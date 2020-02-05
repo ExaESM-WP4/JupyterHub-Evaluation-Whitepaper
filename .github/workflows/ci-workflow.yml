@@ -8,7 +8,7 @@ jobs:
     steps:
     - uses: docker://continuumio/miniconda3:4.7.12
     - run: conda install -q -y -c conda-forge tectonic
-    - run: source $(dirname $(which conda))/activate base
+    - run: env
     - run: which tectonic
     - uses: actions/checkout@v1
     - run: cd tex && tectonic jupyterhub-evaluation-whitepaper.tex && cd ..

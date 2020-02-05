@@ -7,4 +7,4 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: docker://continuumio/miniconda3:4.7.12
-    - run: conda list
+    - run: conda install -c conda-forge tectonic

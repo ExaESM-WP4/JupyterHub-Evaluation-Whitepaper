@@ -10,7 +10,7 @@ jobs:
     - run: conda install -q -y -c conda-forge tectonic
     - run: source $CONDA/bin/activate base && which tectonic
     - uses: actions/checkout@v1
-    - run: cd tex && tectonic jupyterhub-evaluation-whitepaper.tex && cd ..
+    - run: source $CONDA/bin/activate base && cd tex && tectonic jupyterhub-evaluation-whitepaper.tex && cd ..
     - run: mkdir -p pdf_out/
     - run: mv tex/jupyterhub-evaluation-whitepaper.pdf pdf_out/.
     - uses: actions/upload-artifact@v1

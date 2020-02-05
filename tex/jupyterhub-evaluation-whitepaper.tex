@@ -18,6 +18,11 @@
 
 %==============================================================================
 
+% STYLE GUIDE
+%
+% - One sentence per line. This avoids merge conflicts and creates easier to read git diffs.
+% - TBC.
+
 \section{Introduction}
 \label{s-introductoin}
 
@@ -26,10 +31,23 @@
 \section{Documentation from user perspective}
 \label{s-doc-from-user-pov}
 
+\begin{itemize}
+	\item Are the docs up to date with the system that is offered?
+	\item Are the docs up to date with the Jupyter docs?
+	\item Is there a way of contributing to the docs?
+	\item Is it easy for new Jupyter users to get started just based on what's provided by the centre?
+\end{itemize}
+
 %==============================================================================
 
 \section{Working environments}
 \label{s-working-envs}
+
+\begin{itemize}
+  \item Define own kernels?
+  \item Possible to run remote kernels?
+  \item Use conda-defined kernels?
+\end{itemize}
 
 \subsection{Existing ways of selecting working environments}
 \label{ss-existing-env-selection}
@@ -48,15 +66,33 @@
 \section{Availability of resources}
 \label{s-availability-resources}
 
+\begin{itemize}
+  \item Possible to run many notebook servers per user?
+  \item Feedback about availability of resources / waiting time etc.?
+  \item Tranparent way to chose resources that are available?
+\end{itemize}
+
 %==============================================================================
 
 \section{Stability}
 \label{s-stability}
 
+\begin{itemize}
+	\item Stable in productive work? Error rate?
+  \item Possibility to debug if errors occur?
+  \item Responsive under less than ideal link from personal endpoint to Jupyterhub?
+\end{itemize}
+
 %==============================================================================
 
 \section{Customization}
 \label{s-customization}
+
+\begin{itemize}
+	\item Use own notebook server?
+  \item Possible to use jupyter-server-proxy?
+  \item Jupyter Plugins / Widgets?
+\end{itemize}
 
 %==============================================================================
 

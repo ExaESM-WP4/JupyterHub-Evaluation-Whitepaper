@@ -9,9 +9,10 @@ jobs:
     - uses: docker://continuumio/miniconda3:4.7.12
     - run: conda install -q -y -c conda-forge tectonic
     - uses: actions/checkout@v1
+    - run: cd tex && tectonic jupyterhub-evaluation-whitepaper.tex && cd ..
     - run: mkdir -p pdf_out/
-    - run: echo "not a PDF" > pdf_out/not_a_PDF.txt
+    - run: mv tex/jupyterhub-evaluation-whitepaper.pdf pdf_out/.
     - uses: actions/upload-artifact@v1
       with:
-        name: not_a_PDF.txt
+        name: jupyterhub-evaluation-whitepaper.pdf
         path: pdf_out/

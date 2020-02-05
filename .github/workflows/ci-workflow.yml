@@ -1,0 +1,17 @@
+name: Build PDF
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: docker://continuumio/miniconda3:4.7.12
+    - run: conda install -q -y -c conda-forge tectonic
+    - uses: actions/checkout@v1
+    - run: mkdir -p pdf_out/
+    - run: echo "not a PDF" > pdf_out/not_a_PDF.txt
+    - uses: actions/upload-artifact@v1
+      with:
+        name: not_a_PDF.txt
+        path: pdf_out/

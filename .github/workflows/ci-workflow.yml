@@ -8,7 +8,7 @@ jobs:
     steps:
     - uses: docker://continuumio/miniconda3:4.7.12
     - run: conda install -q -y -c conda-forge tectonic
-    - run: conda init
+    - run: conda init && source ~/.bashrc
     - run: conda activate base
     - run: which tectonic
     - uses: actions/checkout@v1

@@ -7,12 +7,10 @@ jobs:
     runs-on: ubuntu-18.04
     container: docker://continuumio/miniconda3:4.7.12
     steps:
-    - run: conda install -q -y -c conda-forge tectonic
-    - run: which tectonic
+    - run: conda install -q -y -c conda-forge tectonic && which tectonic
     - uses: actions/checkout@v1
-    - run: cd tex && tectonic jupyterhub-evaluation-whitepaper.tex && cd ..
     - run: mkdir -p pdf_out/
-    - run: mv tex/jupyterhub-evaluation-whitepaper.pdf pdf_out/.
+    - run: tectonic tex/jupyterhub-evaluation-whitepaper.tex --outdir pdf_out/ --outfmt pdf
     - uses: actions/upload-artifact@v1
       with:
         name: jupyterhub-evaluation-whitepaper.pdf

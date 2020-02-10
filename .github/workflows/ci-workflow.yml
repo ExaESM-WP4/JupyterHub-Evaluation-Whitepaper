@@ -5,12 +5,12 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-18.04
+    container: docker://continuumio/miniconda3:4.7.12
     steps:
-    - uses: docker://continuumio/miniconda3:4.7.12
     - run: conda install -q -y -c conda-forge tectonic
-    - run: source $CONDA/bin/activate base && which tectonic
+    - run: which tectonic
     - uses: actions/checkout@v1
-    - run: source $CONDA/bin/activate base && cd tex && tectonic jupyterhub-evaluation-whitepaper.tex && cd ..
+    - run: cd tex && tectonic jupyterhub-evaluation-whitepaper.tex && cd ..
     - run: mkdir -p pdf_out/
     - run: mv tex/jupyterhub-evaluation-whitepaper.pdf pdf_out/.
     - uses: actions/upload-artifact@v1

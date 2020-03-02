@@ -767,6 +767,8 @@ already existing packages in the user file system location are not properly unin
 \item the \verb|--ignore-installed| flag has an unnecessarily negative impact upon user file system inode counts;
 all packages and their dependencies are copied into the virtual Python environment even though exactly needed versions are already available in the default environment
 
+\item to keep the virtual environment small, for packages that are already installed it would be better to use the \verb|--upgrade| flag or to define a specific package version
+
 \item the 314 package default Python environment is currently always carried along;
 Python virtual environments are a Python base feature and only need a working core Python interpreter/environment and pip and setuptools packages installed;
 it would thus be possible to define very light-weight user specific virtual Python environments as kernels
@@ -886,7 +888,7 @@ Containers provide a flexible way of deploying isolated software environments, t
 Here we summarize the status quo of working environment selection, modification and specification for JUWELS JupyterLab instances.
 Specific proposals to achieve better robustness and flexibility, compatible with the chosen system software architecture, are also given.
 
-Principal other user working environment managing approaches are discussed at the end of the report in section xxx. OR SHOULD WE NOT DO THIS?
+Principal other user working environment managing approaches are discussed at the end of the report. OR SHOULD WE NOT DO THIS? (JupyterLab instances could also be started inside containers. Currently, this approach is used only on the HDF cloud. Should this be made possible on JURECA and JUWELS, too? What is pro and contra here? From a user and system administrator perspective?)
 
 \subsubsection{Selection, modification and specification}
 
@@ -897,9 +899,9 @@ The central problem is the entirely missing documentation on what can or should 
 
 Modification of the default Python environment can also be done by setting up a virtual Python environment, a documentation is provided that explains registering it as further Jupyter kernel.
 However, the approach that is described only allows the user to modify certain Python packages inside the extensive default Python environment.
-Specifying a standalone and light-weight virtual Python environment as Jupyter kernel is possible, but currently not documented.
+Specifying a more standalone and light-weight virtual Python environment as Jupyter kernel is possible, but currently not documented.
 
-The specification of completely standalone working environments has been explored in section XXX.
+The specification of completely standalone working environments has been explored in sections \ref{sect:conda-environment} and \ref{sect:container-based-environment}.
 Both a Conda package manager and a container based Jupyter kernel approach are presented.
 They extend the documented approaches by the possibility of deploying isolated software environments, enabling convenient analysis environment porting and scientific reproducibility.
 
@@ -911,10 +913,21 @@ They extend the documented approaches by the possibility of deploying isolated s
   provided Lmod software environment modules should be completely exchangeable;
   the user should not be able or should clearly be instructed how not to destroy their Jupyter kernels and JupyterLab instances
 
-  \item provide only a minimalistic Python interpreter software environment module for users' to build their own virtual Python environments and Jupyter kernels;
-  this would combine the advantage of using a JUWELS specific Python interpreter (with its potentially higher code execution speeds, see  \href{https://www.fz-juelich.de/SharedDocs/Downloads/IAS/JSC/EN/slides/supercomputer-ressources-2019-11/15a-tuning_intel.html}{this example investigation by Intel}) with (robust) standalone pip package dependency managing
+  \item on system start-up the \verb|Jupyter/2019a-Python-3.6.8| module automatically establishes the software environment for the complete set of available Jupyter kernels;
+  in terms of preventing software environment conflicts, it might make sense to provide only a very minimalistic Jupyter environment;
+  the user should not be able to unload the modules that provide basic system functionality;
+  a documentation could be displayed on how to activate software environment modules that provide Jupyter kernel functionality;
+  thus, users are taught to consciously handle their software environments;
+  however, there might be work on the Jupyter kernel launcher tab necessary;
+  currently, the launcher tab only shows the Jupyter kernels available on JupyterLab instance start-up;
+  kernels that become available after JupyterLab has started can be chosen only from the kernel drop down of open Jupyter notebooks
 
-  \item extend the documentation for working environment specification based on the alternatives presented in section XXX
+  \item another approach to robust Jupyter kernels would be to make software module based kernel launcher scripts the default; these would show up in the JupyterLab launcher tab on system start-up; loading and unloading of software environment modules would not have an effect on the kernel software environments; customization of kernel software environments would be entirely by setting up own kernel launcher scripts; in this case good documentation needs to be provided by the system designers/administators; the Lmod software modules extension in the JupyterLab sidebar would be obsolete in this case
+
+  \item provide only a minimalistic Python interpreter software environment module for users' to build their own virtual Python environments and Jupyter kernels;
+  this would combine the advantage of using a JUWELS specific Python interpreter (with its potentially higher code execution speeds, see \href{https://www.fz-juelich.de/SharedDocs/Downloads/IAS/JSC/EN/slides/supercomputer-ressources-2019-11/15a-tuning_intel.html}{this example investigation by Intel}) with robust standalone pip package dependency managing
+
+  \item extend the documentation for working environment specification based on the alternatives presented in section \ref{sect:jupyter-kernel-suggestions}
 
 \end{itemize}
 

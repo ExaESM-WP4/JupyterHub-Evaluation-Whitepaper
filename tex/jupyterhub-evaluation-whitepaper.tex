@@ -1,5 +1,10 @@
 \documentclass[11pt,a4paper]{article}
 
+\usepackage{xcolor}
+\definecolor{bg}{rgb}{0.96,0.96,0.96}
+\usepackage{minted}
+\setminted[]{fontsize=\small,bgcolor=bg}
+
 \usepackage{hyperref}
 
 \usepackage[utf8]{inputenc}
@@ -18,6 +23,7 @@
 \begin{document}
 
 \maketitle
+\tableofcontents
 
 %==============================================================================
 
@@ -42,11 +48,204 @@
 \end{itemize}
 
 %==============================================================================
-
+\citet{Lorem2020a} %local PDF build workaround
 \section{Working environments}
 \label{sect:working-envs}
 
-%\citet{Lorem2020a} local PDF build workaround
+In this section a description of the software environments accessible via the JupyterHub system is given.
+PUT DESCRIPTION OF FURTHER SECTION CONTENTS HERE.
+
+\subsection{JupyterLab system description}
+\label{sect:system-description}
+
+JupyterLab sessions on JUWELS nodes are instantiated based on activating the following hierarchy of \href{https://lmod.readthedocs.io/en/latest/index.html}{Lmod software environment modules}
+
+\begin{minted}[breaklines,breakanywhere]{bash}
+$ module purge --force
+$ module use $OTHERSTAGES
+$ module load Stages/Devel-2019a GCC/8.3.0
+$ module load Jupyter/2019a-Python-3.6.8
+$ which jupyter
+/gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/bin/jupyter
+\end{minted}
+
+Executing the following command on JUWELS login nodes
+
+\begin{minted}[breaklines,breakanywhere]{bash}
+$ jupyter lab --ip=$HOSTNAME --no-browser
+\end{minted}
+
+starts up the same JupyterLab instance that is otherwise spawned by the JupyterHub system.
+The following software environment modules\footnote{the command must be executed before the Jupyter module is loaded}
+
+\begin{minted}[breaklines,breakanywhere]{bash}
+$ module --redirect show Jupyter/2019a-Python-3.6.8 | grep "load("
+load("imkl/.2019.3.199")
+load("Python/3.6.8")
+load("SciPy-Stack/2019a-Python-3.6.8")
+load("libyaml/.0.2.2")
+load("cling/.0.6dev")
+load("pandoc/2.7.2")
+load("texlive/2018")
+load("Julia/1.1.0")
+load("ITK/5.0.1-Python-3.6.8")
+load("HDF5/1.10.5-serial")
+load("netcdf4-python/1.5.3-serial-Python-3.6.8")
+load("FFmpeg/.4.1.3")
+\end{minted}
+
+are further activated by the \verb|Jupyter/2019a-Python-3.6.8| and provide the default software environment that is used by the following Jupyter kernels
+
+\begin{minted}[breaklines,breakanywhere]{bash}
+$ jupyter kernelspec list
+Available kernels:
+  bash          /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/share/jupyter/kernels/bash
+  cling-cpp11   /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/share/jupyter/kernels/cling-cpp11
+  cling-cpp14   /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/share/jupyter/kernels/cling-cpp14
+  cling-cpp17   /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/share/jupyter/kernels/cling-cpp17
+  javascript    /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/share/jupyter/kernels/javascript
+  julia-1.1     /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/share/jupyter/kernels/julia-1.1
+  python3       /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/share/jupyter/kernels/python3
+\end{minted}
+
+and that can be chosen in the JupyterLab launcher tab.
+
+\subsubsection{Lmod software Jupyter extension}
+
+The default JupyterLab instance software environment can directly be modified with the \href{https://github.com/cmd-ntrf/jupyter-lmod}{Jupyter Lmod extension} that is accessible via the JupyterLab sidebar.
+The currently activated default software environment modules are listed, as well as every module available in the \verb|Devel-2019a| stage and \verb|GCC/8.3.0| compiler module hierarchy, which are those modules also listed by the \verb|module avail| command in a shell.
+
+Using the Lmod softwares extensions approach, the default Python environment can, for example, be extended by loading the \verb|Keras/2.2.4-Python-3.6.8| software module (also available in a GPU variant) that automatically sets up the necessary \verb|TensorFlow/1.13.1-Python-3.6.8| backend. After restarting the Python kernel the following environment changes
+
+\begin{minted}{bash}
+$ pip list > default.txt
+$ module load Keras/2.2.4-Python-3.6.8
+$ pip list > changed.txt
+$ diff default.txt changed.txt
+3c3
+< absl-py                            0.8.1
+---
+> absl-py                            0.7.1
+14a15
+> astor                              0.7.1
+72a74
+> gast                               0.2.2
+76a79
+> grpcio                             1.20.1
+144a148,150
+> Keras                              2.2.4
+> Keras-Applications                 1.0.7
+> Keras-Preprocessing                1.0.9
+153a160
+> Markdown                           3.1
+277a285,288
+> tensorboard                        1.13.1
+> tensorflow                         1.13.1
+> tensorflow-estimator               1.13.0
+> termcolor                          1.1.0
+\end{minted}
+
+are applied and available inside Python kernel notebooks.
+
+While for the previous example applied software environment changes are successful, conflicting examples can also be identified.
+By loading e.g. the \verb|numba/0.43.1-Python-3.6.8| module the following changes
+
+\begin{minted}{bash}
+$ module load numba/0.43.1-Python-3.6.8
+The following have been reloaded with a version change:
+  1) LLVM/8.0.0 => LLVM/7.0.1-dev
+$ pip list > changed.txt
+$ diff default.txt changed.txt
+149c149
+< llvmlite                           0.30.0
+---
+> llvmlite                           0.28.0
+$ pip show numba | grep -i version
+Version: 0.46.0
+\end{minted}
+
+are applied, that is activation of a previous version of the LLVM compiler infrastructure and the llvmlite Python package.
+However, the numba package version that is accessed via the Jupyter kernel does not change.
+Evaluation of the Python package environment
+
+\begin{minted}[breaklines,breakanywhere]{bash}
+$ module --redirect show numba/0.43.1-Python-3.6.8 | grep PYTHONPATH
+prepend_path("PYTHONPATH","/gpfs/software/juwels/stages/Devel-2019a/software/numba/0.43.1-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages")
+$ pip show numba | grep -i location
+Location: /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages
+$ printenv | grep -i pythonpath
+PYTHONPATH=/gpfs/software/juwels/stages/Devel-2019a/software/numba/0.43.1-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages:/gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages:/gpfs/software/juwels/stages/Devel-2019a/software/netcdf4-python/1.5.3-gcccoremkl-8.3.0-2019.3.199-serial-Python-3.6.8/lib/python3.6/site-packages:/gpfs/software/juwels/stages/Devel-2019a/software/ITK/5.0.1-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages:/gpfs/software/juwels/stages/Devel-2019a/software/VTK/8.2.0-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib64/python3.6/site-packages:/gpfs/software/juwels/stages/Devel-2019a/software/SciPy-Stack/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages:/gpfs/software/juwels/stages/Devel-2019a/software/Python/3.6.8-GCCcore-8.3.0/easybuild/python:/gpfs/software/juwels/stages/Devel-2019a/software/Python/3.6.8-GCCcore-8.3.0/lib/python3.6/site-packages
+$ ls /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages -lrtha | grep -i numba
+drwxr-sr-x  24 goebbert1 swmanage  32K 25. Jan 09:24 numba
+drwxr-sr-x   2 goebbert1 swmanage 4,0K 25. Jan 09:24 numba-0.46.0.dist-info
+$ ls /gpfs/software/juwels/stages/Devel-2019a/software/numba/0.43.1-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages -lrtha | grep -i numba
+drwxrwsr-x 4 swmanage swmanage 4,0K  9. Mai 2019  numba-0.43.1-py3.6-linux-x86_64.egg
+\end{minted}
+
+reveals that numba from the \verb|Jupyter/2019a-Python-3.6.8| environment is used, even though the \verb|PYTHONPATH| is correctly set.
+Generally, such unexpected software module environment behaviour is not desired and could lead to conflicting software with broken Jupyter kernel functionality.
+
+\subsubsection{Jupyter kernel functionality}
+
+Indeed, by using the Lmod software modules extension users can completely destroy their default Jupyter kernel functionality, and even the functionality of the whole JupyterLab instance.
+
+The Lmod softwares Jupyter extension allows, for example, replacing the default \verb|Julia/1.1.0| with a newer \verb|Julia/1.3.1| software environment.
+This, however, breaks Julia kernel functionality.
+Checking the Jupyter kernel configuration file
+
+\begin{minted}[breaklines,breakanywhere]{bash}
+$ cd /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/share/jupyter/kernels/julia-1.1
+$ cat kernel.json
+{
+  "display_name": "Julia 1.1.0",
+  "argv": [
+    "/gpfs/software/juwels/stages/Devel-2019a/software/Julia/1.1.0-gcccoremkl-8.3.0-2019.3.199/bin/julia",
+    "-i",
+    "--startup-file=yes",
+    "--color=yes",
+    "--project=@.",
+    "/gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/share/julia/site/packages/IJulia/F1GUo/src/kernel.jl",
+    "{connection_file}"
+  ],
+  "language": "julia",
+  "env": {},
+  "interrupt_mode": "signal"
+}
+\end{minted}
+
+reveals that the Julia path is hard coded to the 1.1.0 version.
+Replacing the software environment paths with those of Julia 1.3.1, but calling Julia 1.1.0 apparently leads to conflicts that then cause a dead kernel.
+The JupyterLab system does not provide error messages on this.
+
+Currently, the Lmod software modules extension might also accidently be used to destroy the functionality of the whole JupyterLab instance.
+Unloading the \verb|Jupyter/2019a-Python-3.6.8| modules breaks the functionality of the whole set of default Jupyter kernels.
+In the software extension module several Jupyter software environments are available
+
+\begin{minted}[breaklines,breakanywhere]{bash}
+$ module -t --redirect avail | grep -i jupyter
+Jupyter/
+Jupyter/2019a-rc17-Python-3.6.8
+Jupyter/2019a-rc18-Python-3.6.8
+Jupyter/2019a-rc19-Python-3.6.8
+Jupyter/2019a-rc20-Python-3.6.8
+Jupyter/2019a-rc21-Python-3.6.8
+Jupyter/2019a-rc22-Python-3.6.8
+Jupyter/2019a-rc23-Python-3.6.8
+Jupyter/2019a-rc30-Python-3.6.8
+Jupyter/2019a-rc31-Python-3.6.8
+Jupyter/2019a-devel-Python-3.6.8
+Jupyter/2019a-Python-3.6.8-damian
+Jupyter/2019a-Python-3.6.8
+\end{minted}
+
+but it remains unclear if stable JupyterLab instance software environments are established.
+For example, unloading the \verb|Jupyter/2019a-Python-3.6.8| module does not unload its dependent modules, even though they are activated by the \verb|load()| command, for which Lmod intended behaviour\footnote{see \href{https://lmod.readthedocs.io/en/latest/098_dependent_modules.html}{Lmod 8.3.1 documentation} on module dependencies} is to unload dependencies.
+If this a problem on the Lmod side (on JUWELS Lmod 7.7.38 is installed), or by software architecture design is not clear at this point.
+SHOULD IT BE INVESTIGATED?
+
+Software environment modules are used to establish and extend the functionality of the instantiated JupyterLab software environment.
+However, they are not set up in a strictly hierarchical way, the potential for setting up conflicting software environments is therefore currently high.
+Choice of a slightly different design approach might solve that problem, i.e. providing a module hierarchy that only contains Jupyter related modules.
 
 \subsection{Summary}
 \label{sect:working-envs:summary}

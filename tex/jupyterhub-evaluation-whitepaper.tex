@@ -1,6 +1,9 @@
 \documentclass[11pt,a4paper]{article}
 
+\usepackage{hyperref}
+
 \usepackage[utf8]{inputenc}
+\usepackage{indentfirst}
 
 \usepackage[round,semicolon]{natbib}
 \bibliographystyle{plainnat}
@@ -8,7 +11,7 @@
 \title{\textbf{JupyterHub@JSC evaluation}}
 
 \author{
-  Martin Claus \ % alphabetical order
+  Martin Claus \\ % alphabetical order
 	Katharina Höflich \\
 	Willi Rath}
 
@@ -41,25 +44,65 @@
 %==============================================================================
 
 \section{Working environments}
-\label{s-working-envs}
+\label{sect:working-envs}
+
+%\citet{Lorem2020a} local PDF build workaround
+
+\subsection{Summary}
+\label{sect:working-envs:summary}
+
+Here we summarize the status quo of working environment selection, modification and specification for JUWELS JupyterLab instances.
+Specific proposals to achieve better robustness and flexibility, compatible with the chosen system software architecture, are also given.
+Principal other user working environment managing approaches are discussed at the end of the report in section XXX.
+
+\subsubsection{Selection, modification and specification}
+
+Working environment selection is established based on Jupyter kernels, available per default are currently a Bash, Javascript, Julia and Python kernel, and several C++ kernels.
+The default Python package environment can be extended and modified using the Lmod software environment Jupyter extension available in the JupyterLab sidebar, however, most of the available Python modules are not compatible with the default environment, quickly leaving the user with broken Python kernel functionality.
+THERE SHOULD BE MORE DETAILS FROM ABOVE INVESTIGATIONS HERE.
+The central problem is the entirely missing documentation on what can or should be achieved via the software environment module extension.
+
+Modification of the default Python environment can also be done by setting up a virtual Python environment, a documentation is provided that explains registering it as further Jupyter kernel.
+However, the approach that is described only allows the user to modify certain Python packages inside the extensive default Python environment.
+Specifying a standalone and light-weight virtual Python environment as Jupyter kernel is possible, but currently not documented.
+
+The specification of completely standalone working environments has been explored in section XXX.
+Both a Conda package manager and a container based Jupyter kernel approach are presented.
+They extend the documented approaches by the possibility of deploying isolated software environments, enabling convenient analysis environment porting and scientific reproducibility.
+
+\subsubsection{Suggestions}
 
 \begin{itemize}
-  \item Define own kernels?
-  \item Possible to run remote kernels?
-  \item Use conda-defined kernels?
+
+  \item set up a software modules hierarchy that is scoped only for the JUWELS JupyterLab functionality;
+  provided Lmod software environment modules should be completely exchangeable;
+  the user should not be able or should clearly be instructed how not to destroy their Jupyter kernels and JupyterLab instances
+
+  \item provide only a minimalistic Python interpreter software environment module for users' to build their own virtual Python environments and Jupyter kernels;
+  this would combine the advantage of using a JUWELS specific Python interpreter (with its potentially higher code execution speeds, see  \href{https://www.fz-juelich.de/SharedDocs/Downloads/IAS/JSC/EN/slides/supercomputer-ressources-2019-11/15a-tuning_intel.html}{this example investigation by Intel}) with (robust) standalone pip package dependency managing
+
+  \item extend the documentation for working environment specification based on the alternatives presented in section XXX
+
 \end{itemize}
 
-\subsection{Existing ways of selecting working environments}
-\label{ss-existing-env-selection}
 
-\subsection{Desired ways of selecting working environments}
-\label{ss-desired-env-selection}
+%\begin{itemize}
+%  \item Define own kernels?
+%  \item Possible to run remote kernels?
+%  \item Use conda-defined kernels?
+%\end{itemize}
 
-\subsection{Existing ways of defining working environments}
-\label{ss-existing-env-definition}
+%\subsection{Existing ways of selecting working environments}
+%\label{ss-existing-env-selection}
 
-\subsection{Desired ways of defining working environments}
-\label{ss-desired-env-definition}
+%\subsection{Desired ways of selecting working environments}
+%\label{ss-desired-env-selection}
+
+%\subsection{Existing ways of defining working environments}
+%\label{ss-existing-env-definition}
+
+%\subsection{Desired ways of defining working environments}
+%\label{ss-desired-env-definition}
 
 %==============================================================================
 

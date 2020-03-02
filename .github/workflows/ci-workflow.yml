@@ -10,7 +10,7 @@ jobs:
     - run: conda install -q -y -c conda-forge tectonic && which tectonic
     - uses: actions/checkout@v1
     - run: mkdir -p pdf_out/
-    - run: tectonic tex/jupyterhub-evaluation-whitepaper.tex --outdir pdf_out/ --outfmt pdf
+    - run: tectonic tex/jupyterhub-evaluation-whitepaper.tex -shell-escape --outdir pdf_out/ --outfmt pdf
     - uses: actions/upload-artifact@v1
       with:
         name: jupyterhub-evaluation-whitepaper.pdf

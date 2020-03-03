@@ -183,12 +183,12 @@ Generally, such unexpected software module environment behaviour is not desired 
 
 \subsubsection{Jupyter kernel functionality}
 
-Indeed, by using the Lmod software modules extension users can completely destroy their default Jupyter kernel functionality, and even the functionality of the whole JupyterLab instance.
+By using the Lmod software modules extension users can completely destroy their default Jupyter kernel functionality, and even the functionality of the whole JupyterLab instance.
 
 The Lmod softwares Jupyter extension allows, for example, replacing the default \verb|Julia/1.1.0| with a newer \verb|Julia/1.3.1| software environment.
 This, however, breaks Julia kernel functionality.
-Checking the Jupyter kernel configuration file
-
+Checking the Jupyter kernel configuration file reveals that the Julia path is hard coded to the 1.1.0 version.
+%
 \begin{minted}[breaklines,breakanywhere]{bash}
 $ cd /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/share/jupyter/kernels/julia-1.1
 $ cat kernel.json
@@ -208,15 +208,15 @@ $ cat kernel.json
   "interrupt_mode": "signal"
 }
 \end{minted}
-
-reveals that the Julia path is hard coded to the 1.1.0 version.
+%
 Replacing the software environment paths with those of Julia 1.3.1, but calling Julia 1.1.0 apparently leads to conflicts that then cause a dead kernel.
 The JupyterLab system does not provide error messages on this.
 
 Currently, the Lmod software modules extension might also accidently be used to destroy the functionality of the whole JupyterLab instance.
 Unloading the \verb|Jupyter/2019a-Python-3.6.8| modules breaks the functionality of the whole set of default Jupyter kernels.
-In the software extension module several Jupyter software environments are available
 
+In the software extension module several Jupyter software environments are available but it remains unclear if stable JupyterLab instance software environments are established:
+%
 \begin{minted}[breaklines,breakanywhere]{bash}
 $ module -t --redirect avail | grep -i jupyter
 Jupyter/
@@ -234,11 +234,11 @@ Jupyter/2019a-Python-3.6.8-damian
 Jupyter/2019a-Python-3.6.8
 \end{minted}
 
-but it remains unclear if stable JupyterLab instance software environments are established.
 For example, unloading the \verb|Jupyter/2019a-Python-3.6.8| module does not unload its dependent modules, even though they are activated by the \verb|load()| command, for which Lmod intended behaviour\footnote{see \href{https://lmod.readthedocs.io/en/latest/098_dependent_modules.html}{Lmod 8.3.1 documentation} on dependencies} is to unload dependencies.
-If this a problem on the Lmod side (on JUWELS Lmod 7.7.38 is installed) or by software module architecture design is not clear at this point.
+If this a problem on the Lmod side\footnote{on JUWELS Lmod 7.7.38 is installed} or by software module architecture design is not clear at this point.
 SHOULD IT BE INVESTIGATED?
 
+MOVE THIS PARAGRAPH TO A SUMMARY AT THE TOP?
 Software environment modules are used to establish and extend the functionality of the instantiated JupyterLab software environment.
 However, they are not set up in a strictly hierarchical way, the potential for setting up conflicting software environments is therefore currently high.
 Choice of a slightly different design approach might solve that problem, i.e. providing a module hierarchy that only contains Jupyter related modules.

@@ -13,6 +13,8 @@
 \usepackage[round,semicolon]{natbib}
 \bibliographystyle{plainnat}
 
+\usepackage{cprotect}  % allows for verbatim text in footnotes
+
 \title{\textbf{JupyterHub@JSC evaluation}}
 
 \author{
@@ -113,7 +115,7 @@ and that can be chosen in the JupyterLab launcher tab.
 \subsubsection{Lmod software Jupyter extension}
 
 The default JupyterLab instance software environment can directly be modified with the \href{https://github.com/cmd-ntrf/jupyter-lmod}{Jupyter Lmod extension} that is accessible via the JupyterLab sidebar.
-The currently activated default software environment modules are listed, as well as every module available in the \verb|Devel-2019a| stage and \verb|GCC/8.3.0| compiler module hierarchy\footnote{These modules also listed by the \verb|module avail| command in a shell.}.
+The currently activated default software environment modules are listed, as well as every module available in the \verb|Devel-2019a| stage and \verb|GCC/8.3.0| compiler module hierarchy\cprotect\footnote{These modules also listed by the \verb|module avail| command in a shell.}.
 
 Using the Lmod softwares extensions approach, the default Python environment can, for example, be extended.
 Adding, e.g., the \verb|Keras/2.2.4-Python-3.6.8| software module\footnote{also available in a GPU variant} automatically sets up the necessary \verb|TensorFlow/1.13.1-Python-3.6.8| backend and applies the following changes to the environmen\footnote{To make these changes available in the Jupyter kernel, the kernel needs to be restarted.}:
@@ -253,8 +255,8 @@ The system designers propose the usage of a \href{https://docs.python.org/3/libr
 \label{sect:python-kernel:default-packages}
 
 The default Python environment as defined by the above software modules contains 314 packages.
-The following 154 are currently\footnote{February 19th, 2020} up-to-date
-
+The following 154 are currently\footnote{February 19th, 2020} up-to-date:
+%
 \begin{minted}{bash}
 $ pip list --uptodate
 Package                            Version
@@ -407,9 +409,9 @@ widgetsnbextension                 3.5.1
 wslink                             0.1.11
 zict                               1.0.0
 \end{minted}
-
-and the following 160 packages are currently outdated,
-
+%
+The following 160 packages are currently outdated:
+%
 \begin{minted}{bash}
 $ pip list --outdated
 Package                   Version   Latest     Type
@@ -576,7 +578,8 @@ zope.interface            4.6.0     4.7.1      wheel
 zstandard                 0.12.0    0.13.0     wheel
 \end{minted}
 
-respectively.
+NOTE THAT THERE'S REDUNDANT STUFF IN THE ENV AS WELL. FOR EXAMPLE, ENUM34 IS A BACKPORT OF PY34 FUNCTIONALITY TO 33 AND PY2.
+
 While slightly outdated Python packages might not be problematic for many use cases, other use cases might be strongly dependent on recent developments in the quickly evolving scientific Python ecosystem.
 
 Furthermore, there are use cases that require running Jupyter Notebook code in a version specific package environment.

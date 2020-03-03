@@ -8,9 +8,8 @@ jobs:
     container: docker://danteev/texlive:v1.6.0
     steps:
     - uses: actions/checkout@v1
-    - run: mkdir -p pdf_out/
-    - run: latexmk -cd -bibtex -pdf tex/jupyterhub-evaluation-whitepaper.tex -pdflatex="pdflatex --shell-escape %O %S" -outdir pdf_out/
+    - run: latexmk -cd -bibtex -pdf tex/jupyterhub-evaluation-whitepaper.tex -pdflatex="pdflatex --shell-escape %O %S"
     - uses: actions/upload-artifact@v1
       with:
         name: jupyterhub-evaluation-whitepaper.pdf
-        path: pdf_out/
+        path: tex/

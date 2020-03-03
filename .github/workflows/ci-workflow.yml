@@ -4,17 +4,13 @@ on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
+    container: docker://danteev/texlive:v1.6.0
     steps:
-      - name: Set up Git repository
-        uses: actions/checkout@v1
-      - name: Compile document.tex
-        uses: dante-ev/latex-action@master
-        with:
-          root_file: tex/jupyterhub-evaluation-whitepaper.tex
-      - run: mkdir -p pdf_out/
-      - run: mv tex/jupyterhub-evaluation-whitepaper.pdf pdf_out/.
-      - uses: actions/upload-artifact@v1
-        with:
-          name: jupyterhub-evaluation-whitepaper.pdf
-          path: pdf_out/
+    - uses: actions/checkout@v1
+    - run: mkdir -p pdf_out/
+    - run: cd tex/ && latexmk -bibtex -pdf tex/jupyterhub-evaluation-whitepaper.tex -pdflatex="pdflatex --shell-escape %O %S" -outdir pdf_out/
+    - uses: actions/upload-artifact@v1
+      with:
+        name: jupyterhub-evaluation-whitepaper.pdf
+        path: pdf_out/

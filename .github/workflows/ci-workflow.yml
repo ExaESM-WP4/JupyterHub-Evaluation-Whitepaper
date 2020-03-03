@@ -9,7 +9,8 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - run: mkdir -p pdf_out/
-    - run: cd tex/ && latexmk -bibtex -pdf tex/jupyterhub-evaluation-whitepaper.tex -pdflatex="pdflatex --shell-escape %O %S" -outdir pdf_out/
+    - run: latexmk 	
+-cd -bibtex -pdf tex/jupyterhub-evaluation-whitepaper.tex -pdflatex="pdflatex --shell-escape %O %S" -outdir pdf_out/
     - uses: actions/upload-artifact@v1
       with:
         name: jupyterhub-evaluation-whitepaper.pdf

@@ -4,14 +4,17 @@ on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
-    container: docker://continuumio/miniconda3:4.7.12
+    runs-on: ubuntu-latest
     steps:
-    - run: conda install -q -y -c conda-forge tectonic && which tectonic
-    - uses: actions/checkout@v1
-    - run: mkdir -p pdf_out/
-    - run: tectonic tex/jupyterhub-evaluation-whitepaper.tex --shell-escape --outdir pdf_out/ --outfmt pdf
-    - uses: actions/upload-artifact@v1
-      with:
-        name: jupyterhub-evaluation-whitepaper.pdf
-        path: pdf_out/
+      - name: Set up Git repository
+        uses: actions/checkout@v1
+      - name: Compile document.tex
+        uses: dante-ev/latex-action@master
+        with:
+          root_file: tex/jupyterhub-evaluation-whitepaper.tex
+      - run: mkdir -p pdf_out/
+      - run: mv tex/jupyterhub-evaluation-whitepaper.pdf pdf_out/.
+      - uses: actions/upload-artifact@v1
+        with:
+          name: jupyterhub-evaluation-whitepaper.pdf
+          path: pdf_out/

@@ -5,13 +5,11 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-18.04
-    container: docker://continuumio/miniconda3:4.7.12
+    container: docker://danteev/texlive:v1.6.0
     steps:
-    - run: conda install -q -y -c conda-forge tectonic && which tectonic
     - uses: actions/checkout@v1
-    - run: mkdir -p pdf_out/
-    - run: tectonic tex/jupyterhub-evaluation-whitepaper.tex --shell-escape --outdir pdf_out/ --outfmt pdf
+    - run: cd tex/ && latexmk -bibtex -pdf jupyterhub-evaluation-whitepaper.tex -pdflatex="pdflatex --shell-escape %O %S" && cd -
     - uses: actions/upload-artifact@v1
       with:
         name: jupyterhub-evaluation-whitepaper.pdf
-        path: pdf_out/
+        path: tex/jupyterhub-evaluation-whitepaper.pdf

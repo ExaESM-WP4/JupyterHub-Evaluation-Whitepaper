@@ -1,0 +1,981 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{xcolor}
+\definecolor{bg}{rgb}{0.96,0.96,0.96}
+\usepackage{minted}
+\setminted[]{fontsize=\small,bgcolor=bg}
+
+\usepackage{hyperref}
+
+\usepackage[utf8]{inputenc}
+\usepackage{indentfirst}
+
+\usepackage[strings]{underscore}
+\usepackage[round,semicolon]{natbib}
+\bibliographystyle{plainnat}
+
+\usepackage{cprotect}  % allows for verbatim text in footnotes
+
+\title{\textbf{JupyterHub@JSC evaluation}}
+
+\author{
+  Martin Claus \\ % alphabetical order
+	Katharina Höflich \\
+	Willi Rath}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+%==============================================================================
+
+% STYLE GUIDE
+%
+% - One sentence per line. This avoids merge conflicts and creates easier to read git diffs.
+% - TBC.
+
+%==============================================================================
+
+\input{introduction}
+
+%==============================================================================
+
+\section{Documentation from user perspective}
+\label{s-doc-from-user-pov}
+
+\begin{itemize}
+	\item Are the docs up to date with the system that is offered?
+	\item Are the docs up to date with the Jupyter docs?
+	\item Is there a way of contributing to the docs?
+	\item Is it easy for new Jupyter users to get started just based on what's provided by the centre?
+\end{itemize}
+
+%==============================================================================
+\citet{Lorem2020a} %local PDF build workaround
+\section{Working environments}
+\label{sect:working-envs}
+
+In this section a description of the software environments accessible via the JupyterHub system is given.
+PUT DESCRIPTION OF FURTHER SECTION CONTENTS HERE.
+
+\subsection{JupyterLab system description}
+\label{sect:system-description}
+
+JupyterLab sessions on JUWELS nodes are instantiated based on activating the following hierarchy of \href{https://lmod.readthedocs.io/en/latest/index.html}{Lmod software environment modules}:
+%
+\begin{minted}[breaklines,breakanywhere]{bash}
+$ module purge --force
+$ module use $OTHERSTAGES
+$ module load Stages/Devel-2019a GCC/8.3.0
+$ module load Jupyter/2019a-Python-3.6.8
+$ which jupyter
+/gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/bin/jupyter
+\end{minted}
+
+Executing the following command on JUWELS login nodes
+%
+\begin{minted}[breaklines,breakanywhere]{bash}
+$ jupyter lab --ip=$HOSTNAME --no-browser
+\end{minted}
+%
+starts up the same JupyterLab instance that is otherwise spawned by the JupyterHub system.
+The following software environment modules\footnote{the command must be executed before the Jupyter module is loaded}
+
+\begin{minted}[breaklines,breakanywhere]{bash}
+$ module --redirect show Jupyter/2019a-Python-3.6.8 | grep "load("
+load("imkl/.2019.3.199")
+load("Python/3.6.8")
+load("SciPy-Stack/2019a-Python-3.6.8")
+load("libyaml/.0.2.2")
+load("cling/.0.6dev")
+load("pandoc/2.7.2")
+load("texlive/2018")
+load("Julia/1.1.0")
+load("ITK/5.0.1-Python-3.6.8")
+load("HDF5/1.10.5-serial")
+load("netcdf4-python/1.5.3-serial-Python-3.6.8")
+load("FFmpeg/.4.1.3")
+\end{minted}
+%
+are further activated by the \verb|Jupyter/2019a-Python-3.6.8| and provide the default software environment that is used by the following Jupyter kernels
+%
+\begin{minted}[breaklines,breakanywhere]{bash}
+$ jupyter kernelspec list
+Available kernels:
+  bash          /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/share/jupyter/kernels/bash
+  cling-cpp11   /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/share/jupyter/kernels/cling-cpp11
+  cling-cpp14   /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/share/jupyter/kernels/cling-cpp14
+  cling-cpp17   /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/share/jupyter/kernels/cling-cpp17
+  javascript    /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/share/jupyter/kernels/javascript
+  julia-1.1     /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/share/jupyter/kernels/julia-1.1
+  python3       /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/share/jupyter/kernels/python3
+\end{minted}
+%
+and that can be chosen in the JupyterLab launcher tab.
+
+\subsubsection{Lmod software Jupyter extension}
+
+The default JupyterLab instance software environment can directly be modified with the \href{https://github.com/cmd-ntrf/jupyter-lmod}{Jupyter Lmod extension} that is accessible via the JupyterLab sidebar.
+The currently activated default software environment modules are listed, as well as every module available in the \verb|Devel-2019a| stage and \verb|GCC/8.3.0| compiler module hierarchy\cprotect\footnote{These modules also listed by the \verb|module avail| command in a shell.}.
+
+Using the Lmod softwares extensions approach, the default Python environment can, for example, be extended.
+Adding, e.g., the \verb|Keras/2.2.4-Python-3.6.8| software module\footnote{also available in a GPU variant} automatically sets up the necessary \verb|TensorFlow/1.13.1-Python-3.6.8| backend and applies the following changes to the environmen\footnote{To make these changes available in the Jupyter kernel, the kernel needs to be restarted.}:
+%
+\begin{minted}{bash}
+$ pip list > default.txt
+$ module load Keras/2.2.4-Python-3.6.8
+$ pip list > changed.txt
+$ diff default.txt changed.txt
+3c3
+< absl-py                            0.8.1
+---
+> absl-py                            0.7.1
+14a15
+> astor                              0.7.1
+72a74
+> gast                               0.2.2
+76a79
+> grpcio                             1.20.1
+144a148,150
+> Keras                              2.2.4
+> Keras-Applications                 1.0.7
+> Keras-Preprocessing                1.0.9
+153a160
+> Markdown                           3.1
+277a285,288
+> tensorboard                        1.13.1
+> tensorflow                         1.13.1
+> tensorflow-estimator               1.13.0
+> termcolor                          1.1.0
+\end{minted}
+
+While for the previous example applied software environment changes are successful, conflicting examples can also be identified.
+Loading, e.g., the \verb|numba/0.43.1-Python-3.6.8| module only activates an older version of the LLVM compiler infrastructure and the llvmlite Python package. The version of the numba package that is present in the Jupyter kernel, however, does not change:
+%
+\begin{minted}{bash}
+$ module load numba/0.43.1-Python-3.6.8
+The following have been reloaded with a version change:
+  1) LLVM/8.0.0 => LLVM/7.0.1-dev
+$ pip list > changed.txt
+$ diff default.txt changed.txt
+149c149
+< llvmlite                           0.30.0
+---
+> llvmlite                           0.28.0
+$ pip show numba | grep -i version
+Version: 0.46.0
+\end{minted}
+
+Evaluation of the Python package environment reveals that numba from the \verb|Jupyter/2019a-Python-3.6.8| environment is used, even though the \verb|PYTHONPATH| is correctly set:
+%
+\begin{minted}[breaklines,breakanywhere]{bash}
+$ module --redirect show numba/0.43.1-Python-3.6.8 | grep PYTHONPATH
+prepend_path("PYTHONPATH","/gpfs/software/juwels/stages/Devel-2019a/software/numba/0.43.1-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages")
+$ pip show numba | grep -i location
+Location: /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages
+$ printenv | grep -i pythonpath
+PYTHONPATH=/gpfs/software/juwels/stages/Devel-2019a/software/numba/0.43.1-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages:/gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages:/gpfs/software/juwels/stages/Devel-2019a/software/netcdf4-python/1.5.3-gcccoremkl-8.3.0-2019.3.199-serial-Python-3.6.8/lib/python3.6/site-packages:/gpfs/software/juwels/stages/Devel-2019a/software/ITK/5.0.1-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages:/gpfs/software/juwels/stages/Devel-2019a/software/VTK/8.2.0-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib64/python3.6/site-packages:/gpfs/software/juwels/stages/Devel-2019a/software/SciPy-Stack/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages:/gpfs/software/juwels/stages/Devel-2019a/software/Python/3.6.8-GCCcore-8.3.0/easybuild/python:/gpfs/software/juwels/stages/Devel-2019a/software/Python/3.6.8-GCCcore-8.3.0/lib/python3.6/site-packages
+$ ls /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages -lrtha | grep -i numba
+drwxr-sr-x  24 goebbert1 swmanage  32K 25. Jan 09:24 numba
+drwxr-sr-x   2 goebbert1 swmanage 4,0K 25. Jan 09:24 numba-0.46.0.dist-info
+$ ls /gpfs/software/juwels/stages/Devel-2019a/software/numba/0.43.1-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages -lrtha | grep -i numba
+drwxrwsr-x 4 swmanage swmanage 4,0K  9. Mai 2019  numba-0.43.1-py3.6-linux-x86_64.egg
+\end{minted}
+
+Generally, such unexpected software module environment behaviour is not desired and could lead to conflicting software with broken Jupyter kernel functionality.
+
+\subsubsection{Jupyter kernel functionality}
+
+By using the Lmod software modules extension users can completely destroy their default Jupyter kernel functionality, and even the functionality of the whole JupyterLab instance.
+
+The Lmod softwares Jupyter extension allows, for example, replacing the default \verb|Julia/1.1.0| with a newer \verb|Julia/1.3.1| software environment.
+This, however, breaks Julia kernel functionality.
+Checking the Jupyter kernel configuration file reveals that the Julia path is hard coded to the 1.1.0 version.
+%
+\begin{minted}[breaklines,breakanywhere]{bash}
+$ cd /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/share/jupyter/kernels/julia-1.1
+$ cat kernel.json
+{
+  "display_name": "Julia 1.1.0",
+  "argv": [
+    "/gpfs/software/juwels/stages/Devel-2019a/software/Julia/1.1.0-gcccoremkl-8.3.0-2019.3.199/bin/julia",
+    "-i",
+    "--startup-file=yes",
+    "--color=yes",
+    "--project=@.",
+    "/gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/share/julia/site/packages/IJulia/F1GUo/src/kernel.jl",
+    "{connection_file}"
+  ],
+  "language": "julia",
+  "env": {},
+  "interrupt_mode": "signal"
+}
+\end{minted}
+%
+Replacing the software environment paths with those of Julia 1.3.1, but calling Julia 1.1.0 apparently leads to conflicts that then cause a dead kernel.
+The JupyterLab system does not provide error messages on this.
+
+Currently, the Lmod software modules extension might also accidently be used to destroy the functionality of the whole JupyterLab instance.
+Unloading the \verb|Jupyter/2019a-Python-3.6.8| modules breaks the functionality of the whole set of default Jupyter kernels.
+
+In the software extension module several Jupyter software environments are available but it remains unclear if stable JupyterLab instance software environments are established:
+%
+\begin{minted}[breaklines,breakanywhere]{bash}
+$ module -t --redirect avail | grep -i jupyter
+Jupyter/
+Jupyter/2019a-rc17-Python-3.6.8
+Jupyter/2019a-rc18-Python-3.6.8
+Jupyter/2019a-rc19-Python-3.6.8
+Jupyter/2019a-rc20-Python-3.6.8
+Jupyter/2019a-rc21-Python-3.6.8
+Jupyter/2019a-rc22-Python-3.6.8
+Jupyter/2019a-rc23-Python-3.6.8
+Jupyter/2019a-rc30-Python-3.6.8
+Jupyter/2019a-rc31-Python-3.6.8
+Jupyter/2019a-devel-Python-3.6.8
+Jupyter/2019a-Python-3.6.8-damian
+Jupyter/2019a-Python-3.6.8
+\end{minted}
+
+For example, unloading the \verb|Jupyter/2019a-Python-3.6.8| module does not unload its dependent modules, even though they are activated by the \verb|load()| command, for which Lmod intended behaviour\footnote{see \href{https://lmod.readthedocs.io/en/latest/098_dependent_modules.html}{Lmod 8.3.1 documentation} on dependencies} is to unload dependencies.
+If this a problem on the Lmod side\footnote{on JUWELS Lmod 7.7.38 is installed} or by software module architecture design is not clear at this point.
+SHOULD IT BE INVESTIGATED?
+
+MOVE THIS PARAGRAPH TO A SUMMARY AT THE TOP?
+Software environment modules are used to establish and extend the functionality of the instantiated JupyterLab software environment.
+However, they are not set up in a strictly hierarchical way, the potential for setting up conflicting software environments is therefore currently high.
+Choice of a slightly different design approach might solve that problem, i.e. providing a module hierarchy that only contains Jupyter related modules.
+
+\subsection{Setup your own Python kernel}
+
+Modifications to the default JupyterLab software environment of the Python kernel can also be done without loading  software environment modules.
+The status quo of bringing your own Python packages to the JupyterHub system is evaluated here.
+The system designers propose the usage of a \href{https://docs.python.org/3/library/venv.html}{virtual Python environment} as an \href{https://ipython.org/ipython-doc/3/development/kernels.html#kernelspecs}{IPython kernel}.
+
+\subsubsection{Default packages}
+\label{sect:python-kernel:default-packages}
+
+The default Python environment as defined by the above software modules contains 314 packages.
+The following 154 are currently\footnote{February 19th, 2020} up-to-date:
+%
+\begin{minted}{bash}
+$ pip list --uptodate
+Package                            Version
+---------------------------------- ---------
+aiohttp                            3.6.2
+alabaster                          0.7.12
+ansiwrap                           0.8.4
+apipkg                             1.5
+appdirs                            1.4.3
+async-generator                    1.10
+async-timeout                      3.0.1
+atomicwrites                       1.3.0
+backcall                           0.1.0
+backports.shutil-get-terminal-size 1.0.0
+backports.tempfile                 1.0
+backports.weakref                  1.0.post1
+bleach                             3.1.0
+blist                              1.3.6
+certipy                            0.1.3
+chardet                            3.0.4
+Click                              7.0
+colorcet                           2.0.2
+commonmark                         0.9.1
+entrypoints                        0.3
+enum34                             1.1.6
+fsspec                             0.6.2
+funcsigs                           1.0.2
+grako                              3.99.9
+graphviz                           0.13.2
+h5py                               2.10.0
+HeapDict                           1.0.1
+html5lib                           1.0.1
+hyperlink                          19.0.0
+idna-ssl                           1.1.0
+incremental                        17.5.0
+ipydatawidgets                     4.0.1
+ipynb                              0.5.1
+ipyparallel                        6.2.4
+ipython-genutils                   0.2.0
+ipythonblocks                      1.9.0
+ipyvolume                          0.5.2
+ipyvuetify                         1.1.1
+ipywebrtc                          0.5.0
+ipywidgets                         7.5.1
+isodate                            0.6.0
+itk-core                           5.0.1
+itk-filtering                      5.0.1
+itk-io                             5.0.1
+itk-meshtopolydata                 0.5.1
+itk-numerics                       5.0.1
+itk-registration                   5.0.1
+itk-segmentation                   5.0.1
+itsdangerous                       1.1.0
+joblib                             0.14.1
+jsfileupload                       0.1.0
+jupyter-bokeh                      1.1.1
+jupyter-client                     5.3.4
+jupyter-contrib-core               0.3.3
+jupyter-contrib-nbextensions       0.5.1
+jupyter-highlight-selected-word    0.2.0
+jupyter-latex-envs                 1.4.6
+jupyter-nbextensions-configurator  0.4.1
+jupyter-server-proxy               1.2.0
+jupyterlab-github                  1.0.0
+jupyterlab-gitlab                  0.2.0
+jupyterlab-iframe                  0.2.1
+jupyterlab-latex                   1.0.0
+jupyterlab-launcher                0.13.1
+jupyterlab-pygments                0.1.0
+jupyterlab-quickopen               0.3.0
+jupyterlab-server                  1.0.6
+jupyterlab-slurm                   1.0.5
+jupyterlmod                        1.7.5
+jupyterthemes                      0.20.0
+liac-arff                          2.4.0
+locket                             0.2.0
+lockfile                           0.12.2
+MarkupSafe                         1.1.1
+mistune                            0.8.4
+mpmath                             1.1.0
+multipledispatch                   0.6.0
+nbconvert                          5.6.1
+nbdime                             1.1.0
+netaddr                            0.7.19
+netCDF4                            1.5.3
+netifaces                          0.10.9
+nose                               1.3.7
+oauthlib                           3.1.0
+olefile                            0.46
+pamela                             1.0.0
+pandocfilters                      1.4.2
+partd                              1.1.0
+patsy                              0.5.1
+paycheck                           1.0.2
+pickleshare                        0.7.5
+ply                                3.11
+prometheus-client                  0.7.1
+prov                               1.5.3
+ptyprocess                         0.6.0
+pvlink                             0.1.2
+pyasn1                             0.4.8
+pyasn1-modules                     0.2.8
+pycodestyle                        2.5.0
+pycparser                          2.19
+pycrypto                           2.6.1
+pyct                               0.4.6
+pydot                              1.4.1
+pydotplus                          2.0.2
+pydub                              0.23.1
+pymc3                              3.8
+PyNaCl                             1.3.0
+pyOpenSSL                          19.1.0
+python-editor                      1.0.4
+python-gflags                      3.1.2
+pythreejs                          2.1.1
+PyWavelets                         1.1.1
+rdflib                             4.2.2
+recommonmark                       0.6.0
+retrying                           1.3.3
+scandir                            1.10.0
+scikit-image                       0.16.2
+selenium                           3.141.0
+Send2Trash                         1.5.0
+service-identity                   18.1.0
+sidecar                            0.3.0
+simpervisor                        0.3
+simplegeneric                      0.8.1
+singledispatch                     3.4.0.3
+smmap2                             2.0.5
+smopy                              0.0.7
+snowballstemmer                    2.0.0
+sortedcontainers                   2.1.0
+sphinx-rtd-theme                   0.4.3
+tenacity                           6.0.0
+testpath                           0.4.4
+textwrap3                          0.9.2
+Theano                             1.0.4
+toml                               0.10.0
+tornado                            6.0.3
+traitlets                          4.3.3
+traittypes                         0.2.1
+ujson                              1.35
+vcversioner                        2.16.0.0
+vega-datasets                      0.8.0
+version-information                1.0.3
+vincent                            0.4.4
+voila-material                     0.2.5
+webencodings                       0.5.1
+widgetsnbextension                 3.5.1
+wslink                             0.1.11
+zict                               1.0.0
+\end{minted}
+%
+The following 160 packages are currently outdated:
+%
+\begin{minted}{bash}
+$ pip list --outdated
+Package                   Version   Latest     Type
+------------------------- --------- ---------- -----
+absl-py                   0.8.1     0.9.0      sdist
+alembic                   1.0.8     1.4.0      sdist
+altair                    3.3.0     4.0.1      wheel
+appmode                   0.6.0     0.7.0      sdist
+argcomplete               1.9.5     1.11.1     wheel
+arviz                     0.5.1     0.6.1      wheel
+asn1crypto                0.24.0    1.3.0      wheel
+attrs                     19.1.0    19.3.0     wheel
+autobahn                  19.10.1   20.2.1     wheel
+Automat                   0.8.0     20.2.0     wheel
+autopep8                  1.4.4     1.5        sdist
+Babel                     2.7.0     2.8.0      wheel
+bash-kernel               0.7.1     0.7.2      wheel
+bcrypt                    3.1.6     3.1.7      wheel
+bitstring                 3.1.5     3.1.6      wheel
+bokeh                     1.3.4     1.4.0      sdist
+bqplot                    0.11.9    0.12.3     wheel
+branca                    0.3.1     0.4.0      wheel
+certifi                   2019.3.9  2019.11.28 wheel
+cffi                      1.12.2    1.14.0     wheel
+cftime                    1.0.4.2   1.1.0      wheel
+cloudpickle               0.8.1     1.3.0      wheel
+ClusterShell              1.8       1.8.3      wheel
+colorama                  0.4.1     0.4.3      wheel
+configparser              3.7.4     4.0.2      wheel
+Cython                    0.29.6    0.29.15    wheel
+dask                      2.6.0     2.10.1     wheel
+dask-labextension         1.0.3     1.1.0      sdist
+datashader                0.9.0     0.10.0     wheel
+deap                      1.2.2     1.3.1      wheel
+decorator                 4.4.0     4.4.1      wheel
+dicom-upload              0.1.1     0.1.2      wheel
+distributed               2.6.0     2.10.0     wheel
+docutils                  0.15.2    0.16       wheel
+ecdsa                     0.13      0.15       wheel
+execnet                   1.6.0     1.7.1      wheel
+Flask                     1.0.2     1.1.1      wheel
+future                    0.18.1    0.18.2     sdist
+gitdb2                    2.0.6     3.0.2      wheel
+GitPython                 3.0.4     3.0.8      wheel
+holoviews                 1.12.6    1.12.7     wheel
+idna                      2.8       2.9        wheel
+imageio                   2.6.1     2.8.0      wheel
+imagesize                 1.1.0     1.2.0      wheel
+importlib-metadata        0.23      1.5.0      wheel
+ipaddress                 1.0.22    1.0.23     wheel
+ipykernel                 5.1.3     5.1.4      wheel
+ipyleaflet                0.11.4    0.12.2     wheel
+ipympl                    0.3.3     0.4.1      wheel
+ipython                   7.9.0     7.12.0     wheel
+ipyvue                    1.0.0     1.1.0      sdist
+itkwidgets                0.22.0    0.25.3     wheel
+jedi                      0.13.3    0.16.0     wheel
+Jinja2                    2.10      2.11.1     wheel
+json5                     0.8.5     0.9.1      wheel
+jsonschema                3.1.1     3.2.0      wheel
+julia                     0.5.0     0.5.1      wheel
+jupyter-core              4.6.1     4.6.3      wheel
+jupyter-server            0.1.1     0.2.1      wheel
+jupyterhub                1.0.0     1.1.0      wheel
+jupyterlab                1.2.1     1.2.6      wheel
+jupyterlab-code-formatter 0.6.1     1.1.0      sdist
+jupyterlab-git            0.8.1     0.9.0      wheel
+kiwisolver                1.0.1     1.1.0      wheel
+lesscpy                   0.13.0    0.14.0     wheel
+line-profiler             2.1.2     3.0.2      wheel
+llvmlite                  0.30.0    0.31.0     wheel
+lxml                      4.3.3     4.5.0      wheel
+Mako                      1.0.8     1.1.1      sdist
+matplotlib                3.0.3     3.1.3      wheel
+memory-profiler           0.55.0    0.57.0     sdist
+mock                      2.0.0     4.0.1      wheel
+more-itertools            7.0.0     8.2.0      wheel
+msgpack                   0.6.2     1.0.0      wheel
+multidict                 4.5.2     4.7.4      wheel
+nbformat                  4.4.0     5.0.4      wheel
+nbresuse                  0.3.2     0.3.3      wheel
+networkx                  2.3       2.4        wheel
+notebook                  6.0.2     6.0.3      wheel
+numba                     0.46.0    0.48.0     wheel
+numexpr                   2.7.0     2.7.1      wheel
+numpy                     1.15.2    1.18.1     wheel
+packaging                 19.0      20.1       wheel
+pandas                    0.24.2    1.0.1      wheel
+papermill                 1.2.1     2.0.0      wheel
+param                     1.9.2     1.9.3      wheel
+paramiko                  2.4.2     2.7.1      wheel
+parso                     0.3.4     0.6.1      wheel
+pathlib2                  2.3.3     2.3.5      wheel
+pathspec                  0.6.0     0.7.0      wheel
+pbr                       5.1.3     5.4.4      wheel
+pexpect                   4.7.0     4.8.0      wheel
+Pillow                    6.0.0     7.0.0      wheel
+pip                       19.0.3    20.0.2     wheel
+plotly                    4.2.1     4.5.0      wheel
+pluggy                    0.9.0     0.13.1     wheel
+prompt-toolkit            2.0.9     3.0.3      wheel
+protobuf                  3.7.1     3.11.3     wheel
+psutil                    5.6.1     5.7.0      sdist
+psycopg2                  2.7.7     2.8.4      sdist
+py                        1.8.0     1.8.1      wheel
+pydicom                   1.3.0     1.4.1      wheel
+Pygments                  2.4.2     2.5.2      wheel
+PyHamcrest                1.9.0     2.0.0      wheel
+pyparsing                 2.3.1     2.4.6      wheel
+pyrsistent                0.14.11   0.15.7     sdist
+pytest                    4.4.0     5.3.5      wheel
+pytest-forked             1.0.2     1.1.3      wheel
+pytest-runner             4.4       5.2        wheel
+pytest-xdist              1.27.0    1.31.0     wheel
+python-dateutil           2.8.0     2.8.1      wheel
+python-dotenv             0.10.3    0.11.0     wheel
+python-oauth2             1.1.0     1.1.1      sdist
+pytz                      2018.9    2019.3     wheel
+pyviz-comms               0.7.2     0.7.3      wheel
+PyYAML                    5.1.2     5.3        sdist
+pyzmq                     18.1.0    18.1.1     wheel
+regex                     2019.11.1 2020.2.18  wheel
+requests                  2.21.0    2.22.0     wheel
+rise                      5.5.1     5.6.0      wheel
+Rtree                     0.8.3     0.9.4      sdist
+scikit-learn              0.22      0.22.1     wheel
+scipy                     1.2.1     1.4.1      wheel
+seaborn                   0.9.0     0.10.0     wheel
+setuptools                45.0.0    45.2.0     wheel
+setuptools-scm            3.2.0     3.5.0      wheel
+simplejson                3.16.0    3.17.0     sdist
+six                       1.12.0    1.14.0     wheel
+SPARQLWrapper             1.8.2     1.8.5      wheel
+Sphinx                    1.8.5     2.4.2      wheel
+sphinxcontrib-websupport  1.1.2     1.2.0      wheel
+SQLAlchemy                1.3.1     1.3.13     sdist
+statsmodels               0.10.2    0.11.0     wheel
+sympy                     1.3       1.5.1      wheel
+TatSu                     4.2.6     4.4.0      wheel
+tblib                     1.5.0     1.6.0      wheel
+terminado                 0.8.2     0.8.3      wheel
+tikzplotlib               0.8.4     0.9.1      wheel
+toolz                     0.9.0     0.10.0     sdist
+tqdm                      4.41.0    4.43.0     wheel
+traits                    5.0.0     6.0.0      sdist
+Twisted                   19.7.0    19.10.0    wheel
+txaio                     18.8.1    20.1.1     wheel
+typed-ast                 1.4.0     1.4.1      wheel
+typing                    3.6.6     3.7.4.1    wheel
+typing-extensions         3.7.4     3.7.4.1    wheel
+urllib3                   1.24.1    1.25.8     wheel
+voila                     0.1.14    0.1.20     wheel
+voila-gridstack           0.0.6     0.0.8      wheel
+voila-vuetify             0.1.1     0.2.2      sdist
+wcwidth                   0.1.7     0.1.8      wheel
+Werkzeug                  0.15.1    1.0.0      wheel
+wheel                     0.33.1    0.34.2     wheel
+xarray                    0.12.1    0.15.0     wheel
+XlsxWriter                1.1.5     1.2.7      wheel
+yapf                      0.28.0    0.29.0     wheel
+yarl                      1.3.0     1.4.2      wheel
+zipp                      0.6.0     3.0.0      wheel
+zope.interface            4.6.0     4.7.1      wheel
+zstandard                 0.12.0    0.13.0     wheel
+\end{minted}
+
+NOTE THAT THERE'S REDUNDANT STUFF IN THE ENV AS WELL. FOR EXAMPLE, ENUM34 IS A BACKPORT OF PY34 FUNCTIONALITY TO 33 AND PY2.
+
+While slightly outdated Python packages might not be problematic for many use cases, other use cases might be strongly dependent on recent developments in the quickly evolving scientific Python ecosystem.
+
+Furthermore, there are use cases that require running Jupyter Notebook code in a version specific package environment.
+For example, because newer package versions break older package syntax or functionality, or because of the need to exactly repeat a former analysis.
+
+For these reasons the possibility of setting up user specific and standalone package environments is a fundamental requirement for an all purpose JupyterHub/Lab system.
+
+\subsubsection{Python virtual environment}
+\label{sect:python-kernel:virtual-environment}
+
+The JupyterHub login page provides a link to a \href{https://jupyter-jsc.fz-juelich.de/hub/static/files/kernel.html}{\emph{Setup your own kernel}} document where instructions on how to define virtual Python software environments and registering these as IPython/Jupyter kernels are given.
+
+The document proposes to create the Python virtual environment inside the activated default software environment described in section \ref{sect:system-description} using
+
+\begin{minted}{text}
+$ pwd
+/p/project/cesmtst/hoeflich1/kernels
+$ python3 -m venv jupyterhub-evaluation-v2020.02.24.1
+$ source jupyterhub-evaluation-v2020.02.24.1/bin/activate
+\end{minted}
+
+The pip package manager that configures the virtual Python environment looks up installed packages in the Python path
+%
+\begin{minted}[breaklines,breakanywhere]{text}
+(jupyterhub-evaluation-v2020.02.24.1) $ echo $PYTHONPATH
+/gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages:/gpfs/software/juwels/stages/Devel-2019a/software/netcdf4-python/1.5.3-gcccoremkl-8.3.0-2019.3.199-serial-Python-3.6.8/lib/python3.6/site-packages:/gpfs/software/juwels/stages/Devel-2019a/software/ITK/5.0.1-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages:/gpfs/software/juwels/stages/Devel-2019a/software/VTK/8.2.0-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib64/python3.6/site-packages:/gpfs/software/juwels/stages/Devel-2019a/software/SciPy-Stack/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages:/gpfs/software/juwels/stages/Devel-2019a/software/Python/3.6.8-GCCcore-8.3.0/easybuild/python:/gpfs/software/juwels/stages/Devel-2019a/software/Python/3.6.8-GCCcore-8.3.0/lib/python3.6/site-packages
+\end{minted}
+%
+and the documentation proposes to prepend the file system location of the user specific virtual Python environment using
+%
+\begin{minted}[breaklines,breakanywhere]{text}
+(jupyterhub-evaluation-v2020.02.24.1) $ export PYTHONPATH=/p/project/cesmtst/hoeflich1/kernels/jupyterhub-evaluation-v2020.02.24.1/lib/python3.6/site-packages:${PYTHONPATH}
+\end{minted}
+%
+effectively allowing the user to overload Python packages inside the existing default Python environment described in section \ref{sect:python-kernel:default-packages}.
+
+Before installing any desired packages, the installation of the IPython kernel package using the \verb|--ignore-installed| pip flag is suggested
+%
+\begin{minted}[breaklines,breakanywhere]{text}
+(jupyterhub-evaluation-v2020.02.24.1) $ pip install --ignore-installed ipykernel
+Collecting ipykernel
+  Using cached https://files.pythonhosted.org/packages/d7/62/d1a5d654b7a21bd3eb99be1b59a608cc18a7a08ed88495457a87c40a0495/ipykernel-5.1.4-py3-none-any.whl
+Collecting traitlets>=4.1.0 (from ipykernel)
+  Using cached https://files.pythonhosted.org/packages/ca/ab/872a23e29cec3cf2594af7e857f18b687ad21039c1f9b922fac5b9b142d5/traitlets-4.3.3-py2.py3-none-any.whl
+Collecting ipython>=5.0.0 (from ipykernel)
+  Using cached https://files.pythonhosted.org/packages/b8/6d/1e3e335e767fc15a2047a008e27df31aa8bcf11c6f3805d03abefc69aa88/ipython-7.12.0-py3-none-any.whl
+Collecting tornado>=4.2 (from ipykernel)
+Collecting jupyter-client (from ipykernel)
+  Downloading https://files.pythonhosted.org/packages/40/75/4c4eb43749e59db3c1c7932b50eaf8c4b8219b1b5644fe379ea796f8dbe5/jupyter_client-6.0.0-py3-none-any.whl (104kB)
+    100% |||||||||||||||||||||||||||||||||| 112kB 4.0MB/s
+Collecting decorator (from traitlets>=4.1.0->ipykernel)
+  Using cached https://files.pythonhosted.org/packages/8f/b7/f329cfdc75f3d28d12c65980e4469e2fa373f1953f5df6e370e84ea2e875/decorator-4.4.1-py2.py3-none-any.whl
+Collecting ipython-genutils (from traitlets>=4.1.0->ipykernel)
+  Using cached https://files.pythonhosted.org/packages/fa/bc/9bd3b5c2b4774d5f33b2d544f1460be9df7df2fe42f352135381c347c69a/ipython_genutils-0.2.0-py2.py3-none-any.whl
+Collecting six (from traitlets>=4.1.0->ipykernel)
+  Using cached https://files.pythonhosted.org/packages/65/eb/1f97cb97bfc2390a276969c6fae16075da282f5058082d4cb10c6c5c1dba/six-1.14.0-py2.py3-none-any.whl
+Collecting backcall (from ipython>=5.0.0->ipykernel)
+Collecting setuptools>=18.5 (from ipython>=5.0.0->ipykernel)
+  Using cached https://files.pythonhosted.org/packages/3d/72/1c1498c1e908e0562b1e1cd30012580baa7d33b5b0ffdbeb5fde2462cc71/setuptools-45.2.0-py3-none-any.whl
+Collecting pickleshare (from ipython>=5.0.0->ipykernel)
+  Using cached https://files.pythonhosted.org/packages/9a/41/220f49aaea88bc6fa6cba8d05ecf24676326156c23b991e80b3f2fc24c77/pickleshare-0.7.5-py2.py3-none-any.whl
+Collecting jedi>=0.10 (from ipython>=5.0.0->ipykernel)
+  Using cached https://files.pythonhosted.org/packages/01/67/333e2196b70840f411fd819407b4e98aa3150c2bd24c52154a451f912ef2/jedi-0.16.0-py2.py3-none-any.whl
+Collecting prompt-toolkit!=3.0.0,!=3.0.1,<3.1.0,>=2.0.0 (from ipython>=5.0.0->ipykernel)
+  Using cached https://files.pythonhosted.org/packages/f5/22/f00412fafc68169054cc623a35c32773f22b403ddbe516c8adfdecf25341/prompt_toolkit-3.0.3-py3-none-any.whl
+Collecting pygments (from ipython>=5.0.0->ipykernel)
+  Using cached https://files.pythonhosted.org/packages/be/39/32da3184734730c0e4d3fa3b2b5872104668ad6dc1b5a73d8e477e5fe967/Pygments-2.5.2-py2.py3-none-any.whl
+Collecting pexpect; sys_platform != "win32" (from ipython>=5.0.0->ipykernel)
+  Using cached https://files.pythonhosted.org/packages/39/7b/88dbb785881c28a102619d46423cb853b46dbccc70d3ac362d99773a78ce/pexpect-4.8.0-py2.py3-none-any.whl
+Collecting python-dateutil>=2.1 (from jupyter-client->ipykernel)
+  Using cached https://files.pythonhosted.org/packages/d4/70/d60450c3dd48ef87586924207ae8907090de0b306af2bce5d134d78615cb/python_dateutil-2.8.1-py2.py3-none-any.whl
+Collecting jupyter-core>=4.6.0 (from jupyter-client->ipykernel)
+  Using cached https://files.pythonhosted.org/packages/63/0d/df2d17cdf389cea83e2efa9a4d32f7d527ba78667e0153a8e676e957b2f7/jupyter_core-4.6.3-py2.py3-none-any.whl
+Collecting pyzmq>=13 (from jupyter-client->ipykernel)
+  Using cached https://files.pythonhosted.org/packages/94/07/cee3d328a2e13f9de1c2b62cced7a389b61ac81424f2e377f3dc9d668282/pyzmq-18.1.1-cp36-cp36m-manylinux1_x86_64.whl
+Collecting parso>=0.5.2 (from jedi>=0.10->ipython>=5.0.0->ipykernel)
+  Using cached https://files.pythonhosted.org/packages/ec/bb/3b6c9f604ac40e2a7833bc767bd084035f12febcbd2b62204c5bc30edf97/parso-0.6.1-py2.py3-none-any.whl
+Collecting wcwidth (from prompt-toolkit!=3.0.0,!=3.0.1,<3.1.0,>=2.0.0->ipython>=5.0.0->ipykernel)
+  Using cached https://files.pythonhosted.org/packages/58/b4/4850a0ccc6f567cc0ebe7060d20ffd4258b8210efadc259da62dc6ed9c65/wcwidth-0.1.8-py2.py3-none-any.whl
+Collecting ptyprocess>=0.5 (from pexpect; sys_platform != "win32"->ipython>=5.0.0->ipykernel)
+  Using cached https://files.pythonhosted.org/packages/d1/29/605c2cc68a9992d18dada28206eeada56ea4bd07a239669da41674648b6f/ptyprocess-0.6.0-py2.py3-none-any.whl
+Installing collected packages: decorator, ipython-genutils, six, traitlets, backcall, setuptools, pickleshare, parso, jedi, wcwidth, prompt-toolkit, pygments, ptyprocess, pexpect, ipython, tornado, python-dateutil, jupyter-core, pyzmq, jupyter-client, ipykernel
+Successfully installed backcall-0.1.0 decorator-4.4.1 ipykernel-5.1.4 ipython-7.12.0 ipython-genutils-0.2.0 jedi-0.16.0 jupyter-client-6.0.0 jupyter-core-4.6.3 parso-0.6.1 pexpect-4.8.0 pickleshare-0.7.5 prompt-toolkit-3.0.3 ptyprocess-0.6.0 pygments-2.5.2 python-dateutil-2.8.1 pyzmq-18.1.1 setuptools-45.2.0 six-1.14.0 tornado-6.0.3 traitlets-4.3.3 wcwidth-0.1.8
+You are using pip version 18.1, however version 20.0.2 is available.
+You should consider upgrading via the 'pip install --upgrade pip' command.
+\end{minted}
+%
+which installs the IPython kernel package and all dependencies into the virtual Python environment either by downloading an up-to-date version or by copying from the default environment packages.
+
+For evaluation purposes we proceed with the example task of upgrading the outdated (for the package versions see section \ref{sect:python-kernel:default-packages}) Dask package
+%
+\begin{minted}[breaklines,breakanywhere]{text}
+(jupyterhub-evaluation-v2020.02.24.1) $ pip install --upgrade dask
+Collecting dask
+  Downloading https://files.pythonhosted.org/packages/c2/7a/22ffaff40b7c912cac6956e18d38c686b6b5756179e9c09e8e6bf7810aad/dask-2.11.0-py3-none-any.whl (785kB)
+    100% |||||||||||||||||||||||||||||||||| 788kB 6.2MB/s
+Installing collected packages: dask
+  Found existing installation: dask 2.6.0
+    Not uninstalling dask at /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages/dask-2.6.0-py3.6.egg, outside environment /p/project/cesmtst/hoeflich1/kernels/jupyterhub-evaluation-v2020.02.24.1
+    Can't uninstall 'dask'. No files were found to uninstall.
+Successfully installed dask-2.11.0
+You are using pip version 18.1, however version 20.0.2 is available.
+You should consider upgrading via the 'pip install --upgrade pip' command.
+\end{minted}
+
+To register the above virtual Python environment as Jupyter kernel the documentation suggests using the following IPython kernel command
+%
+\begin{minted}[breaklines,breakanywhere]{text}
+(jupyterhub-evaluation-v2020.02.24.1) $ python3 -m ipykernel install --user --name=jupyterhub-evaluation-v2020.02.24.1
+\end{minted}
+%
+which installs a default Jupyter kernel configuration into the user directory:
+%
+\begin{minted}[breaklines,breakanywhere]{text}
+$ pwd
+/p/home/jusers/hoeflich1/juwels/.local/share/jupyter/kernels/jupyterhub-evaluation-v2020.02.24.1
+$ cat kernel.json
+{
+ "argv": [
+  "/p/project/cesmtst/hoeflich1/kernels/jupyterhub-evaluation-v2020.02.24.1/bin/python3",
+  "-m",
+  "ipykernel_launcher",
+  "-f",
+  "{connection_file}"
+ ],
+ "display_name": "jupyterhub-evaluation-v2020.02.24.1",
+ "language": "python"
+}
+\end{minted}
+
+This already defines a working IPython kernel for JupyterLab instances, however, only the default Python environment package collection described in section \ref{sect:python-kernel:default-packages} is available.
+
+To use the virtual Python environment that was created above an executable kernel launch script needs to be set up
+%
+\begin{minted}[breaklines,breakanywhere]{text}
+$ pwd
+/p/project/cesmtst/hoeflich1/kernels/jupyterhub-evaluation-v2020.02.24.1
+$ cat kernel.sh
+#!/bin/bash
+module purge --force
+module use $OTHERSTAGES
+module load Stages/Devel-2019a GCCcore/.8.3.0
+module load Jupyter/2019a-Python-3.6.8
+source /p/project/cesmtst/hoeflich1/kernels/jupyterhub-evaluation-v2020.02.24.1/bin/activate
+export PYTHONPATH=/p/project/cesmtst/hoeflich1/kernels/jupyterhub-evaluation-v2020.02.24.1/lib/python3.6/site-packages:${PYTHONPATH}
+exec python -m ipykernel $@
+$ chmod +x kernel.sh
+\end{minted}
+%
+and the IPython kernel is launched after both the default and virtual Python environments are activated.
+The kernel configuration file needs to point to the kernel launch script
+%
+\begin{minted}[breaklines,breakanywhere]{text}
+$ pwd
+/p/home/jusers/hoeflich1/juwels/.local/share/jupyter/kernels/jupyterhub-evaluation-v2020.02.24.1
+$ cat kernel.sh
+{
+ "argv": [
+  "/p/project/cesmtst/hoeflich1/kernels/jupyterhub-evaluation-v2020.02.24.1/kernel.sh",
+  "-f",
+  "{connection_file}"
+ ],
+ "display_name": "jupyterhub-evaluation-v2020.02.24.1",
+ "language": "python"
+}
+\end{minted}
+%
+instead of directly calling the IPython kernel.
+The Python packages from the default environment extended by packages from the virtual environment are then available inside Jupyter notebooks.
+
+\subsubsection{Detailed remarks}
+
+\begin{itemize}
+
+  \item not clear why the installation of the IPython kernel package into the virtual environment is suggested;
+  this is not strictly necessary because of how the Python package path environment variable is set;
+  Python packages of the virtual environment only overload/extend existing default packages and the IPython kernel package is already available in the default Python environment
+
+  \item the \verb|--ignore-installed| pip flag is not a recommended feature\footnote{https://stackoverflow.com/questions/51913361/difference-between-pip-install-options-ignore-installed-and-force-reinstall};
+  already existing packages in the user file system location are not properly uninstalled, which could lead to the accumulation of orphaned files that would need to be cleaned up manually
+
+  \item the \verb|--ignore-installed| flag has an unnecessarily negative impact upon user file system inode counts;
+  all packages and their dependencies are copied into the virtual Python environment even though exactly needed versions are already available in the default environment
+
+  \item to keep the virtual environment small, for packages that are already installed it would be better to use the \verb|--upgrade| flag or to define a specific package version
+
+  \item the 314 package default Python environment is currently always carried along;
+  Python virtual environments are a Python base feature and only need a working core Python interpreter/environment and pip and setuptools packages installed;
+  it would thus be possible to define very light-weight user specific virtual Python environments as kernels
+
+\end{itemize}
+
+\subsection{Jupyter kernel suggestions}
+\label{sect:jupyter-kernel-suggestions}
+
+Overloading single packages in the 314 packages default Python environment might not fulfil every user's software requirements (see section \ref{sect:python-kernel:default-packages} for reasons).
+Therefore, a scripted light-weight virtual Python environment solution is described in the following.
+As virtual Python environments are not purely standalone, we further explore the possibility of using a conda managed and a container-based environment as Jupyter kernels.
+
+\subsubsection{Light-weight virtual Python environment}
+\label{sect:suggested-python-virtual-environment}
+
+The kernel launcher script approach from section \ref{sect:python-kernel:virtual-environment} is used.
+As base environment only the more light-weight Python software environment module is loaded.
+The following script is designed to install, register and execute a virtual Python environment as Jupyter kernel:
+%
+\begin{minted}[breaklines,breakanywhere]{bash}
+#!/bin/bash
+
+kernel_name=dask-jobqueue-v2020.02.24.3
+python_packages='dask[complete] dask-jobqueue'
+
+jutil env activate -p cesmtst
+base_directory=$PROJECT/$USER
+
+module purge
+module load GCC/8.3.0
+module load Python/3.6.8
+
+if [ "${1}" == "install" ]; then python3 -m venv ${base_directory}/kernels/${kernel_name}; fi
+
+source ${base_directory}/kernels/${kernel_name}/bin/activate
+export PYTHONPATH=${base_directory}/kernels/${kernel_name}/lib/python3.6/site-packages
+
+if [ "${1}" == "install" ]; then
+  # Upgrade pip and install Python packages
+  pip install --upgrade pip
+  pip install ipykernel ${python_packages}
+  # Register this virtual Python environment as Jupyter kernel
+  python3 -m ipykernel install --user --name=${kernel_name}
+  # Establish standalone-ness of this virtual Python environment
+  cp kernel.sh ${base_directory}/kernels/${kernel_name}/
+  jupyter_kernelspec_path=${HOME}/.local/share/jupyter/kernels
+  this_kernel=${jupyter_kernelspec_path}/${kernel_name,,}/kernel.json # lower case conversion
+  sed -i "s|/bin/python3|/kernel.sh|g" ${this_kernel}
+  sed -i "/-m/d" ${this_kernel}
+  sed -i "/ipykernel_launcher/d" ${this_kernel}
+else
+  exec python -m ipykernel $@
+fi
+
+\end{minted}
+
+%https://stackoverflow.com/questions/1382925/virtualenv-no-site-packages-and-pip-still-finding-global-packages
+%https://docs.python.org/3/tutorial/venv.html
+%https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/
+
+%https://stackoverflow.com/questions/52060533/does-pip-install-add-current-directory-to-pythonpath
+%https://www.dabapps.com/blog/introduction-to-pip-and-virtualenv-python/
+%https://able.bio/rhett/python-virtual-environments-with-virtualenv--63mmpmp
+
+\subsubsection{Conda managed environment}
+\label{sect:conda-environment}
+
+The downside of Python virtual environments is that they depend upon the parent Python interpreter features only.
+There might, however, be use cases that require not only custom Python packages, but also custom Python interpreter versions.
+The \href{https://conda.io/en/latest/}{Conda package manager} is one way to solve this.
+
+To define a Conda environment as kernelm, the launcher script approach described in \ref{sect:python-kernel:virtual-environment} is used.
+The script essentially activates a Conda Python environment that has the IPython kernel package installed and could be placed into the default Jupyter kernel location:
+%
+\begin{minted}[breaklines,breakanywhere]{text}
+$ pwd
+/p/home/jusers/hoeflich1/juwels/.local/share/jupyter/kernels/miniconda3-kernel
+$ cat kernel.sh
+#!/bin/bash
+module purge --force
+source /p/project/cesmtst/hoeflich1/miniconda3/bin/activate Dask-jobqueue_v2020.02.10
+exec python -m ipykernel $@
+\end{minted}
+
+After setting up a kernel configuration file manually
+%
+\begin{minted}[breaklines,breakanywhere]{text}
+$ cat kernel.json
+{
+ "argv": [
+  "/p/home/jusers/hoeflich1/juwels/.local/share/jupyter/kernels/miniconda3-kernel/kernel.sh",
+  "-f",
+  "{connection_file}"
+ ],
+ "display_name": "miniconda3-kernel",
+ "language": "python"
+}
+\end{minted}
+%
+the conda-maintained environment works as Jupyter kernel.
+
+%https://github.com/jupyterhub/jupyterhub/issues/847
+%https://jupyter-client.readthedocs.io/en/stable/kernels.html
+%https://github.com/pyenv/pyenv
+
+\subsubsection{Singularity environment}
+\label{sect:container-based-environment}
+
+Containers provide a flexible way of deploying isolated software environments, thus enabling standalone analysis and compute environments and scientific reproducibility.
+They can also be used as Jupyter kernels.
+
+(How exactly this works should be described here. Further information and starting points are found in \href{https://github.com/ExaESM-WP4/JupyterHub-Evaluation-Whitepaper/issues/6}{this Github issue}.)
+
+\subsection{Summary}
+\label{sect:working-envs:summary}
+
+Here we summarize the status quo of working environment selection, modification and specification for JUWELS JupyterLab instances.
+Specific proposals to achieve better robustness and flexibility, compatible with the chosen system software architecture, are also given.
+
+Principal other user working environment managing approaches are discussed at the end of the report. OR SHOULD WE NOT DO THIS? (JupyterLab instances could also be started inside containers. Currently, this approach is used only on the HDF cloud. Should this be made possible on JURECA and JUWELS, too? What is pro and contra here? From a user and system administrator perspective?)
+
+\subsubsection{Selection, modification and specification}
+
+Working environment selection is established based on Jupyter kernels, available per default are currently a Bash, Javascript, Julia and Python kernel, and several C++ kernels.
+The default Python package environment can be extended and modified using the Lmod software environment Jupyter extension available in the JupyterLab sidebar, however, most of the available Python modules are not compatible with the default environment, quickly leaving the user with broken Python kernel functionality.
+THERE SHOULD BE MORE DETAILS FROM ABOVE INVESTIGATIONS HERE.
+The central problem is the entirely missing documentation on what can or should be achieved via the software environment module extension.
+
+Modification of the default Python environment can also be done by setting up a virtual Python environment, a documentation is provided that explains registering it as further Jupyter kernel.
+However, the approach that is described only allows the user to modify certain Python packages inside the extensive default Python environment.
+Specifying a more standalone and light-weight virtual Python environment as Jupyter kernel was shown to be possible here, but is currently not documented.
+
+The specification of completely standalone working environments has been explored in sections \ref{sect:conda-environment} and \ref{sect:container-based-environment}.
+Both a Conda package manager and a container based Jupyter kernel approach are presented.
+They extend the documented approaches by the possibility of deploying isolated software environments, enabling convenient porting of analysis environments and facilitating scientific reproducibility.
+
+\subsubsection{Suggestions}
+
+\begin{itemize}
+
+  \item set up a software modules hierarchy that is scoped only for the JUWELS JupyterLab functionality;
+  provided Lmod software environment modules should be completely exchangeable;
+  the user should not be able or should clearly be instructed how not to destroy their Jupyter kernels and JupyterLab instances
+
+  \item on system start-up the \verb|Jupyter/2019a-Python-3.6.8| module automatically establishes the software environment for the complete set of available Jupyter kernels;
+  in terms of preventing software environment conflicts, it might make sense to provide only a very minimalistic Jupyter environment;
+  the user should not be able to unload the modules that provide basic system functionality;
+  a documentation could be displayed on how to activate software environment modules that provide Jupyter kernel functionality;
+  thus, users are taught to consciously handle their software environments;
+  however, there might be work on the Jupyter kernel launcher tab necessary;
+  currently, the launcher tab only shows the Jupyter kernels available on JupyterLab instance start-up;
+  kernels that become available after JupyterLab has started can be chosen only from the kernel drop down of open Jupyter notebooks
+
+  \item another approach to robust Jupyter kernels would be to make software module based kernel launcher scripts the default; these would show up in the JupyterLab launcher tab on system start-up; loading and unloading of software environment modules would not have an effect on the kernel software environments; customization of kernel software environments would be entirely by setting up own kernel launcher scripts; in this case good documentation needs to be provided by the system designers/administators; the Lmod software modules extension in the JupyterLab sidebar would be obsolete in this case
+
+  \item provide only a minimalistic Python interpreter software environment module for users' to build their own virtual Python environments and Jupyter kernels;
+  this would combine the advantage of using a JUWELS specific Python interpreter (with its potentially higher code execution speeds, see \href{https://www.fz-juelich.de/SharedDocs/Downloads/IAS/JSC/EN/slides/supercomputer-ressources-2019-11/15a-tuning_intel.html}{this example investigation by Intel}) with robust standalone pip package dependency managing
+
+  \item extend the documentation for working environment specification based on the alternatives presented in section \ref{sect:jupyter-kernel-suggestions}
+
+\end{itemize}
+
+%==============================================================================
+
+\section{Availability of resources}
+\label{s-availability-resources}
+
+\begin{itemize}
+  \item Possible to run many notebook servers per user?
+  \item Feedback about availability of resources / waiting time etc.?
+  \item Tranparent way to chose resources that are available?
+\end{itemize}
+
+%==============================================================================
+
+\section{Stability}
+\label{s-stability}
+
+\begin{itemize}
+	\item Stable in productive work? Error rate?
+  \item Possibility to debug if errors occur?
+  \item Responsive under less than ideal link from personal endpoint to Jupyterhub?
+\end{itemize}
+
+%==============================================================================
+
+\section{Customization}
+\label{s-customization}
+
+\begin{itemize}
+	\item Use own notebook server?
+  \item Possible to use jupyter-server-proxy?
+  \item Jupyter Plugins / Widgets?
+\end{itemize}
+
+%==============================================================================
+
+\section{HDF cloud via JSC JupyterHub}
+\label{s-hdfcloud-jsc-jhub}
+
+%==============================================================================
+
+\section{Comparison to JupyterHub at DKRZ}
+\label{s-comparison-dkrz}
+
+%==============================================================================
+
+\bibliography{references.bib}
+
+\end{document}

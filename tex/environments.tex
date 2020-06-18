@@ -1,49 +1,56 @@
 
-\section{Working environments}
+\subsection{Working environments}
 
-Here we summarize the status quo of working environment selection, modification and specification for JUWELS JupyterLab instances.
-A detailed investigation of the currently available ways of modifying the JupyterHub from a user perspective is given in the appendix~\ref{app:tech-details-jsc-hub}.
-Specific proposals to achieve better robustness and flexibility, compatible with the chosen system software architecture, are also given.
+Here we summarize the status quo of working environment selection, modification and specification for JUWELS JupyterLab instances and give specific suggestions to achieve better robustness and flexibility, compatible with the chosen system software architecture.
+
+A detailed description of the technical details of the JUWELS Jupyter setup is given in the appendix~\ref{app:tech-details-jsc-hub} with suggestions for simpler implementations of user-defined kernels (see~\ref{sect:custom-kernels}) based on Conda and containers are given.
 
 Principal other user working environment managing approaches are discussed at the end of the report. OR SHOULD WE NOT DO THIS? (JupyterLab instances could also be started inside containers. Currently, this approach is used only on the HDF cloud. Should this be made possible on JURECA and JUWELS, too? What is pro and contra here? From a user and system administrator perspective?)
 
-\subsubsection{Selection, modification and specification}
+\subsubsection{Documented functionality for selection, modification and specification of working environments}
 
-Working environment selection is established based on Jupyter kernels, available per default are currently a Bash, Javascript, Julia and Python kernel, and several C++ kernels.
-The default Python package environment can be extended and modified using the Lmod software environment Jupyter extension available in the JupyterLab sidebar, however, most of the available Python modules are not compatible with the default environment, quickly leaving the user with broken Python kernel functionality.
-THERE SHOULD BE MORE DETAILS FROM ABOVE INVESTIGATIONS HERE.
-The central problem is the entirely missing documentation on what can or should be achieved via the software environment module extension.
+At JSC, working environment selection is provided via Jupyter kernels.
+Per default, tehre are currently a Bash, Javascript, Julia and Python kernel, and several C++ kernels available.
+The default Python package environment can be extended and modified using the Lmod software environment Jupyter extension available in the JupyterLab sidebar.
 
-Modification of the default Python environment can also be done by setting up a virtual Python environment, a documentation is provided that explains registering it as further Jupyter kernel.
-However, the approach that is described only allows the user to modify certain Python packages inside the extensive default Python environment.
-Specifying a more standalone and light-weight virtual Python environment as Jupyter kernel was shown to be possible here, but is currently not documented.
+There is a range of problems with the module based approach of letting the user modify their environment.
+First, there is no documentation of typical usage patterns and anti-patterns and no information on what the user can or cannot expect to achieve via the software environment module extension.
+Then, most of the available Python modules are not compatible with the default environment, and users are esily getting to a state of broken Python kernels or even a defunct Jupyter instance (see~\ref{sect:lmod-use-and-problems}).
+Finally, the documented ways of creating custom Jupyter kernels with a virtual Python environment hardly goes beyond slight modifications of an extensive default Python environment.
 
+\subsubsection{Undocumented ways of specifying working environments}
+
+Specifying a more standalone and light-weight virtual Python environment as Jupyter kernel is currently not documented but can easily be done (see~\ref{sect:suggested-python-virtual-environment}).
 The specification of completely standalone working environments has been explored in sections \ref{sect:conda-environment} and \ref{sect:container-based-environment}.
-Both a Conda package manager and a container based Jupyter kernel approach are presented.
+Both a Conda package manager and a container based Jupyter kernel approach are suggested.
 They extend the documented approaches by the possibility of deploying isolated software environments, enabling convenient porting of analysis environments and facilitating scientific reproducibility.
 
 \subsubsection{Suggestions}
 
 \begin{itemize}
 
-  \item set up a software modules hierarchy that is scoped only for the JUWELS JupyterLab functionality;
-  provided Lmod software environment modules should be completely exchangeable;
-  the user should not be able or should clearly be instructed how not to destroy their Jupyter kernels and JupyterLab instances
+  \item Set up a software modules hierarchy that is scoped only for the JUWELS JupyterLab functionality and ensures the provided Lmod software environment modules are completely exchangeable.
+  The user should not have a way of or should be aware of how to avoid  destroying their Jupyter kernels and JupyterLab instances.
 
-  \item on system start-up the \verb|Jupyter/2019a-Python-3.6.8| module automatically establishes the software environment for the complete set of available Jupyter kernels;
-  in terms of preventing software environment conflicts, it might make sense to provide only a very minimalistic Jupyter environment;
-  the user should not be able to unload the modules that provide basic system functionality;
-  a documentation could be displayed on how to activate software environment modules that provide Jupyter kernel functionality;
-  thus, users are taught to consciously handle their software environments;
-  however, there might be work on the Jupyter kernel launcher tab necessary;
-  currently, the launcher tab only shows the Jupyter kernels available on JupyterLab instance start-up;
-  kernels that become available after JupyterLab has started can be chosen only from the kernel drop down of open Jupyter notebooks
+  \item On system start-up, the \verb|Jupyter/2019a-Python-3.6.8| module automatically establishes the software environment for all available Jupyter kernels.
+  To prevent version conflicts, it might make sense to provide only a very minimalistic Jupyter environment and prevent the user from unloading the modules that provide basic system functionality.
+  Loading environment modules that provide Jupyter kernel functionality should be documented in a way the lets users consciously manage their software environments.
+  This could, however, need modifications of the Jupyter kernel launcher tab, because currently, the launcher tab only shows the Jupyter kernels available on JupyterLab instance start-up and kernels that become available after JupyterLab has started can only be chosen from the kernel drop down of already open Jupyter notebooks.
 
-  \item another approach to robust Jupyter kernels would be to make software module based kernel launcher scripts the default; these would show up in the JupyterLab launcher tab on system start-up; loading and unloading of software environment modules would not have an effect on the kernel software environments; customization of kernel software environments would be entirely by setting up own kernel launcher scripts; in this case good documentation needs to be provided by the system designers/administators; the Lmod software modules extension in the JupyterLab sidebar would be obsolete in this case
+  \item Another approach to create robust Jupyter kernels would be to make module-based kernel launcher scripts the default, let these show up in the JupyterLab launcher tab on system start-up.
+  Loading and unloading of software environment modules would not have an effect on the kernel software environments and customization of kernel software environments would be done entirely by setting up own kernel launcher scripts.
+  In this case good documentation would need to be provided by the system designers/administators and the Lmod software modules extension in the JupyterLab sidebar would become obsolete.
 
-  \item provide only a minimalistic Python interpreter software environment module for users' to build their own virtual Python environments and Jupyter kernels;
-  this would combine the advantage of using a JUWELS specific Python interpreter (with its potentially higher code execution speeds, see \href{https://www.fz-juelich.de/SharedDocs/Downloads/IAS/JSC/EN/slides/supercomputer-ressources-2019-11/15a-tuning_intel.html}{this example investigation by Intel}) with robust standalone pip package dependency managing
+  \item Provide only a minimalistic Python interpreter software environment module for users to build their own virtual Python environments and Jupyter kernels.
+  This would combine the advantage of using a JUWELS specific Python interpreter (with its potentially higher code execution speeds, see \href{https://www.fz-juelich.de/SharedDocs/Downloads/IAS/JSC/EN/slides/supercomputer-ressources-2019-11/15a-tuning_intel.html}{this example investigation by Intel}) with robust standalone pip package dependency managing.
 
-  \item extend the documentation for working environment specification based on the alternatives presented in section \ref{sect:jupyter-kernel-suggestions}
+  \item Extend the documentation for working environment specification based on the alternatives presented in section \ref{sect:jupyter-kernel-suggestions}.
+
+  \item It should be noted that a complete and clear separation of JupyterLab and kernel functionality is not possible with the Jupyter ecosystem.
+  Hence, a one-size-fits-all JupyterLab configuration that seamlessly works with every conceivable kernel cannot be provided.
+  A possible way out would be to allow users to not only modify or create kernels, but to allow for full configuration also of upyterLab.
+  This could be done with containers (which then would not only contain a Jupyter kernel but the full JupyterLab and kernel application) or by letting users specify virtual or Conda environments that also provide the Jupyter instance that is spawned by the JupyterHub.
 
 \end{itemize}
+
+

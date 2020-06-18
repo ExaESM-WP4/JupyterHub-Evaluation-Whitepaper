@@ -1,9 +1,8 @@
 
-\section{Working environments}
-\label{sect:working-envs}
+\section{Technical details of the JSC JupyterHub setup}
+\label{sect:tech-details-jsc-hub}
 
-In this section a description of the software environments accessible via the JupyterHub system is given.
-PUT DESCRIPTION OF FURTHER SECTION CONTENTS HERE.
+In this section, an in-depth description of the software environments accessible via the JupyterHub system at JSC is given.
 
 \subsection{JupyterLab system description}
 \label{sect:system-description}
@@ -19,15 +18,14 @@ $ which jupyter
 /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/bin/jupyter
 \end{minted}
 
-Executing the following command on JUWELS login nodes
+Executing the following command on JUWELS login nodes starts up the same JupyterLab instance that is otherwise spawned by the JupyterHub system:
 %
 \begin{minted}[breaklines,breakanywhere]{bash}
 $ jupyter lab --ip=$HOSTNAME --no-browser
 \end{minted}
-%
-starts up the same JupyterLab instance that is otherwise spawned by the JupyterHub system.
-The following software environment modules\footnote{the command must be executed before the Jupyter module is loaded}
 
+The following software environment modules\footnote{the command must be executed before the Jupyter module is loaded} are further activated by the \verb|Jupyter/2019a-Python-3.6.8|:
+%
 \begin{minted}[breaklines,breakanywhere]{bash}
 $ module --redirect show Jupyter/2019a-Python-3.6.8 | grep "load("
 load("imkl/.2019.3.199")
@@ -44,7 +42,7 @@ load("netcdf4-python/1.5.3-serial-Python-3.6.8")
 load("FFmpeg/.4.1.3")
 \end{minted}
 %
-are further activated by the \verb|Jupyter/2019a-Python-3.6.8| and provide the default software environment that is used by the following Jupyter kernels
+They provide the default software environment that is used by the following Jupyter kernels
 %
 \begin{minted}[breaklines,breakanywhere]{bash}
 $ jupyter kernelspec list
@@ -60,9 +58,15 @@ Available kernels:
 %
 and that can be chosen in the JupyterLab launcher tab.
 
-\subsubsection{Lmod software Jupyter extension}
+\subsection{The Lmod software Juptyer extension}
 
 The default JupyterLab instance software environment can directly be modified with the \href{https://github.com/cmd-ntrf/jupyter-lmod}{Jupyter Lmod extension} that is accessible via the JupyterLab sidebar.
+While the idea of using the well-established module concept for fine-grained managing of Python environments in Jupyter is appealing, the current Lmod and module setup is not strictly hierarchical and hence brings a lot of potential for creating inconsistent states that unintended versions or even broken environments that are very difficult to debug from within the JupyterLab session.
+
+I DON'T UNDERSTAND THIS: Choice of a slightly different design approach might solve that problem, i.e. providing a module hierarchy that only contains Jupyter related modules.
+
+\subsubsection{Intended behaviour of the Lmod software Jupyter extension}
+
 The currently activated default software environment modules are listed, as well as every module available in the \verb|Devel-2019a| stage and \verb|GCC/8.3.0| compiler module hierarchy\cprotect\footnote{These modules also listed by the \verb|module avail| command in a shell.}.
 
 Using the Lmod softwares extensions approach, the default Python environment can, for example, be extended.
@@ -95,6 +99,8 @@ $ diff default.txt changed.txt
 > tensorflow-estimator               1.13.0
 > termcolor                          1.1.0
 \end{minted}
+
+\subsubsection{Creating inconsistent environments with Lmod}
 
 While for the previous example applied software environment changes are successful, conflicting examples can also be identified.
 Loading, e.g., the \verb|numba/0.43.1-Python-3.6.8| module only activates an older version of the LLVM compiler infrastructure and the llvmlite Python package. The version of the numba package that is present in the Jupyter kernel, however, does not change:
@@ -131,9 +137,9 @@ drwxrwsr-x 4 swmanage swmanage 4,0K  9. Mai 2019  numba-0.43.1-py3.6-linux-x86_6
 
 Generally, such unexpected software module environment behaviour is not desired and could lead to conflicting software with broken Jupyter kernel functionality.
 
-\subsubsection{Jupyter kernel functionality}
+\subsubsection{Breaking kernels and JupyterLab with Lmod}
 
-By using the Lmod software modules extension users can completely destroy their default Jupyter kernel functionality, and even the functionality of the whole JupyterLab instance.
+By using the Lmod software modules extension users can completely destroy their default Jupyter kernel\footnote{For the current session.}, and even the disable the whole JupyterLab instance.
 
 The Lmod softwares Jupyter extension allows, for example, replacing the default \verb|Julia/1.1.0| with a newer \verb|Julia/1.3.1| software environment.
 This, however, breaks Julia kernel functionality.
@@ -165,37 +171,34 @@ The JupyterLab system does not provide error messages on this.
 Currently, the Lmod software modules extension might also accidently be used to destroy the functionality of the whole JupyterLab instance.
 Unloading the \verb|Jupyter/2019a-Python-3.6.8| modules breaks the functionality of the whole set of default Jupyter kernels.
 
-In the software extension module several Jupyter software environments are available but it remains unclear if stable JupyterLab instance software environments are established:
+% THIS PARAGRAPH IS SOMEHOW OUT OF PLACE HERE. I DON'T THINK WE NEED IT AT ALL?  -- WILLI
 %
-\begin{minted}[breaklines,breakanywhere]{bash}
-$ module -t --redirect avail | grep -i jupyter
-Jupyter/
-Jupyter/2019a-rc17-Python-3.6.8
-Jupyter/2019a-rc18-Python-3.6.8
-Jupyter/2019a-rc19-Python-3.6.8
-Jupyter/2019a-rc20-Python-3.6.8
-Jupyter/2019a-rc21-Python-3.6.8
-Jupyter/2019a-rc22-Python-3.6.8
-Jupyter/2019a-rc23-Python-3.6.8
-Jupyter/2019a-rc30-Python-3.6.8
-Jupyter/2019a-rc31-Python-3.6.8
-Jupyter/2019a-devel-Python-3.6.8
-Jupyter/2019a-Python-3.6.8-damian
-Jupyter/2019a-Python-3.6.8
-\end{minted}
+% In the software extension module several Jupyter software environments are available but it remains unclear if stable JupyterLab instance software environments are established:
+% %
+% \begin{minted}[breaklines,breakanywhere]{bash}
+% $ module -t --redirect avail | grep -i jupyter
+% Jupyter/
+% Jupyter/2019a-rc17-Python-3.6.8
+% Jupyter/2019a-rc18-Python-3.6.8
+% Jupyter/2019a-rc19-Python-3.6.8
+% Jupyter/2019a-rc20-Python-3.6.8
+% Jupyter/2019a-rc21-Python-3.6.8
+% Jupyter/2019a-rc22-Python-3.6.8
+% Jupyter/2019a-rc23-Python-3.6.8
+% Jupyter/2019a-rc30-Python-3.6.8
+% Jupyter/2019a-rc31-Python-3.6.8
+% Jupyter/2019a-devel-Python-3.6.8
+% Jupyter/2019a-Python-3.6.8-damian
+% Jupyter/2019a-Python-3.6.8
+% \end{minted}
 
 For example, unloading the \verb|Jupyter/2019a-Python-3.6.8| module does not unload its dependent modules, even though they are activated by the \verb|load()| command, for which Lmod intended behaviour\footnote{see \href{https://lmod.readthedocs.io/en/latest/098_dependent_modules.html}{Lmod 8.3.1 documentation} on dependencies} is to unload dependencies.
 If this a problem on the Lmod side\footnote{on JUWELS Lmod 7.7.38 is installed} or by software module architecture design is not clear at this point.
-SHOULD IT BE INVESTIGATED?
 
-MOVE THIS PARAGRAPH TO A SUMMARY AT THE TOP?
-Software environment modules are used to establish and extend the functionality of the instantiated JupyterLab software environment.
-However, they are not set up in a strictly hierarchical way, the potential for setting up conflicting software environments is therefore currently high.
-Choice of a slightly different design approach might solve that problem, i.e. providing a module hierarchy that only contains Jupyter related modules.
 
-\subsection{Setup your own Python kernel}
+\subsection{Custom Python kernels}
 
-Modifications to the default JupyterLab software environment of the Python kernel can also be done without loading  software environment modules.
+Modifications to the default JupyterLab software environment of the Python kernel can also be done without loading software environment modules.
 The status quo of bringing your own Python packages to the JupyterHub system is evaluated here.
 The system designers propose the usage of a \href{https://docs.python.org/3/library/venv.html}{virtual Python environment} as an \href{https://ipython.org/ipython-doc/3/development/kernels.html#kernelspecs}{IPython kernel}.
 

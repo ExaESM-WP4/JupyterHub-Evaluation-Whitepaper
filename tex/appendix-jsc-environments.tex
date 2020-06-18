@@ -1,6 +1,6 @@
 
 \section{Technical details of the JSC JupyterHub setup}
-\label{sect:tech-details-jsc-hub}
+\label{app:tech-details-jsc-hub}
 
 In this section, an in-depth description of the software environments accessible via the JupyterHub system at JSC is given.
 
@@ -528,23 +528,20 @@ zipp                      0.6.0     3.0.0      wheel
 zope.interface            4.6.0     4.7.1      wheel
 zstandard                 0.12.0    0.13.0     wheel
 \end{minted}
-
-NOTE THAT THERE'S REDUNDANT STUFF IN THE ENV AS WELL. FOR EXAMPLE, ENUM34 IS A BACKPORT OF PY34 FUNCTIONALITY TO 33 AND PY2.
-
 While slightly outdated Python packages might not be problematic for many use cases, other use cases might be strongly dependent on recent developments in the quickly evolving scientific Python ecosystem.
 
 Furthermore, there are use cases that require running Jupyter Notebook code in a version specific package environment.
-For example, because newer package versions break older package syntax or functionality, or because of the need to exactly repeat a former analysis.
+For example, because newer package versions break older package syntax or functionality, or for reproducibility.
 
 For these reasons the possibility of setting up user specific and standalone package environments is a fundamental requirement for an all purpose JupyterHub/Lab system.
 
 \subsubsection{Python virtual environment}
 \label{sect:python-kernel:virtual-environment}
 
-The JupyterHub login page provides a link to a \href{https://jupyter-jsc.fz-juelich.de/hub/static/files/kernel.html}{\emph{Setup your own kernel}} document where instructions on how to define virtual Python software environments and registering these as IPython/Jupyter kernels are given.
+The JupyterHub login page provides a link to a document on how to \href{https://jupyter-jsc.fz-juelich.de/hub/static/files/kernel.html}{\emph{Create your own Jupyter Kernel}} where instructions on how to define virtual Python software environments and registering these as IPython/Jupyter kernels are given.
 
-The document proposes to create the Python virtual environment inside the activated default software environment described in section \ref{sect:system-description} using
-
+The document suggests creating the Python virtual environment inside the activated default software environment described in section \ref{sect:system-description} using
+%
 \begin{minted}{text}
 $ pwd
 /p/project/cesmtst/hoeflich1/kernels
@@ -559,7 +556,7 @@ The pip package manager that configures the virtual Python environment looks up 
 /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages:/gpfs/software/juwels/stages/Devel-2019a/software/netcdf4-python/1.5.3-gcccoremkl-8.3.0-2019.3.199-serial-Python-3.6.8/lib/python3.6/site-packages:/gpfs/software/juwels/stages/Devel-2019a/software/ITK/5.0.1-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages:/gpfs/software/juwels/stages/Devel-2019a/software/VTK/8.2.0-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib64/python3.6/site-packages:/gpfs/software/juwels/stages/Devel-2019a/software/SciPy-Stack/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages:/gpfs/software/juwels/stages/Devel-2019a/software/Python/3.6.8-GCCcore-8.3.0/easybuild/python:/gpfs/software/juwels/stages/Devel-2019a/software/Python/3.6.8-GCCcore-8.3.0/lib/python3.6/site-packages
 \end{minted}
 %
-and the documentation proposes to prepend the file system location of the user specific virtual Python environment using
+and the documentation suggests prepending the path to the user specific virtual Python environment using
 %
 \begin{minted}[breaklines,breakanywhere]{text}
 (jupyterhub-evaluation-v2020.02.24.1) $ export PYTHONPATH=/p/project/cesmtst/hoeflich1/kernels/jupyterhub-evaluation-v2020.02.24.1/lib/python3.6/site-packages:${PYTHONPATH}
@@ -571,52 +568,57 @@ Before installing any desired packages, the installation of the IPython kernel p
 %
 \begin{minted}[breaklines,breakanywhere]{text}
 (jupyterhub-evaluation-v2020.02.24.1) $ pip install --ignore-installed ipykernel
-Collecting ipykernel
-  Using cached https://files.pythonhosted.org/packages/d7/62/d1a5d654b7a21bd3eb99be1b59a608cc18a7a08ed88495457a87c40a0495/ipykernel-5.1.4-py3-none-any.whl
-Collecting traitlets>=4.1.0 (from ipykernel)
-  Using cached https://files.pythonhosted.org/packages/ca/ab/872a23e29cec3cf2594af7e857f18b687ad21039c1f9b922fac5b9b142d5/traitlets-4.3.3-py2.py3-none-any.whl
-Collecting ipython>=5.0.0 (from ipykernel)
-  Using cached https://files.pythonhosted.org/packages/b8/6d/1e3e335e767fc15a2047a008e27df31aa8bcf11c6f3805d03abefc69aa88/ipython-7.12.0-py3-none-any.whl
-Collecting tornado>=4.2 (from ipykernel)
-Collecting jupyter-client (from ipykernel)
-  Downloading https://files.pythonhosted.org/packages/40/75/4c4eb43749e59db3c1c7932b50eaf8c4b8219b1b5644fe379ea796f8dbe5/jupyter_client-6.0.0-py3-none-any.whl (104kB)
-    100% |||||||||||||||||||||||||||||||||| 112kB 4.0MB/s
-Collecting decorator (from traitlets>=4.1.0->ipykernel)
-  Using cached https://files.pythonhosted.org/packages/8f/b7/f329cfdc75f3d28d12c65980e4469e2fa373f1953f5df6e370e84ea2e875/decorator-4.4.1-py2.py3-none-any.whl
-Collecting ipython-genutils (from traitlets>=4.1.0->ipykernel)
-  Using cached https://files.pythonhosted.org/packages/fa/bc/9bd3b5c2b4774d5f33b2d544f1460be9df7df2fe42f352135381c347c69a/ipython_genutils-0.2.0-py2.py3-none-any.whl
-Collecting six (from traitlets>=4.1.0->ipykernel)
-  Using cached https://files.pythonhosted.org/packages/65/eb/1f97cb97bfc2390a276969c6fae16075da282f5058082d4cb10c6c5c1dba/six-1.14.0-py2.py3-none-any.whl
-Collecting backcall (from ipython>=5.0.0->ipykernel)
-Collecting setuptools>=18.5 (from ipython>=5.0.0->ipykernel)
-  Using cached https://files.pythonhosted.org/packages/3d/72/1c1498c1e908e0562b1e1cd30012580baa7d33b5b0ffdbeb5fde2462cc71/setuptools-45.2.0-py3-none-any.whl
-Collecting pickleshare (from ipython>=5.0.0->ipykernel)
-  Using cached https://files.pythonhosted.org/packages/9a/41/220f49aaea88bc6fa6cba8d05ecf24676326156c23b991e80b3f2fc24c77/pickleshare-0.7.5-py2.py3-none-any.whl
-Collecting jedi>=0.10 (from ipython>=5.0.0->ipykernel)
-  Using cached https://files.pythonhosted.org/packages/01/67/333e2196b70840f411fd819407b4e98aa3150c2bd24c52154a451f912ef2/jedi-0.16.0-py2.py3-none-any.whl
-Collecting prompt-toolkit!=3.0.0,!=3.0.1,<3.1.0,>=2.0.0 (from ipython>=5.0.0->ipykernel)
-  Using cached https://files.pythonhosted.org/packages/f5/22/f00412fafc68169054cc623a35c32773f22b403ddbe516c8adfdecf25341/prompt_toolkit-3.0.3-py3-none-any.whl
-Collecting pygments (from ipython>=5.0.0->ipykernel)
-  Using cached https://files.pythonhosted.org/packages/be/39/32da3184734730c0e4d3fa3b2b5872104668ad6dc1b5a73d8e477e5fe967/Pygments-2.5.2-py2.py3-none-any.whl
-Collecting pexpect; sys_platform != "win32" (from ipython>=5.0.0->ipykernel)
-  Using cached https://files.pythonhosted.org/packages/39/7b/88dbb785881c28a102619d46423cb853b46dbccc70d3ac362d99773a78ce/pexpect-4.8.0-py2.py3-none-any.whl
-Collecting python-dateutil>=2.1 (from jupyter-client->ipykernel)
-  Using cached https://files.pythonhosted.org/packages/d4/70/d60450c3dd48ef87586924207ae8907090de0b306af2bce5d134d78615cb/python_dateutil-2.8.1-py2.py3-none-any.whl
-Collecting jupyter-core>=4.6.0 (from jupyter-client->ipykernel)
-  Using cached https://files.pythonhosted.org/packages/63/0d/df2d17cdf389cea83e2efa9a4d32f7d527ba78667e0153a8e676e957b2f7/jupyter_core-4.6.3-py2.py3-none-any.whl
-Collecting pyzmq>=13 (from jupyter-client->ipykernel)
-  Using cached https://files.pythonhosted.org/packages/94/07/cee3d328a2e13f9de1c2b62cced7a389b61ac81424f2e377f3dc9d668282/pyzmq-18.1.1-cp36-cp36m-manylinux1_x86_64.whl
-Collecting parso>=0.5.2 (from jedi>=0.10->ipython>=5.0.0->ipykernel)
-  Using cached https://files.pythonhosted.org/packages/ec/bb/3b6c9f604ac40e2a7833bc767bd084035f12febcbd2b62204c5bc30edf97/parso-0.6.1-py2.py3-none-any.whl
-Collecting wcwidth (from prompt-toolkit!=3.0.0,!=3.0.1,<3.1.0,>=2.0.0->ipython>=5.0.0->ipykernel)
-  Using cached https://files.pythonhosted.org/packages/58/b4/4850a0ccc6f567cc0ebe7060d20ffd4258b8210efadc259da62dc6ed9c65/wcwidth-0.1.8-py2.py3-none-any.whl
-Collecting ptyprocess>=0.5 (from pexpect; sys_platform != "win32"->ipython>=5.0.0->ipykernel)
-  Using cached https://files.pythonhosted.org/packages/d1/29/605c2cc68a9992d18dada28206eeada56ea4bd07a239669da41674648b6f/ptyprocess-0.6.0-py2.py3-none-any.whl
-Installing collected packages: decorator, ipython-genutils, six, traitlets, backcall, setuptools, pickleshare, parso, jedi, wcwidth, prompt-toolkit, pygments, ptyprocess, pexpect, ipython, tornado, python-dateutil, jupyter-core, pyzmq, jupyter-client, ipykernel
-Successfully installed backcall-0.1.0 decorator-4.4.1 ipykernel-5.1.4 ipython-7.12.0 ipython-genutils-0.2.0 jedi-0.16.0 jupyter-client-6.0.0 jupyter-core-4.6.3 parso-0.6.1 pexpect-4.8.0 pickleshare-0.7.5 prompt-toolkit-3.0.3 ptyprocess-0.6.0 pygments-2.5.2 python-dateutil-2.8.1 pyzmq-18.1.1 setuptools-45.2.0 six-1.14.0 tornado-6.0.3 traitlets-4.3.3 wcwidth-0.1.8
-You are using pip version 18.1, however version 20.0.2 is available.
-You should consider upgrading via the 'pip install --upgrade pip' command.
 \end{minted}
+% Not sure if we really need verbatim pip output here?
+%
+% \begin{minted}[breaklines,breakanywhere]{text}
+% (jupyterhub-evaluation-v2020.02.24.1) $ pip install --ignore-installed ipykernel
+% Collecting ipykernel
+%   Using cached https://files.pythonhosted.org/packages/d7/62/d1a5d654b7a21bd3eb99be1b59a608cc18a7a08ed88495457a87c40a0495/ipykernel-5.1.4-py3-none-any.whl
+% Collecting traitlets>=4.1.0 (from ipykernel)
+%   Using cached https://files.pythonhosted.org/packages/ca/ab/872a23e29cec3cf2594af7e857f18b687ad21039c1f9b922fac5b9b142d5/traitlets-4.3.3-py2.py3-none-any.whl
+% Collecting ipython>=5.0.0 (from ipykernel)
+%   Using cached https://files.pythonhosted.org/packages/b8/6d/1e3e335e767fc15a2047a008e27df31aa8bcf11c6f3805d03abefc69aa88/ipython-7.12.0-py3-none-any.whl
+% Collecting tornado>=4.2 (from ipykernel)
+% Collecting jupyter-client (from ipykernel)
+%   Downloading https://files.pythonhosted.org/packages/40/75/4c4eb43749e59db3c1c7932b50eaf8c4b8219b1b5644fe379ea796f8dbe5/jupyter_client-6.0.0-py3-none-any.whl (104kB)
+%     100% |||||||||||||||||||||||||||||||||| 112kB 4.0MB/s
+% Collecting decorator (from traitlets>=4.1.0->ipykernel)
+%   Using cached https://files.pythonhosted.org/packages/8f/b7/f329cfdc75f3d28d12c65980e4469e2fa373f1953f5df6e370e84ea2e875/decorator-4.4.1-py2.py3-none-any.whl
+% Collecting ipython-genutils (from traitlets>=4.1.0->ipykernel)
+%   Using cached https://files.pythonhosted.org/packages/fa/bc/9bd3b5c2b4774d5f33b2d544f1460be9df7df2fe42f352135381c347c69a/ipython_genutils-0.2.0-py2.py3-none-any.whl
+% Collecting six (from traitlets>=4.1.0->ipykernel)
+%   Using cached https://files.pythonhosted.org/packages/65/eb/1f97cb97bfc2390a276969c6fae16075da282f5058082d4cb10c6c5c1dba/six-1.14.0-py2.py3-none-any.whl
+% Collecting backcall (from ipython>=5.0.0->ipykernel)
+% Collecting setuptools>=18.5 (from ipython>=5.0.0->ipykernel)
+%   Using cached https://files.pythonhosted.org/packages/3d/72/1c1498c1e908e0562b1e1cd30012580baa7d33b5b0ffdbeb5fde2462cc71/setuptools-45.2.0-py3-none-any.whl
+% Collecting pickleshare (from ipython>=5.0.0->ipykernel)
+%   Using cached https://files.pythonhosted.org/packages/9a/41/220f49aaea88bc6fa6cba8d05ecf24676326156c23b991e80b3f2fc24c77/pickleshare-0.7.5-py2.py3-none-any.whl
+% Collecting jedi>=0.10 (from ipython>=5.0.0->ipykernel)
+%   Using cached https://files.pythonhosted.org/packages/01/67/333e2196b70840f411fd819407b4e98aa3150c2bd24c52154a451f912ef2/jedi-0.16.0-py2.py3-none-any.whl
+% Collecting prompt-toolkit!=3.0.0,!=3.0.1,<3.1.0,>=2.0.0 (from ipython>=5.0.0->ipykernel)
+%   Using cached https://files.pythonhosted.org/packages/f5/22/f00412fafc68169054cc623a35c32773f22b403ddbe516c8adfdecf25341/prompt_toolkit-3.0.3-py3-none-any.whl
+% Collecting pygments (from ipython>=5.0.0->ipykernel)
+%   Using cached https://files.pythonhosted.org/packages/be/39/32da3184734730c0e4d3fa3b2b5872104668ad6dc1b5a73d8e477e5fe967/Pygments-2.5.2-py2.py3-none-any.whl
+% Collecting pexpect; sys_platform != "win32" (from ipython>=5.0.0->ipykernel)
+%   Using cached https://files.pythonhosted.org/packages/39/7b/88dbb785881c28a102619d46423cb853b46dbccc70d3ac362d99773a78ce/pexpect-4.8.0-py2.py3-none-any.whl
+% Collecting python-dateutil>=2.1 (from jupyter-client->ipykernel)
+%   Using cached https://files.pythonhosted.org/packages/d4/70/d60450c3dd48ef87586924207ae8907090de0b306af2bce5d134d78615cb/python_dateutil-2.8.1-py2.py3-none-any.whl
+% Collecting jupyter-core>=4.6.0 (from jupyter-client->ipykernel)
+%   Using cached https://files.pythonhosted.org/packages/63/0d/df2d17cdf389cea83e2efa9a4d32f7d527ba78667e0153a8e676e957b2f7/jupyter_core-4.6.3-py2.py3-none-any.whl
+% Collecting pyzmq>=13 (from jupyter-client->ipykernel)
+%   Using cached https://files.pythonhosted.org/packages/94/07/cee3d328a2e13f9de1c2b62cced7a389b61ac81424f2e377f3dc9d668282/pyzmq-18.1.1-cp36-cp36m-manylinux1_x86_64.whl
+% Collecting parso>=0.5.2 (from jedi>=0.10->ipython>=5.0.0->ipykernel)
+%   Using cached https://files.pythonhosted.org/packages/ec/bb/3b6c9f604ac40e2a7833bc767bd084035f12febcbd2b62204c5bc30edf97/parso-0.6.1-py2.py3-none-any.whl
+% Collecting wcwidth (from prompt-toolkit!=3.0.0,!=3.0.1,<3.1.0,>=2.0.0->ipython>=5.0.0->ipykernel)
+%   Using cached https://files.pythonhosted.org/packages/58/b4/4850a0ccc6f567cc0ebe7060d20ffd4258b8210efadc259da62dc6ed9c65/wcwidth-0.1.8-py2.py3-none-any.whl
+% Collecting ptyprocess>=0.5 (from pexpect; sys_platform != "win32"->ipython>=5.0.0->ipykernel)
+%   Using cached https://files.pythonhosted.org/packages/d1/29/605c2cc68a9992d18dada28206eeada56ea4bd07a239669da41674648b6f/ptyprocess-0.6.0-py2.py3-none-any.whl
+% Installing collected packages: decorator, ipython-genutils, six, traitlets, backcall, setuptools, pickleshare, parso, jedi, wcwidth, prompt-toolkit, pygments, ptyprocess, pexpect, ipython, tornado, python-dateutil, jupyter-core, pyzmq, jupyter-client, ipykernel
+% Successfully installed backcall-0.1.0 decorator-4.4.1 ipykernel-5.1.4 ipython-7.12.0 ipython-genutils-0.2.0 jedi-0.16.0 jupyter-client-6.0.0 jupyter-core-4.6.3 parso-0.6.1 pexpect-4.8.0 pickleshare-0.7.5 prompt-toolkit-3.0.3 ptyprocess-0.6.0 pygments-2.5.2 python-dateutil-2.8.1 pyzmq-18.1.1 setuptools-45.2.0 six-1.14.0 tornado-6.0.3 traitlets-4.3.3 wcwidth-0.1.8
+% You are using pip version 18.1, however version 20.0.2 is available.
+% You should consider upgrading via the 'pip install --upgrade pip' command.
+% \end{minted}
 %
 which installs the IPython kernel package and all dependencies into the virtual Python environment either by downloading an up-to-date version or by copying from the default environment packages.
 
@@ -624,19 +626,24 @@ For evaluation purposes we proceed with the example task of upgrading the outdat
 %
 \begin{minted}[breaklines,breakanywhere]{text}
 (jupyterhub-evaluation-v2020.02.24.1) $ pip install --upgrade dask
-Collecting dask
-  Downloading https://files.pythonhosted.org/packages/c2/7a/22ffaff40b7c912cac6956e18d38c686b6b5756179e9c09e8e6bf7810aad/dask-2.11.0-py3-none-any.whl (785kB)
-    100% |||||||||||||||||||||||||||||||||| 788kB 6.2MB/s
-Installing collected packages: dask
-  Found existing installation: dask 2.6.0
-    Not uninstalling dask at /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages/dask-2.6.0-py3.6.egg, outside environment /p/project/cesmtst/hoeflich1/kernels/jupyterhub-evaluation-v2020.02.24.1
-    Can't uninstall 'dask'. No files were found to uninstall.
-Successfully installed dask-2.11.0
-You are using pip version 18.1, however version 20.0.2 is available.
-You should consider upgrading via the 'pip install --upgrade pip' command.
 \end{minted}
+% See above.
+%
+% \begin{minted}[breaklines,breakanywhere]{text}
+% (jupyterhub-evaluation-v2020.02.24.1) $ pip install --upgrade dask
+% Collecting dask
+%   Downloading https://files.pythonhosted.org/packages/c2/7a/22ffaff40b7c912cac6956e18d38c686b6b5756179e9c09e8e6bf7810aad/dask-2.11.0-py3-none-any.whl (785kB)
+%     100% |||||||||||||||||||||||||||||||||| 788kB 6.2MB/s
+% Installing collected packages: dask
+%   Found existing installation: dask 2.6.0
+%     Not uninstalling dask at /gpfs/software/juwels/stages/Devel-2019a/software/Jupyter/2019a-gcccoremkl-8.3.0-2019.3.199-Python-3.6.8/lib/python3.6/site-packages/dask-2.6.0-py3.6.egg, outside environment /p/project/cesmtst/hoeflich1/kernels/jupyterhub-evaluation-v2020.02.24.1
+%     Can't uninstall 'dask'. No files were found to uninstall.
+% Successfully installed dask-2.11.0
+% You are using pip version 18.1, however version 20.0.2 is available.
+% You should consider upgrading via the 'pip install --upgrade pip' command.
+% \end{minted}
 
-To register the above virtual Python environment as Jupyter kernel the documentation suggests using the following IPython kernel command
+To register the above virtual Python environment as a Jupyter kernel, the documentation suggests using
 %
 \begin{minted}[breaklines,breakanywhere]{text}
 (jupyterhub-evaluation-v2020.02.24.1) $ python3 -m ipykernel install --user --name=jupyterhub-evaluation-v2020.02.24.1
@@ -661,7 +668,8 @@ $ cat kernel.json
 }
 \end{minted}
 
-This already defines a working IPython kernel for JupyterLab instances, however, only the default Python environment package collection described in section \ref{sect:python-kernel:default-packages} is available.
+This already defines a working IPython kernel for JupyterLab instances. 
+However, only the default Python environment package collection described in section \ref{sect:python-kernel:default-packages} is available.
 
 To use the virtual Python environment that was created above an executable kernel launch script needs to be set up
 %
@@ -705,21 +713,15 @@ The Python packages from the default environment extended by packages from the v
 
 \begin{itemize}
 
-  \item not clear why the installation of the IPython kernel package into the virtual environment is suggested;
-  this is not strictly necessary because of how the Python package path environment variable is set;
-  Python packages of the virtual environment only overload/extend existing default packages and the IPython kernel package is already available in the default Python environment
+  \item It is not clear why the installation of the IPython kernel package into the virtual environment is suggested as this is not strictly necessary, because Python packages of the virtual environment only overload/extend existing default packages and the IPython kernel package is already available in the default Python environment.
 
-  \item the \verb|--ignore-installed| pip flag is not a recommended feature\footnote{https://stackoverflow.com/questions/51913361/difference-between-pip-install-options-ignore-installed-and-force-reinstall};
-  already existing packages in the user file system location are not properly uninstalled, which could lead to the accumulation of orphaned files that would need to be cleaned up manually
+  \item The \verb|--ignore-installed| pip flag is not a recommended feature\footnote{https://stackoverflow.com/questions/51913361/difference-between-pip-install-options-ignore-installed-and-force-reinstall}, because already existing packages in the user file system location are not properly uninstalled, which could lead to the accumulation of orphaned files that would need to be cleaned up manually.
 
-  \item the \verb|--ignore-installed| flag has an unnecessarily negative impact upon user file system inode counts;
-  all packages and their dependencies are copied into the virtual Python environment even though exactly needed versions are already available in the default environment
+  \item The \verb|--ignore-installed| flag has an unnecessary negative impact upon user file system inode counts, because all packages and their dependencies are copied into the virtual Python environment even though exactly needed versions are already available in the default environment.
 
-  \item to keep the virtual environment small, for packages that are already installed it would be better to use the \verb|--upgrade| flag or to define a specific package version
+  \item To keep the virtual environment small, for packages that are already installed it would be better to use the \verb|--upgrade| flag or to define a specific package version.
 
-  \item the 314 package default Python environment is currently always carried along;
-  Python virtual environments are a Python base feature and only need a working core Python interpreter/environment and pip and setuptools packages installed;
-  it would thus be possible to define very light-weight user specific virtual Python environments as kernels
+  \item The 314-package default Python environment is currently always carried along even though Python virtual environments are a Python base feature and only need a working core Python interpreter/environment and pip and setuptools packages installed.  It would thus be possible to define very light-weight user specific virtual Python environments as kernels.
 
 \end{itemize}
 
@@ -728,7 +730,7 @@ The Python packages from the default environment extended by packages from the v
 
 Overloading single packages in the 314 packages default Python environment might not fulfil every user's software requirements (see section \ref{sect:python-kernel:default-packages} for reasons).
 Therefore, a scripted light-weight virtual Python environment solution is described in the following.
-As virtual Python environments are not purely standalone, we further explore the possibility of using a conda managed and a container-based environment as Jupyter kernels.
+As virtual Python environments are not purely standalone, we further explore the possibility of using a conda-managed and a container-based environment as Jupyter kernels.
 
 \subsubsection{Light-weight virtual Python environment}
 \label{sect:suggested-python-virtual-environment}
@@ -782,7 +784,7 @@ fi
 %https://www.dabapps.com/blog/introduction-to-pip-and-virtualenv-python/
 %https://able.bio/rhett/python-virtual-environments-with-virtualenv--63mmpmp
 
-\subsubsection{Conda managed environment}
+\subsubsection{Conda-managed environment}
 \label{sect:conda-environment}
 
 The downside of Python virtual environments is that they depend upon the parent Python interpreter features only.
@@ -823,59 +825,10 @@ the conda-maintained environment works as Jupyter kernel.
 %https://jupyter-client.readthedocs.io/en/stable/kernels.html
 %https://github.com/pyenv/pyenv
 
-\subsubsection{Singularity environment}
+\subsubsection{Container-based environment}
 \label{sect:container-based-environment}
 
 Containers provide a flexible way of deploying isolated software environments, thus enabling standalone analysis and compute environments and scientific reproducibility.
 They can also be used as Jupyter kernels.
 
 (How exactly this works should be described here. Further information and starting points are found in \href{https://github.com/ExaESM-WP4/JupyterHub-Evaluation-Whitepaper/issues/6}{this Github issue}.)
-
-\subsection{Summary}
-\label{sect:working-envs:summary}
-
-Here we summarize the status quo of working environment selection, modification and specification for JUWELS JupyterLab instances.
-Specific proposals to achieve better robustness and flexibility, compatible with the chosen system software architecture, are also given.
-
-Principal other user working environment managing approaches are discussed at the end of the report. OR SHOULD WE NOT DO THIS? (JupyterLab instances could also be started inside containers. Currently, this approach is used only on the HDF cloud. Should this be made possible on JURECA and JUWELS, too? What is pro and contra here? From a user and system administrator perspective?)
-
-\subsubsection{Selection, modification and specification}
-
-Working environment selection is established based on Jupyter kernels, available per default are currently a Bash, Javascript, Julia and Python kernel, and several C++ kernels.
-The default Python package environment can be extended and modified using the Lmod software environment Jupyter extension available in the JupyterLab sidebar, however, most of the available Python modules are not compatible with the default environment, quickly leaving the user with broken Python kernel functionality.
-THERE SHOULD BE MORE DETAILS FROM ABOVE INVESTIGATIONS HERE.
-The central problem is the entirely missing documentation on what can or should be achieved via the software environment module extension.
-
-Modification of the default Python environment can also be done by setting up a virtual Python environment, a documentation is provided that explains registering it as further Jupyter kernel.
-However, the approach that is described only allows the user to modify certain Python packages inside the extensive default Python environment.
-Specifying a more standalone and light-weight virtual Python environment as Jupyter kernel was shown to be possible here, but is currently not documented.
-
-The specification of completely standalone working environments has been explored in sections \ref{sect:conda-environment} and \ref{sect:container-based-environment}.
-Both a Conda package manager and a container based Jupyter kernel approach are presented.
-They extend the documented approaches by the possibility of deploying isolated software environments, enabling convenient porting of analysis environments and facilitating scientific reproducibility.
-
-\subsubsection{Suggestions}
-
-\begin{itemize}
-
-  \item set up a software modules hierarchy that is scoped only for the JUWELS JupyterLab functionality;
-  provided Lmod software environment modules should be completely exchangeable;
-  the user should not be able or should clearly be instructed how not to destroy their Jupyter kernels and JupyterLab instances
-
-  \item on system start-up the \verb|Jupyter/2019a-Python-3.6.8| module automatically establishes the software environment for the complete set of available Jupyter kernels;
-  in terms of preventing software environment conflicts, it might make sense to provide only a very minimalistic Jupyter environment;
-  the user should not be able to unload the modules that provide basic system functionality;
-  a documentation could be displayed on how to activate software environment modules that provide Jupyter kernel functionality;
-  thus, users are taught to consciously handle their software environments;
-  however, there might be work on the Jupyter kernel launcher tab necessary;
-  currently, the launcher tab only shows the Jupyter kernels available on JupyterLab instance start-up;
-  kernels that become available after JupyterLab has started can be chosen only from the kernel drop down of open Jupyter notebooks
-
-  \item another approach to robust Jupyter kernels would be to make software module based kernel launcher scripts the default; these would show up in the JupyterLab launcher tab on system start-up; loading and unloading of software environment modules would not have an effect on the kernel software environments; customization of kernel software environments would be entirely by setting up own kernel launcher scripts; in this case good documentation needs to be provided by the system designers/administators; the Lmod software modules extension in the JupyterLab sidebar would be obsolete in this case
-
-  \item provide only a minimalistic Python interpreter software environment module for users' to build their own virtual Python environments and Jupyter kernels;
-  this would combine the advantage of using a JUWELS specific Python interpreter (with its potentially higher code execution speeds, see \href{https://www.fz-juelich.de/SharedDocs/Downloads/IAS/JSC/EN/slides/supercomputer-ressources-2019-11/15a-tuning_intel.html}{this example investigation by Intel}) with robust standalone pip package dependency managing
-
-  \item extend the documentation for working environment specification based on the alternatives presented in section \ref{sect:jupyter-kernel-suggestions}
-
-\end{itemize}

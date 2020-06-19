@@ -15,7 +15,54 @@ In this paper, we evaluate the JSC JupyterHub with respect to {\em Documentation
 
 \subsection{User requirements}
 
-(Might be formulated as user stories, both covering present and desired future workflows.)
+From a user perspective, notebooks may be attractive because they allow for combining a narrative with technical details, code, data and figures and hence provide an integrated way of presenting a line of scientific reasoning, and because they can be created in an incremental and interactive process that in some cases is close the the thought process during scientific work.
+
+Jupyter may be attractive for users because though originating from the Python ecosystem, it provides a common interface for creating notebooks that can contain code in many different languages.  Work with remote Jupyter instances, e.g., through a JupyterHub is popular, because the browser-based graphical application is executed on the user's computer and the bandwidth and stability requirements for the connection to the server are minimal and result in a low-latency and smooth user experience that is rare among classical GUIs that allow for execution on remote servers.
+
+Besides Jupyter, there are other popular implementations of computational notebooks~\citep{Hinsen2019a} that increasingly provide a browser-based way of working with them\footnote{See, e.g., the Matlab Live Editor at https://de.mathworks.com/products/matlab/live-editor.html.}.
+
+The following are user stories that may illustrate what people who end up working via a JuptyerHub on an HPC centre may have in mind:
+\begin{itemize}
+  \item I want to produce a computational notebook that presents my scientific data analysis.
+  All or some of my data are so big, that the processing needs substantial storage and computational resources.
+  \item I want to explore / analyze data that are on an HPC centre and that should not\footnote{e.g., forr reproducibility reasons}, or can not\footnote{e.g. because of volume} be moved to my computer.
+  For the exploration I need to try out and quickly adapt different ideas that I would like to document keeping code and results / figures closely together.
+  \item I am used to working with a specific notebook software and format that I mostly use on my personal computer.
+  Now I want to bring my expertise into a collaboration that runs large simulations on an HPC centre and I would like to keep working with my familiar software without having to learn much about the Unix command line etc.
+  \item I want to do data analysis from a personal device that I cannot use for the task directly, e.g., because I am not allowed to install software myself.
+  \item My device has a modern web browser installed that I can use to browse the internet.
+\end{itemize}
+
+
+\subsection{Resulting technical requirements}
+
+The above user requirements can be broken down into different aspects all or most of which can be solved with a JupyterHub but which should be understood separately:
+\begin{itemize}
+  \item \textbf{Remote access:}  Users want to operate a personal computer and have a way of starting execution on an HPC machine, capturing the results to be displayed on their personal computer.
+  \item \textbf{Minimal software requirements on the user side:}  The computers users can access directly are very diverse.  Most of them, however, do have a web browser.
+  \item \textbf{Web based software on the server side:}  Most computational notebook tools provide a built-in\footnote{For others there may be a way of using, e.g., https://novnc.com/info.html.} way of directly connecting to them via HTTP/HTTPS.
+  \item \textbf{Ability to chose arbitrary resources:}  The resource requirements range from very low memory and CPU demands that could easily be fulfilled on a shared machine to requiring multiple HPC nodes or special hardware like GPUs.
+\end{itemize}
+
+A typical JupyterHub-based session in an HPC centre may work as follows:
+\begin{itemize}
+  \item \textbf{Authentication:} The user logs in to a JupyterHub that provides different choices for the actual Jupyter session.
+  \item \textbf{Spawning of a server:} The user choses how to work (resources, duration, machine, account, project etc.) and the JupyterHub starts spawning a Jupyter user server on the selected HPC resources.
+  This may take time (seconds to hours / days).
+  \item \textbf{Connection to the user server:} When the user server is ready, the user is connected or provided with a link to connect to the user server.
+  The web browser downloads the Jupyter software and starts the Jupyter interface on the user's computer.
+  \item \textbf{Starting a kernel:} After possibly using other ways of working with the Jupyter user server\footnote{There is, e.g., a basic file system browser, a text editor, a terminal, etc. built into Jupyter.}, the user opens a notebook and explicitly or implicitly choses and starts a Jupyter kernel process which will execute the code entered by the user.
+  The user may open more than one notebook and work with more than one kernel process.
+  Kernels can be stopped and restarted by the user.
+  \item \textbf{Exporting and downloading the notebook:} When done with all or parts of the desired work, the user may export one or more notebooks to different formats (including the native notebook format) and download them to their personal computer.
+  \item \textbf{Stopping the user server:} The user server can be stopped by the user (from within the Jupyter server or from the JupyterHub), by the HPC resource manager (because of time or other resource limit violation), or by the JupyterHub.
+  \item \textbf{Disconnecting:} The user disconnects from the Jupyter user server by, e.g., closing the browser tab.
+  In a next or in the same step, the user also could disconnect from or log out of the JupyterHub.
+\end{itemize}
+
+It should be noted that the notion of \textem{Jupyter user server} can be very broad.
+There is applications\footnote{e.g., https://github.com/ideonate/jhsingle-native-proxy} that can be spawned by JupyterHub that do not require a Jupyter notebook at all.
+In this case, the JupyterHub serves as little more than a proxy to an arbitrary web app on the HPC resources that provides convenient ways of authenticating, and chosing apps and resources.
 
 \subsection{Key service challenges}
 

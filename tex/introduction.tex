@@ -11,30 +11,39 @@ There are numerous efforts to establish Jupyter based workflows in HPC centres o
   \item and JSC has a solution~\citep{Goebbert2018}.
 \end{itemize}
 
-In this paper, we evaluate the JSC JupyterHub with respect to {\em Documentation}, {\em Accessibility}, {\em Flexibility}, {\em Availability}, and {\em Stability}.
-
-\subsection{User requirements}
-
 From a user perspective, notebooks may be attractive because they allow for combining a narrative with technical details, code, data and figures and hence provide an integrated way of presenting a line of scientific reasoning, and because they can be created in an incremental and interactive process that in some cases is close the the thought process during scientific work.
 
-Jupyter may be attractive for users because though originating from the Python ecosystem, it provides a common interface for creating notebooks that can contain code in many different languages.  Work with remote Jupyter instances, e.g., through a JupyterHub is popular, because the browser-based graphical application is executed on the user's computer and the bandwidth and stability requirements for the connection to the server are minimal and result in a low-latency and smooth user experience that is rare among classical GUIs that allow for execution on remote servers.
+Jupyter may be attractive for users because though originating from the Python ecosystem, it provides a common interface for creating notebooks that can contain code in many different languages.
+Work with remote Jupyter instances, e.g., through a JupyterHub is popular, because the browser-based graphical application is executed on the user's computer and the bandwidth and stability requirements for the connection to the server are minimal and result in a low-latency and smooth user experience that is rare among classical GUIs that allow for execution on remote servers.
 
 Besides Jupyter, there are other popular implementations of computational notebooks~\citep{Hinsen2019a} that increasingly provide a browser-based way of working with them\footnote{See, e.g., the Matlab Live Editor at https://de.mathworks.com/products/matlab/live-editor.html.}.
 
-The following are user stories that may illustrate what people who end up working via a JuptyerHub on an HPC centre may have in mind:
-\begin{itemize}
-  \item I want to produce a computational notebook that presents my scientific data analysis.
-  All or some of my data are so big, that the processing needs substantial storage and computational resources.
-  \item I want to explore / analyze data that are on an HPC centre and that should not\footnote{e.g., forr reproducibility reasons}, or can not\footnote{e.g. because of volume} be moved to my computer.
-  For the exploration I need to try out and quickly adapt different ideas that I would like to document keeping code and results / figures closely together.
-  \item I am used to working with a specific notebook software and format that I mostly use on my personal computer.
-  Now I want to bring my expertise into a collaboration that runs large simulations on an HPC centre and I would like to keep working with my familiar software without having to learn much about the Unix command line etc.
-  \item I want to do data analysis from a personal device that I cannot use for the task directly, e.g., because I am not allowed to install software myself.
-  \item My device has a modern web browser installed that I can use to browse the internet.
-\end{itemize}
+In this paper, we evaluate the JSC JupyterHub with respect to {\em Documentation}, {\em Accessibility}, {\em Flexibility}, {\em Availability}, and {\em Stability}.
+Throughout the evaluation, the question if the service does or does not lead to an increase in productivity for scientists will be the guiding criterion.
+
+
+\subsection{User requirements}
+
+Jupyter on HPC is a solution for different user groups that profit for different reasons.
+There is expert users who have substantial resource demands (computational power or storage which can only be provided by HPC) and who don't want to miss the familiar comfort of the integrated working environment (notebooks and visualization but also terminal access) provided by Jupyter.
+But Juptyer can also bring non-expert users to HPC who lack the technical background to fully build their own commandline-based workflows, but who \emph{can} do meaningful science with the data and group or community specific toolboxes already available there.
+While for expert users, it's easy to work with Jupyter on HPC without relying on a central service\footnote{see, e.g, https://git.geomar.de/python/jupyter_on_HPC_setup_guide}, for non-experts a JupyterHub service may be essential for opening up the HPC system at all.
+
+Users will expect different levels of customizability, all of which are essential to at least some of the users.
+Some users will want immediately usable default software environments and default resource choices that don't require intimate knowledge of HPC specifics.
+Others will need full customizability not only f to the underlying Jupyter kernel and frontend software environment, but also of the spawning location.
+These users might want access to all resources and to every specific part (e.g., GPU or large-memory nodes) of the HPC system that they could use with classical command-line access.
+
+For all user groups, the provided documentation needs to be up-to-date with the JSC specific default state of the JupyterLab user interface.
+The documentation should also be in sync with community documentation and best practices, because users are unlikely to be only exposed to Juptyer on one single datacentre.
+
+Providing interactive access to HPC resources brings high demands in terms of availability of resources and of stability, which are more difficult to fulfil the more specific the needs of the users are.
+Providing a way to fore-see availability of resources and hence plannable interactive sessions may help.
 
 
 \subsection{Resulting technical requirements}
+
+% TODO: Make much shorter here and move long form to discussion?
 
 The above user requirements can be broken down into different aspects all or most of which can be solved with a JupyterHub but which should be understood separately:
 \begin{itemize}
@@ -43,6 +52,8 @@ The above user requirements can be broken down into different aspects all or mos
   \item \textbf{Web based software on the server side:}  Most computational notebook tools provide a built-in\footnote{For others there may be a way of using, e.g., https://novnc.com/info.html.} way of directly connecting to them via HTTP/HTTPS.
   \item \textbf{Ability to chose arbitrary resources:}  The resource requirements range from very low memory and CPU demands that could easily be fulfilled on a shared machine to requiring multiple HPC nodes or special hardware like GPUs.
 \end{itemize}
+
+% TODO: Filter out the hub-specific requirements and merge this with the user requirements section above.
 
 A typical JupyterHub-based session in an HPC centre may work as follows:
 \begin{itemize}

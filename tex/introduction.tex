@@ -40,40 +40,19 @@ The documentation should also be in sync with community documentation and best p
 Providing interactive access to HPC resources brings high demands in terms of availability of resources and of stability, which are more difficult to fulfil the more specific the needs of the users are.
 Providing a way to fore-see availability of resources and hence plannable interactive sessions may help.
 
+The resource requirements range from very low memory and CPU demands that could easily be fulfilled on a shared machine to requiring multiple HPC nodes or special hardware like GPUs.
+So an pre-selected typical resource selection for non-expert users combined with the possibility of full selection of resources like memory and CPU, type and number of compute nodes, and duration of the session for expert users is a requirement.
 
-\subsection{Resulting technical requirements}
+To also allow for using Jupyter as a front end for managing other batch-type jobs, full access to the batch scheduler would be desirable.
 
-% TODO: Make much shorter here and move long form to discussion?
+Ready-to-use standard configurations can be oriented along popular software distributions like Anaconda or the Pyviz ecosystem. 
+Full configurability of the Jupyter kernel would best follow community standards of managing working environments and could range from HPC-native module-based environment management, to Python virtual envs or conda envs (that are not restricted to Python), and to container based compute kernels.
+Customization of the Jupyter frontend could be done by allowing user-installed Jupyter setups (again based on modules and other community standards of managing workflows).
 
-The above user requirements can be broken down into different aspects all or most of which can be solved with a JupyterHub but which should be understood separately:
-\begin{itemize}
-  \item \textbf{Remote access:}  Users want to operate a personal computer and have a way of starting execution on an HPC machine, capturing the results to be displayed on their personal computer.
-  \item \textbf{Minimal software requirements on the user side:}  The computers users can access directly are very diverse.  Most of them, however, do have a web browser.
-  \item \textbf{Web based software on the server side:}  Most computational notebook tools provide a built-in\footnote{For others there may be a way of using, e.g., https://novnc.com/info.html.} way of directly connecting to them via HTTP/HTTPS.
-  \item \textbf{Ability to chose arbitrary resources:}  The resource requirements range from very low memory and CPU demands that could easily be fulfilled on a shared machine to requiring multiple HPC nodes or special hardware like GPUs.
-\end{itemize}
+Another possibility for full customizability that has considerable overlap with the way the data science community works on other platforms\footnote{Pangeo (https://pangeo.io) and the Binder project (https://mybinder.org) use containers on their cloud deployments that are built in a way that allows for re-use of the same container with Docker and Singulartiy on almost every platform.} would be to allow for containers that not only provide a compute kernel, but that bring a Jupyter setup that is adapted to one or more Jupyter kernels in a very detailed way.
+This would treat the whole Jupyter user server including frontend and backend as one integrated application.
 
-% TODO: Filter out the hub-specific requirements and merge this with the user requirements section above.
-
-A typical JupyterHub-based session in an HPC centre may work as follows:
-\begin{itemize}
-  \item \textbf{Authentication:} The user logs in to a JupyterHub that provides different choices for the actual Jupyter session.
-  \item \textbf{Spawning of a server:} The user choses how to work (resources, duration, machine, account, project etc.) and the JupyterHub starts spawning a Jupyter user server on the selected HPC resources.
-  This may take time (seconds to hours / days).
-  \item \textbf{Connection to the user server:} When the user server is ready, the user is connected or provided with a link to connect to the user server.
-  The web browser downloads the Jupyter software and starts the Jupyter interface on the user's computer.
-  \item \textbf{Starting a kernel:} After possibly using other ways of working with the Jupyter user server\footnote{There is, e.g., a basic file system browser, a text editor, a terminal, etc. built into Jupyter.}, the user opens a notebook and explicitly or implicitly choses and starts a Jupyter kernel process which will execute the code entered by the user.
-  The user may open more than one notebook and work with more than one kernel process.
-  Kernels can be stopped and restarted by the user.
-  \item \textbf{Exporting and downloading the notebook:} When done with all or parts of the desired work, the user may export one or more notebooks to different formats (including the native notebook format) and download them to their personal computer.
-  \item \textbf{Stopping the user server:} The user server can be stopped by the user (from within the Jupyter server or from the JupyterHub), by the HPC resource manager (because of time or other resource limit violation), or by the JupyterHub.
-  \item \textbf{Disconnecting:} The user disconnects from the Jupyter user server by, e.g., closing the browser tab.
-  In a next or in the same step, the user also could disconnect from or log out of the JupyterHub.
-\end{itemize}
-
-It should be noted that the notion of \emph{Jupyter user server} can be very broad.
-There is applications\footnote{e.g., https://github.com/ideonate/jhsingle-native-proxy} that can be spawned by JupyterHub that do not require a Jupyter notebook at all.
-In this case, the JupyterHub serves as little more than a proxy to an arbitrary web app on the HPC resources that provides convenient ways of authenticating, and chosing apps and resources.
+Persistent Jupyter sessions that can be reconnected at any point (within the allocated time window) help accomodating tasks with longer wait times, and allow for recovery after connectivity problems.
 
 \subsection{Key service challenges}
 

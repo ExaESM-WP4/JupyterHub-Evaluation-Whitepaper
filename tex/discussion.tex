@@ -2,7 +2,16 @@
 
 (Here, discuss the JSC solution with respect to the user requirements and key challenges stated in the introduction. Also incorporate aspects from the other investigated solutions.)
 
+(In summary, what are the user requirements we have worked out in the introduction? What are the resulting Jupyter service challenges?)
+
+(What are strengths/weaknesses of the JupyterHub@JSC service in terms of documentation, working environments, customization possibilities, available HPC resources? How does this compare to other Jupyter-based workflow solution, i.e. Jupyter@DKRZ and particular the workflows that were established at GEOMAR? What are the strengths/weaknesses of the system for the different target user groups stated in the introduction?)
+
+(For providing a JupyterHub service, are there any implications for the configuration of the already available HPC system infrastructure? Is further HPC system infrastructure needed?)
+
 \begin{itemize}
-  \item do we need a JupyterHub? for which task, and for which not?
-  \item ...
+  \item hardware infrastructure: possibility to have interactive analysis software environments on a file system location that handles "many small file"-requests better (and/or teach users to switch to containers and enable them to use containers via the JupyterHub)
+  \item JUWELS batch partition structure and node tenancy: as the Jupyter@JSC gains popularity, do the operators really want to have a lot of users doing interactive analysis tasks with their highly unpredictable and/or unskilled resource usage on the login nodes? would it make sense to configure a dedicated batch partition for these tasks, as e.g. available on DKRZ? or should users go to another part of the JSC infrastructure (e.g. JURECA etc. pp.) for some interactive analysis tasks, but not for others? the development of proper user guidance (and before that to define an interactive analysis task JSC system infrastructure policy) might become necessary at some point
+  \item host OS configuration: can/should the software module environment system visible on e.g. JUWELS be reconfigured to fully separate between Jupyter and "batch compute task" scopes?
 \end{itemize}
+
+(Do we need a JupyterHub? For which task, and for which not? For which scientific target user group, for which not? Whose scientific productivity increases, and whose might decrease?)

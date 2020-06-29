@@ -18,9 +18,6 @@ Work with remote Jupyter instances, e.g., through a JupyterHub is popular, becau
 
 Besides Jupyter, there are other popular implementations of computational notebooks~\citep{Hinsen2019a} that increasingly provide a browser-based way of working with them\footnote{See, e.g., the Matlab Live Editor at https://de.mathworks.com/products/matlab/live-editor.html.}.
 
-In this paper, we evaluate the JSC JupyterHub with respect to {\em Documentation}, {\em Accessibility}, {\em Flexibility}, {\em Availability}, and {\em Stability}.
-Throughout the evaluation, the question if the service does or does not lead to an increase in productivity for scientists will be the guiding criterion.
-
 
 \subsection{User requirements}
 
@@ -54,16 +51,34 @@ This would treat the whole Jupyter user server including frontend and backend as
 
 Persistent Jupyter sessions that can be reconnected at any point (within the allocated time window) help accomodating tasks with longer wait times, and allow for recovery after connectivity problems.
 
+
 \subsection{Key service challenges}
 
-(For web-based access to HPC resources.)
+With a special focus on the user requirements stated above, the deployment challenges for a JupyterHub service on HPC are briefly discussed here.
+Deployment details do not only have a strong impact upon system operator workload in maintaining a provided Jupyter service, but also decide about enabling and/or disabling user productivity, and with that whether the service adds value to the provided HPC system (software) infrastructure.
 
-\begin{itemize}
-  \item What are the technical obstacles to overcome from a user perspective? And from an HPC operator perspective?
-  \item ...
-\end{itemize}
+Challenges for system providers can be divided into three categories: HPC resources, working environments, and documentation.
 
-\subsection{Cautionary note}
+Jupyter workflows are interactive by nature and hence, for the HPC resource management for Jupyter, sysadmins are mainly faced with the task of providing a decent amount of HPC resources quickly.
 
-(We should mention that what we discuss here is formulated entirely from a user perspective and that we do not have detailed administrator insight into service configurations. Should probably be moved away from the introduction.) (We should also briefly explain why we take the "subjective" JupyterHub@JSC perspective.)
-(We should also say that our "research objects" gradually changed during the evaluation period, and that some information provided here will and might have become obsolete.)
+While system administrators know a lot about their HPC system and are unquestionably experts in choosing and optimizing low-level libraries for their hardware, higher up in the software stack the expertise shifts to the actual users of the software.
+Thus, finding the right cut between low-level libraries taken care of by sysadmins and high-level libraries managed by scientific users is difficult.
+
+The same divide is present on the documentation level.
+On one hand, the complexity of HPC system infrastructure (with their already highly specialized compute/storage implementations, which are currently e.g. supplemented by co-processing and/or general purpose processing GPUs) requires documentation and user training to ensure efficient usage of the specialised hardware modules and to help users in optimizing their software for the underlying hardware.
+On the other hand, it cannot be expected that system providers are the best for writing documentation on high-level data-analysis software and workflows.
+
+While the processing capability of such systems increases, inefficient usage of the increasingly complex hardware infrastructure especially by untrained users poses a strong risk on their cost effective sustenance\cite{}.
+This risk might further increase by also increasing the complexity of the provided software infrastructure.
+
+
+\subsection{Scope of this paper}
+
+In this paper, we take the user perspective and evaluate the JSC JupyterHub with respect to {\em Documentation}, {\em Accessibility}, {\em Flexibility}, {\em Availability}, and {\em Stability}.
+In doing so, we rely on information that is available to any standard user of the system only.
+Throughout the evaluation, the question if the service does or does not lead to an increase in productivity for scientists will be the key guiding criterion.
+
+The Jupyter@JSC is under heavy development and is a moving target for the evaluation presented here.
+Hence, some of the detailed information provided here might have and will become obsolete.
+
+Jupyter@JSC is a good candidate for the comprehensive evaluation of Jupyter on HPC systems, because it is aimed at providing a full-scale access to the underlying HPC system and hence is likely to hit on many of the challenges that arise for the deployment of such a service. 

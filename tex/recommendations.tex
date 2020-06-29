@@ -1,5 +1,45 @@
 \section{Recommendations for Jupyter@JSC}
 
+%
+% 
+%
+% * HPC resources
+%   * provide live info about available batch resources and possible waiting times (users need to decide where to start JL)
+%
+% (* sketch a system that _is_ easy to maintain:
+%   * only maintain hub and provide way of configuring jupyterlab base installation)
+%
+% * working environments
+%   * pre-installed libraries
+%     * provide separate system specific low-level libraries in a way that enables users in bringing / porting their own software selection (if there is system-optimized builds of modules like numpy or cuda, make it easy to use them in own environments without restricting users to default envs)
+%     * drop the Lmod plugin or only provide Jupyter-specific part of the module tree (remark: we're not convinced that a hierarchical python env management is possible)
+%
+%   * user configuration
+%     * provide a way of using working environments for long time (currently possible via own kernel definition)
+%       ==> problem: continuously updated JupyterLab might drift away from these kernels and break compatibility
+%     * Jupyter and kernel dependencies are entangled (not formally but practically)
+%       ==> aiming at _one_ JupyterLab for all possible kernel setups will lead to conflicts for some users
+%     * both above ==> You cannot separate Jupyter from kernels ==> Need to give up "one relatively rigid JL serves all possible kernels"
+%     * practical solutions:
+%       --> (A) Provide different (frozen) versions of JupyterLab (that can be selected on the hub-level) and continue allowing for user-defined kernels
+%       --> (B) Provide way of spawning fully user-defined JupyterLab from the hub and allow fully user-defined kernels (can be combined with comprehensive suggestions / defaults)
+%
+%   * containers
+%     * provide ways of using containers as Jupyter kernels (see suggestion in appendix)
+%     * provide a way of using containerized Jupyter{Lab,Notebook,...} with kernels included from JupyterHub
+%
+% * Documentation
+%   * do not put system specific documentation only behind the login screen (this makes it impossible 
+%     for new potential user to decide if the system is interesting for their workflows)
+%   * provide documentation about usage patterns / anti-patterns (e.g., when to use / not use login nodes / batch nodes)
+%   * make sure users understand where / when CPU hours are billed 
+%   * clearly document possible resource limits (e.g., walltime on login nodes, ...)
+%   * provide documentation on system-optimized libraries / modules (which aspects should users bringing
+%     / building their own environts care for, because they may impact performance)
+%   * refer to existing community documentation whenever / wherever possible
+%   * encourcage users to contribute to the JSC specific docs
+%
+
 (Here very specific aspects formulated as actionable items should be stated. These should especially be targeted at how to increase the scientific productivity of different target user groups on the present implementation of the system, while minimizing service provider workload / manual intervention on a future system.)
 
 \begin{itemize}

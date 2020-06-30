@@ -3,19 +3,18 @@
 \subsection{HPC resources}
 
 \begin{itemize}
-  \item We recommend Jupyter@JSC provides a way of estimating possible waiting times, e.g., by generating a graphical representation of the current system occupation.
+  \item \emph{Provide information on queue waiting times:} We recommend Jupyter@JSC provides a way of estimating possible waiting times, e.g., by generating a graphical representation of the current system occupation.
   This could greatly enhance the way users can plan their interactive work.
 \end{itemize}
-
 
 \subsection{Working environments}
 
 \subsubsection{Pre-installed software}
 
 \begin{itemize}
-  \item For system specific low-level software that is critical for performance, we recommend the Jupyter@JSC system provides easy to use builds in a way that enables users in bringing / porting their own software selection based on these. E.g., if there is system-optimized builds of modules like numpy or cuda, make it easy to use them in own environments without forcing users to use other parts of the default envs.
-  \item We recommend, the Lmod plugin is removed or to keep restricted to only provide the Jupyter-specific part of the module tree.
-  \item To accomodate the users who come from the Python data analysis worls, there should be an easy way of using the community standards (mainly pip and conda) for defining working environments.
+  \item \emph{Make optimized libraries easy to re-use:} For system specific low-level software that is critical for performance, we recommend the Jupyter@JSC system provides easy to use builds in a way that enables users in bringing / porting their own software selection based on these. E.g., if there is system-optimized builds of modules like numpy or cuda, make it easy to use them in own environments without forcing users to use other parts of the default envs.
+  \item \emph{Remove or restrict the Lmod plugin:} We recommend, the Lmod plugin is removed or to keep restricted to only provide the Jupyter-specific part of the module tree.
+  \item \emph{Actively support pip and conda:} To accomodate the users who come from the Python data analysis world, there should be an easy way of using the community standards (mainly pip and conda) for defining working environments.
 \end{itemize}
 
 \subsubsection{Configurability of working environments}
@@ -24,8 +23,8 @@ As was argued above, the separation between the Jupyter server and the Jupyter k
 This can result in conflicts between kernel and Jupyter server if, e.g., for reproducibility reasons, users keep un-changed kernels for a long time while the default JupyterLab setup is evolving, or if users use the full configurability of the kernels and create conflicts with the current default JupyterLab.
 
 \begin{itemize}
-  \item To overcome this conflict, we recommend that Jupyter@JSC provides full configurability of not only the Jupyter kernels but also of the Jupyter user server.
-  \item To also accomodate users with reproducibility demands but who do not intend to completely manage their own environments, we recommend Jupyter@JSC makes available frozen or checkpointed versions of the default Jupyter environments to be spawned via the hub.
+  \item \emph{Make Jupyter user servers fully configurable:} To overcome this conflict, we recommend that Jupyter@JSC provides full configurability of not only the Jupyter kernels but also of the Jupyter user server.
+  \item \emph{Allow for spawning old configurations of the defaults:} To also accomodate users with reproducibility demands but who do not intend to completely manage their own environments, we recommend Jupyter@JSC makes available frozen or checkpointed versions of the default Jupyter environments to be spawned via the hub.
 \end{itemize}
 
 \subsubsection{Conrtainer-based Jupyter and kernels}

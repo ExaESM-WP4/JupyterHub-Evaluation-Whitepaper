@@ -29,27 +29,21 @@ This can result in conflicts between kernel and Jupyter server if, e.g., for rep
 
 \subsubsection{Conrtainer-based Jupyter and kernels}
 
-Containers provide a way of isolating and porting working environments.
-Hence, they may be used for defining kernels (see \ref{sect:container-based-environment}) that are fully isolated from pre-defined kernels.
-But containers can also be used to provide the full working environment including the Jupyter user server\footnote{CITE BINDER / LINK TO repo2docker} and in that could solve virtually all of the above recommendations if Jupyter@JSC could provide a way of spawning container-based Jupyter instances.
-
-We hence recommend that Jupyter@JSC
 \begin{itemize}
-  \item provides a way of starting container-based Jupyter kernels, and
-  \item provides a way of spawning container-based Jupyter instances.
+  \item \emph{Allow for container-based kernels:} Containers provide a way of isolating and porting working environments.
+  Hence, they can be used for defining kernels (see \ref{sect:container-based-environment}) that are fully isolated from pre-defined environments.
+  \item \emph{Allow for fully container-based Jupyter user servers:} There is ways of building user-defined full working environment including the Jupyter user server\footnote{CITE BINDER / LINK TO repo2docker} that are supported by the Jupyter community.
+  These could solve virtually all of the above recommendations.
 \end{itemize}
 
 \subsection{Documentation}
 
-We recommend that Jupyter@JSC
 \begin{itemize}
-  \item makes available the system-specific documentation in a way that does not need a login to the system,
-  \item provides documentation about usage patterns / anti-patterns (e.g., when to use / not use login nodes / batch nodes),
-  \item makes sure users understand where / when CPU hours are billed,
-  \item clearly documents possible resource limitations (e.g., walltime or memory limits for Jupyter spawned on login nodes),
-  \item provides documentation on where to find, and how / why to use system-optimized performance-critical libraries / modules that is meant to inform users who bring or build their own environts.
-  \item refers to existing community documentation whenever / wherever possible,
-  \item provides an obvious way for users to contribute to the JSC specific docs and actively encourages these contributions,
+  \item \emph{Consolidate documentation:} Make available the system-specific documentation in a way that does not need a login to the system, and provide an obvious way for users to contributed to the JSC specific docs.
+  \item \emph{Leverage community documentation:} Refer to existing community documentation whenever / wherever possible rather than repeating or copying non-synchronized versions of central materials.
   \item completely removes or clearly marks as obsolete any outdated JSC specific docs documentation,
-  \item provides a changelog on Jupyter@JSC implementation to guide existing users who need a quick overview of new possibilities or restrictions.
+  \item \emph{Document evolution of Jupyter@JSC:} Provides a changelog on Jupyter@JSC implementation to guide existing users who need a quick overview of new possibilities or restrictions and remove remove or mark as obsolete any outdated JSC specific documentation.
+  \item \emph{Document intended use:} Provide documentation about usage patterns / anti-patterns (e.g., when to use / not use login nodes / batch nodes).
+  \item \emph{Document resource limitations:} Make sure users understand where / when CPU hours are billed, and clearly highlight possible resource limitations (e.g., walltime or memory limits for Jupyter spawned on login nodes).
+  \item \emph{Highlight system-specific optimizations:} Provide documentation on where to find, and how and why to use system-optimized performance-critical libraries and modules that is able to inform users who bring or build their own environments.
 \end{itemize}

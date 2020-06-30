@@ -1,49 +1,56 @@
 \section{Recommendations for Jupyter@JSC}
 
-%
-% 
-%
-% * HPC resources
-%   * provide live info about available batch resources and possible waiting times (users need to decide where to start JL)
-%
-% (* sketch a system that _is_ easy to maintain:
-%   * only maintain hub and provide way of configuring jupyterlab base installation)
-%
-% * working environments
-%   * pre-installed libraries
-%     * provide separate system specific low-level libraries in a way that enables users in bringing / porting their own software selection (if there is system-optimized builds of modules like numpy or cuda, make it easy to use them in own environments without restricting users to default envs)
-%     * drop the Lmod plugin or only provide Jupyter-specific part of the module tree (remark: we're not convinced that a hierarchical python env management is possible)
-%
-%   * user configuration
-%     * provide a way of using working environments for long time (currently possible via own kernel definition)
-%       ==> problem: continuously updated JupyterLab might drift away from these kernels and break compatibility
-%     * Jupyter and kernel dependencies are entangled (not formally but practically)
-%       ==> aiming at _one_ JupyterLab for all possible kernel setups will lead to conflicts for some users
-%     * both above ==> You cannot separate Jupyter from kernels ==> Need to give up "one relatively rigid JL serves all possible kernels"
-%     * practical solutions:
-%       --> (A) Provide different (frozen) versions of JupyterLab (that can be selected on the hub-level) and continue allowing for user-defined kernels
-%       --> (B) Provide way of spawning fully user-defined JupyterLab from the hub and allow fully user-defined kernels (can be combined with comprehensive suggestions / defaults)
-%
-%   * containers
-%     * provide ways of using containers as Jupyter kernels (see suggestion in appendix)
-%     * provide a way of using containerized Jupyter{Lab,Notebook,...} with kernels included from JupyterHub
-%
-% * Documentation
-%   * do not put system specific documentation only behind the login screen (this makes it impossible 
-%     for new potential user to decide if the system is interesting for their workflows)
-%   * provide documentation about usage patterns / anti-patterns (e.g., when to use / not use login nodes / batch nodes)
-%   * make sure users understand where / when CPU hours are billed 
-%   * clearly document possible resource limits (e.g., walltime on login nodes, ...)
-%   * provide documentation on system-optimized libraries / modules (which aspects should users bringing
-%     / building their own environts care for, because they may impact performance)
-%   * refer to existing community documentation whenever / wherever possible
-%   * encourcage users to contribute to the JSC specific docs
-%   * completely remove outdated JSC specific docs documentation
-%   * provide changelog on Jupyter@JSC implementation to guide existing users
-%
-
-(Here very specific aspects formulated as actionable items should be stated. These should especially be targeted at how to increase the scientific productivity of different target user groups on the present implementation of the system, while minimizing service provider workload / manual intervention on a future system.)
+\subsection{HPC resources}
 
 \begin{itemize}
-  \item ...
+  \item We recommend Jupyter@JSC provides a way of estimating possible waiting times, e.g., by generating a graphical representation of the current system occupation.
+  This could greatly enhance the way users can plan their interactive work.
+\end{itemize}
+
+
+\subsection{Working environments}
+
+\subsubsection{Pre-installed software}
+
+\begin{itemize}
+  \item For system specific low-level software that is critical for performance, we recommend the Jupyter@JSC system provides easy to use builds in a way that enables users in bringing / porting their own software selection based on these. E.g., if there is system-optimized builds of modules like numpy or cuda, make it easy to use them in own environments without forcing users to use other parts of the default envs.
+  \item We recommend, the Lmod plugin is removed or to keep restricted to only provide the Jupyter-specific part of the module tree.
+  \item To accomodate the users who come from the Python data analysis worls, there should be an easy way of using the community standards (mainly pip and conda) for defining working environments.
+\end{itemize}
+
+\subsubsection{Configurability of working environments}
+
+As was argued above, the separation between the Jupyter server and the Jupyter kernel is far from perfect.
+This can result in conflicts between kernel and Jupyter server if, e.g., for reproducibility reasons, users keep un-changed kernels for a long time while the default JupyterLab setup is evolving, or if users use the full configurability of the kernels and create conflicts with the current default JupyterLab.
+
+\begin{itemize}
+  \item To overcome this conflict, we recommend that Jupyter@JSC provides full configurability of not only the Jupyter kernels but also of the Jupyter user server.
+  \item To also accomodate users with reproducibility demands but who do not intend to completely manage their own environments, we recommend Jupyter@JSC makes available frozen or checkpointed versions of the default Jupyter environments to be spawned via the hub.
+\end{itemize}
+
+\subsubsection{Conrtainer-based Jupyter and kernels}
+
+Containers provide a way of isolating and porting working environments.
+Hence, they may be used for defining kernels (see \ref{sect:container-based-environment}) that are fully isolated from pre-defined kernels.
+But containers can also be used to provide the full working environment including the Jupyter user server\footnote{CITE BINDER / LINK TO repo2docker} and in that could solve virtually all of the above recommendations if Jupyter@JSC could provide a way of spawning container-based Jupyter instances.
+
+We hence recommend that Jupyter@JSC
+\begin{itemize}
+  \item provides a way of starting container-based Jupyter kernels, and
+  \item provides a way of spawning container-based Jupyter instances.
+\end{itemize}
+
+\subsection{Documentation}
+
+We recommend that Jupyter@JSC
+\begin{itemize}
+  \item makes available the system-specific documentation in a way that does not need a login to the system,
+  \item provides documentation about usage patterns / anti-patterns (e.g., when to use / not use login nodes / batch nodes),
+  \item makes sure users understand where / when CPU hours are billed,
+  \item clearly documents possible resource limitations (e.g., walltime or memory limits for Jupyter spawned on login nodes),
+  \item provides documentation on where to find, and how / why to use system-optimized performance-critical libraries / modules that is meant to inform users who bring or build their own environts.
+  \item refers to existing community documentation whenever / wherever possible,
+  \item provides an obvious way for users to contribute to the JSC specific docs and actively encourages these contributions,
+  \item completely removes or clearly marks as obsolete any outdated JSC specific docs documentation,
+  \item provides a changelog on Jupyter@JSC implementation to guide existing users who need a quick overview of new possibilities or restrictions.
 \end{itemize}

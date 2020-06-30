@@ -42,4 +42,25 @@ Currently, there is no explicit version information on both the documentation an
 
 \subsection{JupyterHub service}
 
-\subsection{Jupyter control script}
+\subsection{Jupyter remote control script}
+
+At DKRZ a bash script\footnote{\url{https://gitlab.dkrz.de/k202009/ssh_scripts/-/blob/35560ae0c72d9d99e1448140ec0ac2210f7fd1e5/start-jupyter}} that allows users to remotely manage their Jupyter processes on Mistral is provided.
+The script is executed on the user's personal computer and in a typical working session will
+\begin{itemize}
+    \item establish an SSH session to Mistral
+    \item use a Jupyter environment definition stored on Mistral
+    \item submit a Jupyter server either on mistralpp or as a batch job
+    \item waits for the batch job to start (if necessary)
+    \item setups an SSH tunnel
+    \item opens the local web browser
+    \item connects to remote Jupyter server via tunnel
+\end{itemize}
+
+The script is designed to work on Linux, Mac and Windows 10 systems.
+While it is designed to provide a solution to setting up, connecting and terminating a remote Jupyter server, it doesn't provide a robust way of re-established a disrupted connection.
+Jupyter servers need to be terminated manually, which might lead to orphaned Jupyter sessions both on mistralpp and the batch scheduler nodes.
+The documentation highlights this problem for the batch scheduler nodes and gives an example on how to terminate an orphaned job\footnote{https://www.dkrz.de/up/systems/mistral/programming/jupyter-notebook}.
+(Is this a problem also for mistralpp?)
+
+Compared to the DKRZ JupyterHub the management of Jupyter working environments is very flexible, because the only requirement for the Jupyter server that is started on Mistral is that an access URL is printed to the processes' standard output.
+In addition, the script can be modified and then allows for arbitrary resource requests on Mistral, i.e. everything that could be requested via the command line, and hence gives more flexibility than the pre-defined job profiles provided by the drop-down menu in their JupyterHub solution.

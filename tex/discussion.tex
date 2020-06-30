@@ -38,6 +38,16 @@ From a service provider perspective there are three different challenges in sati
 %   * weaknesses:
 %      * from the hub there is no way estimating the waiting times for the scheduled JupyterLab instances
 
+The JupyterHub@JSC allows to spawn JupyterLab on virtually any of their operated HPC systems (see section \ref{} for a brief overview).
+Moreover, it also enables user to work on virtually any part of the operated HPC system, i.e. both on the login nodes, as well as on the normal and specialized GPU batch compute node resources\footnote{at least on the JUWELS and JURECA systems investigated at \ref{}}.
+This is a key strength of the JupyterHub setup at JSC and adds value to scientific analysis workflows, as scientific user productivity will only lastingly profit from a JupyterHub service, if scientific users can reach out to every part of the HPC resources that they could also request and/or utilize via the command line.
+From a user perspective, a strength of the JupyterHub setup is also that a decent amount of compute resources with access to the data natively stored on the HPC file system is always available, i.e. by spawning a JupyterLab on the login nodes.
+The JupyterHub at JSC therefore covers all the strengths inherent to the fully manual, i.e. non-hub Jupyter approaches described above (see \ref{} and the remote Jupyter manager provided by DKRZ at \ref{}).
+In principle, JupyterLab servers can be started manually on every part of an HPC system\footnote{for details on how to do this for non-interactive compute nodes see e.g. \ref{}}.
+If JupyterLab is manually submitted via the command line, users can more much natively access information about currently occupied and idle compute nodes \footnote{for an example see the batch job solution maintained at GEOMAR and described in section \ref{}} and with that expected startup/waiting times for their JupyterLab server.
+A current drawback of spawning JupyterLab on batch compute nodes via the JupyterHub is currently the fundamental in-transparency of present system utilization and thus available resources.
+Scientific user productivity would strongly profit from being enabled to do informed decisions about the JupyterLab spawning location from a system utilization perspective in a convenient way, as several tasks with very different resource requirements might be at issue for a considered working session.
+
 (For providing a JupyterHub service, are there any implications for the configuration of the already available HPC system infrastructure? Is further HPC system infrastructure needed?)
 
 \begin{itemize}

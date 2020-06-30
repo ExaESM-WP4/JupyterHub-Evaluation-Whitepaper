@@ -16,6 +16,30 @@ Another about 1.3\% of the system is explicitely reserved for data processing ta
 The system is supplemented by seven login nodes which are dedicated for file editing, source code compilation, and the preparation and monitoring of batch tasks\footnote{https://www.dkrz.de/up/systems/mistral/login-and-environment} only.
 Interactive command line analysis tasks are supposed to happen on the five \verb|mistralpp| interactive nodes\footnote{add URL}, that can also directly be accessed via external SSH sessions.
 
+\subsection{Documentation}
+
+Documentation about how to do general interactive and batch-type data analysis/processing tasks are provided only on and are easily found via the DKRZ user portal \footnote{https://www.dkrz.de/up/services/analysis/data-processing/processing-on-mistral}.
+The documentation about Jupyter is also centrally managed and easy to find on the user portal\footnote{}.
+There is, however, no obvious way of getting to the documentation from the actual JupyterHub login page and/or control panel.
+
+The DKRZ documents two supported ways of working with Jupyter on Mistral.
+They offer a short "how to" and a bash script that allows starting standalone Jupyter instances on compute nodes and they offer a JupyterHub service.
+Both ways of working with Jupyter are documented separately.
+The documentation of the script approach lives in the Mistral specific documentation\footnote{https://www.dkrz.de/up/systems/mistral/programming/jupyter-notebook}, while the JupyterHub is documented as a separate service\footnote{https://www.dkrz.de/up/systems/jupyterhub-dkrz.de-1}.
+
+The JupyterHub documentation does not discriminate between differente experience levels, but is very concise and makes it easy to find relevant information for all Jupyter-experience levels of users.
+There is a walkthrough documentation for beginning users demonstrates every step from login to actual work on the HPC cluster, including recommendations about which of the available job profiles (see section \ref{} XXX below) are suitable for which task.
+It especially highlights machine specific and SLURM scheduler specific background information that is helpful for unexperienced users and for experienced users not familar with HPC systems.
+Where possible, links to the community documentation of Jupyter are given\footnote{as the link to the community documentation points to the latest version, there is a possible source of inconsistency/confusion, though}.
+A target user group specific example Jupyter notebook is linked and available via the DKRZ Gitlab server.
+
+The documentation seems to be in good agreement with the actually deployed Jupyter service.
+It should be noted though that the deployed Jupyter version is approximately two years old\footnote{version 0.7.2 released in XXX}.
+
+The given examples seem to match the actually deployed Jupyter service.
+There doesn't seem to have been a lot of changes to the JupyterHub system since its initial deployment, thus it's not possible to say how the documentation of changes to the JupyterHub system is done/solved.
+Currently, there is no explicit version information on both the documentation and the examples.
+
 \subsection{JupyterHub service}
 
 \subsection{Jupyter control script}

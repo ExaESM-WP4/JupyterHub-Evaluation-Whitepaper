@@ -7,7 +7,36 @@ The latter also contains scientific end-users that are not experts themselves, b
 
 From a service provider perspective there are three different challenges in satisfying these user groups: Resource availability, working environments and their customization, and documentation.
 
-(What are strengths/weaknesses of the JupyterHub@JSC service in terms of documentation, working environments, customization possibilities, available HPC resources? How does this compare to other Jupyter-based workflow solution, i.e. Jupyter@DKRZ and particular the workflows that were established at GEOMAR? What are the strengths/weaknesses of the system for the different target user groups stated in the introduction?)
+(What are **strengths/weaknesses** of the JupyterHub@JSC service in terms of documentation, working environments, customization possibilities, available HPC resources? How does this compare to other Jupyter-based workflow solution, i.e. Jupyter@DKRZ and particular the workflows that were established at GEOMAR? What are the strengths/weaknesses of the system for the different target user groups stated in the introduction?)
+
+% docs:
+%  * difficult for all user groups
+%  strengths:
+%    * system specific collection of example notebooks that can immediately executed on the HPC system
+%  weaknesses:
+%    * no useful reference to community-maintained docs
+%    * documentation is scattered across different JSC web locations
+%    * no obvious way for users / no motivation of users to contribute to the JSC specific examples / docs
+%    * no high-level overview of the system, that could help users know what to expect and to decide if they want to use/try out the service
+%    * no changelogs
+%
+% working envs/customization:
+%  * beginning users are happy, intermediate users partly happy, experts not happy
+%  strengths:
+%    * extensive selectability of default Jupyter kernels with different languages, good for beginners
+%    * (design approach of providing having one kernel per Lmod module, adds)
+%  weaknesses:
+%    * modification of working environments is very difficult, especially as simple/clean ways are not documented at all, and as documented ways are not explicitly integrated/discussed within the "spectrum of possibilities"
+%    * Lmod extension is confusing/difficult to use correctly, cannot be inspected from the extension itself, user can easily/accidently break kernels and/or JupyterLab itself
+%    * there is no obvious way of modifying/controlling any aspect of the default JupyterLab environment
+%
+%  availability of resources:
+%   * all users mostly happy
+%   * strengths:
+%      * at least on JUWELS, which has login nodes, compute nodes and specialized GPU nodes, the JupyterHub enables to spawn JupyterLab on all of these parts of the system
+%      * decent amount of resources is always available via the frontends (at least on JUWELS)
+%   * weaknesses:
+%      * from the hub there is no way estimating the waiting times for the scheduled JupyterLab instances
 
 (For providing a JupyterHub service, are there any implications for the configuration of the already available HPC system infrastructure? Is further HPC system infrastructure needed?)
 

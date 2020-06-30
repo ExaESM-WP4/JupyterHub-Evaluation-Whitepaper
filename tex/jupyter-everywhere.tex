@@ -1,3 +1,23 @@
-\subsection{How to work with JupyterLab everywhere}
+\section{Alternative: Jupyter@HPC without a hub}
 
-(Basically, a collection of user and operator perspectives on Jupyter@HPC as maintained by GEOMAR at \url{https://git.geomar.de/python/jupyter_on_HPC_setup_guide/-/tree/master}.)
+Scientists from GEOMAR have been using Jupyter on HPC systems for many years without relying on a JupyterHub that is maintained by system providers.
+From 2016 to 2018, GEOMAR staff maintained a JupyterHub that used the \verb|remote_ikernel|\footnote{https://github.com/tdaff/remote_ikernel} package for spawning kernels on remote hosts and had a mechanism of using SSH keys for authentication without the need to collect keys on an untrusted shared machine.
+It provided semi-automatic ways of adding centrally managed default kernels as well as arbitrary user-defined kernels (that needed to be installed on the HPC centres, however).
+
+In 2018, this centrally managed JupyterHub was decommissioned in favor of an approach that does not provide \emph{any} infrastructure and purely relies on enabling and educating users in maintaining their own Jupyter installations.
+Documetation can be found on \url{https://git.geomar.de/python/jupyter_on_HPC_setup_guide/}.
+
+The main aspects of this documentation based approach are
+\begin{itemize}
+    \item a setup guide for conda-based Python environments on any Unix-like operating system,
+    \item a guide for managing Python kernels as Conda environments, and
+    \item a guide for using SSH-based socks proxies for connecting to any HTTP service running on a remote host that comes with a wrapper script automating tunnel creation and proxy setup on Linux, Mac OSX and Windows.
+\end{itemize}
+
+This documentation-based approach has been a full success in that it almost completely eliminated the need of constant support by central technical staff.
+By making users of from levels of experience aware of all the interacting parts of what they do on the HPC centre, it helped them debug problems themselves or, by building common knowledge, to support each other.
+By providing a way of contributing to the documentation, the workload for the technical staff could be minimized as well.
+The only aspect that needed some attention from GEOMAR technical staff is the automated SSH tunnel-based proxied browser which had to be adapted to new security functionality of Chromium approximately once per year.
+
+From a user perspective, the purely documentation-based approach adds limited effort for getting started\footnote{Working through 2-3 pages of documentation rather than logging in and starting immediately.}, but brings substantial intermediate and long-term advantages, because all users learn is completely system-agnostic.
+In fact, users familiar with setting up their own Jupyter-based workflows often decided against working with a JuptyerHub even if it was provided, because of the substantial overhead for adapting their own easily portable workflows and environments to a system with limited configurability.

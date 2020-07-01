@@ -42,6 +42,19 @@ Currently, there is no explicit version information on both the documentation an
 
 \subsection{JupyterHub service}
 
+The \href{https://jupyterhub.dkrz.de/}{JupyterHub} service\footnote{currently running on JupyterHub version 0.7.2} at DKRZ has been set up in September 2017\footnote{as taken from the package folder setup dates in the \verb|jupyterhub/.0.1| module} and is currently operated what DKRZ calls an extended testing phase\footnote{\url{https://www.dkrz.de/up/de-systems/de-jupyterhub-dkrz.de-1/de-jupyterhub-dkrz.de} and \url{https://www.dkrz.de/up/systems/dkrz-extended-test-phase}}.
+
+Access to the JupyterHub service at DKRZ is automatically given for any user registered via the DKRZ web interface\footnote{https://luv.dkrz.de/projects/newuser/} but Jupyter notebooks can only be spawned with a valid compute project membership\footnote{https://www.dkrz.de/up/systems/jupyterhub-dkrz.de-1}.
+
+The DKRZ JupyterHub service allows to manage/connect exactly one Jupyter notebook server on the Mistral batch partitions, which is mainly due to the limited functionality of the JupyterHub version\footnote{access management for named servers was added only in version 1.0.0, according to the changelogs provided at https://jupyterhub.readthedocs.io/en/stable/changelog.html#id3} that is deployed.
+
+The Jupyter notebook servers are set up based on pre-defined job profiles from a drop-down menu, the compute project identifier for possible node hour claims has to be inserted manually by the user.
+Jupyter notebooks can not be spawned on each part of Mistral's hardware, i.e. only on the \verb|shared|, \verb|prepost| and \verb|compute| partitions.
+For the \verb|shared| partition a scientific user can currently request 1, 2 and 4 CPUs with 2.5, 5 and 10 GB of memory with a walltime limit of 12 hours, respectively.
+On the \verb|prepost| partition the user can request the same CPU resources but with doubled memory, respectively.
+A full node with 24 CPUs and 64 GB with a walltime limit of 8 hours can be requested from the \verb|prepost| partition, a full node with 256 GB of memory from the \verb|prepost| partition for 12 hours, respectively.
+Access to the higher performance \verb|compute2| partition hardware and the GPU nodes available via the \verb|gpu| partition is currently not possible via the DKRZ JupyterHub.
+
 \subsection{Jupyter remote control script}
 
 At DKRZ a bash script\footnote{\url{https://gitlab.dkrz.de/k202009/ssh_scripts/-/blob/35560ae0c72d9d99e1448140ec0ac2210f7fd1e5/start-jupyter}} that allows users to remotely manage their Jupyter processes on Mistral is provided.

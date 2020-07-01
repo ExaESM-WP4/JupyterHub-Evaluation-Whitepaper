@@ -29,7 +29,19 @@ From a service provider perspective there are three different challenges in sati
 %    * modification of working environments is very difficult, especially as simple/clean ways are not documented at all, and as documented ways are not explicitly integrated/discussed within the "spectrum of possibilities"
 %    * Lmod extension is confusing/difficult to use correctly, cannot be inspected from the extension itself, user can easily/accidently break kernels and/or JupyterLab itself
 %    * there is no obvious way of modifying/controlling any aspect of the default JupyterLab environment
-%
+
+The default Jupyter kernels provided with Juptyer@JSC are ready to use for standard data science applications in Python and other languages (WHICH ARE AVAILABLE?).
+This is working well for beginning users who do not have any own special requirements, but can lead to limitations for users demands with more diverse demands.
+
+The documented ways of modifying working enrironments are not easy to follow and cleaner and simpler ways (see~\ref{sect:jupyter-kernel-suggestions}) of defining own Jupyter kernels are not documented.
+This may lead to users who initially are happy with the defaults moving away from the central hub at a later or more sophisticated stage of their work.
+
+The Lmod extension has no obvious way of inspecting or debugging its actions.
+It could further be shown here (see~\ref{sect:lmod-use-and-problems}), that there is multiple ways of accidentally breaking kernels, of not getting the desired dependencies, and even of breaking the whole Jupyter session by just activating or deactivating modules via the plugin.
+Parts of these problems could possibly be avoided by giving up full modularity and more clearly separating modules into fully standalone software selections providing everything necessary for a kernel.
+
+It should be noted that the weaknesses described above are not necessarily due to problems with the specific implementation of Jupyter@JSC but largely stem from the fact that Jupyter(Lab) and its kernels are highly intertwined (and in that different parts of a complex system), even though the formal separation into frontend and kernels suggests otherwise.
+
 %  availability of resources:
 %   * all users mostly happy
 %   * strengths:

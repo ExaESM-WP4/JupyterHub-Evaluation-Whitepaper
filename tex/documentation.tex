@@ -2,9 +2,23 @@
 \subsection{Documentation from user perspective}
 \label{s-doc-from-user-pov}
 
-\begin{itemize}
-	\item Are the docs up to date with the system that is offered?
-	\item Are the docs up to date with the Jupyter docs?
-	\item Is there a way of contributing to the docs?
-	\item Is it easy for new Jupyter users to get started just based on what's provided by the centre?
-\end{itemize}
+On the central page of the Jupyter@JSC hub there are easy to reach links to some documentation, but there is no condensed material suitable for users that need/expect a quick overview on how and why to use the JSC JupyterHub.
+There is different places\footnote{Gitlab@JSC, Visualization group wiki: https://trac.version.fz-juelich.de/vis/ (via https://www.fz-juelich.de/ias/jsc/EN/Expertise/Support/Visualization/_node.html and https://www.fz-juelich.de/ias/jsc/EN/Expertise/Support/Visualization/InteractiveSupercomputing/artikel.html?nn=1538466), FZJ-JSC@Github, ...} that contain (often heavily outdated) examples, tutorials, and other documentation related to Jupyter@JSC.
+These are, however, not discoverable\footnote{2020-06-24} directly from the central JupyterHub login/control panel page.
+
+Another way of learning about Jupyter@JSC are the training events provided by JSC on a regular basis\footnote{put link to website here}.
+There was a dedicated training course for Jupyter within the PRACE network scheduled, that needed to be postponed because of the Corona outbreak of 2020\footnote{link here}.
+
+The current documentation covers customization\footnote{}, JSC specifics\footnote{} and other aspects that are predominantly interesting for expert (Jupyter) users, but there is no easy to use introductory documentation suitable for beginners.
+The expert guides often are not in sync with the actual state of the hub, or do not work for other reasons\footnote{see e.g. section \ref{tech-details-appendix} for an impression on proposed and actually working ways of customizing Jupyter kernels}.
+
+While there are pointers to more general community documentation on the hub control page, these are not curated in a way that really help JSC users to find useful existing community documentation.
+As stated above there is many outdated examples that reflect the state of the JSC hub and the state of the underlying community software at the time the materials were created.
+Many of those materials won't work with the current state of the JSC hub and of with the current stable versions of the highlighted community software packages\footnote{see e.g. Dask materials which are based on workshop materials which have been developed for Dask < v1.0, while the current stable Dask release is v2.19.0}.
+Within a JupyterLab session on the JSC HPC systems there is another set of example materials\footnote{https://gitlab.version.fz-juelich.de/jupyter4jsc/j4j_notebooks/}.
+These are directly executable on the machines, and appear to be actively maintained\footnote{see https://gitlab.version.fz-juelich.de/jupyter4jsc/j4j_notebooks/-/commits/}.
+For JSC users it is in principle possible to contribute to the JSC-specific documentation via the Git repository containing the examples.
+Users are, however, not actively motivated to do so and from the Git repository\footnote{https://gitlab.version.fz-juelich.de/jupyter4jsc/j4j_notebooks/-/issues} there is no indication that there have been any user contributions so far.
+
+JupyterHub@JSC appears to be under constant development\footnote{https://github.com/FZJ-JSC?q=jupyter}.
+For users that already use the system, there is no easy way of getting an overview of functional changes.

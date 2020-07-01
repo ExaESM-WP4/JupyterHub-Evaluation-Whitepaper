@@ -1,0 +1,207 @@
+\section{Technical details of the DKRZ Jupyter solutions}
+\label{app:dkrz-jupyter}
+
+\subsection{HPC system infrastructure details}
+\label{app:dkrz-infrastructure}
+
+\begin{minted}[breaklines,breakanywhere]{shell-session}
+$ sinfo --Node --long | grep m -c
+3405
+$ sinfo --Node --long | grep ' 48 ' -c
+1604
+$ sinfo --Node --long | grep ' 72 ' -c
+1801
+\end{minted}
+
+\begin{minted}[breaklines,breakanywhere]{shell-session}
+$ sinfo --Node --long | grep ' compute ' -c
+1513
+$ sinfo --Node --long | grep ' compute2 ' -c
+1762
+$ sinfo --Node --long | grep ' prepost ' -c
+43
+$ sinfo --Node --long | grep ' shared ' -c
+36
+$ sinfo --Node --long | grep ' gpu ' -c
+21
+$ sinfo --Node --long | grep ' miklip ' -c
+30
+\end{minted}
+
+\subsection{Jupyter working environment}
+\label{app:dkrz-jupyter-env}
+
+The following shell sessions happened in a terminal on the Jupyter notebook web interface.
+First, the available JupyterHub and Jupyter notebook environment, and Jupter notebook extensions are briefly investigated.
+
+\begin{minted}[breaklines,breakanywhere]{shell-session}
+$ jupyterhub --version
+0.7.2
+$ jupyter-notebook --version
+5.1.0rc2
+$ jupyter --paths
+config:
+    /mnt/lustre01/pf/b/b350097/.jupyter
+    /sw/rhel6-x64/jupyterhub/python-3.5.4-gcc49/etc/jupyter
+    /usr/local/etc/jupyter
+    /etc/jupyter
+data:
+    /sw/rhel6-x64/jupyterhub/jupyter_kernels
+    /mnt/lustre01/pf/b/b350097/.local/share/jupyter
+    /sw/rhel6-x64/jupyterhub/python-3.5.4-gcc49/share/jupyter
+    /usr/local/share/jupyter
+    /usr/share/jupyter
+runtime:
+    /mnt/lustre01/pf/b/b350097/.local/share/jupyter/runtime
+\end{minted}
+
+\begin{minted}[breaklines,breakanywhere]{shell-session}
+$ jupyter kernelspec list
+Available kernels:
+  python3               /sw/rhel6-x64/jupyterhub/python-3.5.4-gcc49/lib/python3.5/site-packages/ipykernel/resources
+  anaconda2_bleeding    /sw/rhel6-x64/jupyterhub/jupyter_kernels/kernels/anaconda2_bleeding
+  anaconda3_bleeding    /sw/rhel6-x64/jupyterhub/jupyter_kernels/kernels/anaconda3_bleeding
+  python_2.7.12         /sw/rhel6-x64/jupyterhub/jupyter_kernels/kernels/python_2.7.12
+  python_3.5.2          /sw/rhel6-x64/jupyterhub/jupyter_kernels/kernels/python_3.5.2
+$ jupyter nbextension list
+Known nbextensions:
+\end{minted}
+
+Now, the management of the Jupyter software and Jupyter kernel environment on the Mistral HPC system is investigated in more detail.
+The Jupyter notebook environment called by the DKRZ JupyterHub is very minimalistic.
+
+\begin{minted}[breaklines,breakanywhere]{shell-session}
+$ module list
+Currently Loaded Modulefiles:
+  1) texlive/2016      2) jupyterhub/.0.1
+$ module display jupyterhub/.0.1
+-------------------------------------------------------------------
+/sw/rhel6-x64/Modules/jupyterhub/.0.1:
+
+module-whatis    jupyterhub
+conflict         jupyterhub
+prepend-path     PATH /sw/rhel6-x64/jupyterhub/python-3.5.4-gcc49/bin
+setenv           JUPYTER_PATH /sw/rhel6-x64/jupyterhub/jupyter_kernels
+-------------------------------------------------------------------
+$ ls /sw/rhel6-x64/jupyterhub/python-3.5.4-gcc49/bin -lha
+total 62K
+drwxrwsr-x 2 cvmfs cvmfs 4.0K Jun 19  2018 .
+drwxrwsr-x 6 cvmfs cvmfs 4.0K Sep  1  2017 ..
+lrwxrwxrwx 1 cvmfs cvmfs    8 Sep  1  2017 2to3 -> 2to3-3.5
+-rwxrwxr-x 1 cvmfs cvmfs  134 Sep  1  2017 2to3-3.5
+-rwxr-xr-x 1 cvmfs cvmfs  423 Sep  1  2017 alembic
+-rwxr-xr-x 1 cvmfs cvmfs  266 Sep  1  2017 chardetect
+-rwxrwxr-x 1 cvmfs cvmfs  275 Sep  1  2017 easy_install-3.5
+lrwxrwxrwx 1 cvmfs cvmfs    7 Sep  1  2017 idle3 -> idle3.5
+-rwxrwxr-x 1 cvmfs cvmfs  132 Sep  1  2017 idle3.5
+-rwxr-xr-x 1 cvmfs cvmfs  276 Sep  1  2017 iptest
+-rwxr-xr-x 1 cvmfs cvmfs  276 Sep  1  2017 iptest3
+-rwxr-xr-x 1 cvmfs cvmfs  269 Sep  1  2017 ipython
+-rwxr-xr-x 1 cvmfs cvmfs  269 Sep  1  2017 ipython3
+-rwxr-xr-x 1 cvmfs cvmfs  258 Sep  1  2017 jsonschema
+-rwxr-xr-x 1 cvmfs cvmfs  264 Sep  1  2017 jupyter
+-rwxr-xr-x 1 cvmfs cvmfs  278 Sep  1  2017 jupyter-bundlerextension
+-rwxr-xr-x 1 cvmfs cvmfs  100 Sep  1  2017 jupyterhub
+-rwxr-xr-x 1 cvmfs cvmfs  139 Sep  1  2017 jupyterhub-singleuser
+-rwxr-xr-x 1 cvmfs cvmfs  306 Sep  1  2017 jupyter-kernelspec
+-rwxr-xr-x 1 cvmfs cvmfs  264 Sep  1  2017 jupyter-migrate
+-rwxr-xr-x 1 cvmfs cvmfs  266 Sep  1  2017 jupyter-nbconvert
+-rwxr-xr-x 1 cvmfs cvmfs  265 Sep  1  2017 jupyter-nbextension
+-rwxr-xr-x 1 cvmfs cvmfs  264 Sep  1  2017 jupyter-notebook
+-rwxr-xr-x 1 cvmfs cvmfs  285 Sep  1  2017 jupyter-run
+-rwxr-xr-x 1 cvmfs cvmfs  269 Sep  1  2017 jupyter-serverextension
+-rwxr-xr-x 1 cvmfs cvmfs  269 Sep  1  2017 jupyter-troubleshoot
+-rwxr-xr-x 1 cvmfs cvmfs  297 Sep  1  2017 jupyter-trust
+-rwxr-xr-x 1 cvmfs cvmfs  422 Sep  1  2017 mako-render
+lrwxrwxrwx 1 cvmfs cvmfs   42 Jun 19  2018 pandoc -> /sw/rhel6-x64/util/pandoc-2.2.1/bin/pandoc
+-rwxrwxr-x 1 cvmfs cvmfs  247 Sep  1  2017 pip3
+-rwxrwxr-x 1 cvmfs cvmfs  247 Sep  1  2017 pip3.5
+lrwxrwxrwx 1 cvmfs cvmfs    8 Sep  1  2017 pydoc3 -> pydoc3.5
+-rwxrwxr-x 1 cvmfs cvmfs  117 Sep  1  2017 pydoc3.5
+-rwxr-xr-x 1 cvmfs cvmfs  260 Sep  1  2017 pygmentize
+lrwxrwxrwx 1 cvmfs cvmfs    7 Sep  1  2017 python -> python3
+lrwxrwxrwx 1 cvmfs cvmfs    9 Sep  1  2017 python3 -> python3.5
+-rwxrwxr-x 1 cvmfs cvmfs  15K Sep  1  2017 python3.5
+lrwxrwxrwx 1 cvmfs cvmfs   17 Sep  1  2017 python3.5-config -> python3.5m-config
+-rwxrwxr-x 1 cvmfs cvmfs  15K Sep  1  2017 python3.5m
+-rwxrwxr-x 1 cvmfs cvmfs 3.1K Sep  1  2017 python3.5m-config
+lrwxrwxrwx 1 cvmfs cvmfs   16 Sep  1  2017 python3-config -> python3.5-config
+lrwxrwxrwx 1 cvmfs cvmfs   10 Sep  1  2017 pyvenv -> pyvenv-3.5
+-rwxrwxr-x 1 cvmfs cvmfs  269 Sep  1  2017 pyvenv-3.5
+\end{minted}
+
+Compute environments are managed via dedicated Jupyter kernel startup scripts and standalone software environment modules that are also accessible independently of Jupyter via Mistral command line working sessions.
+
+\begin{minted}[breaklines,breakanywhere]{shell-session}
+$ ls /sw/rhel6-x64/jupyterhub/jupyter_kernels/kernels/
+anaconda2_bleeding  anaconda3_bleeding  python_2.7.12  python_3.5.2
+$ cat /sw/rhel6-x64/jupyterhub/jupyter_kernels/kernels/anaconda3_bleeding/kernel.json
+{
+ "display_name": "Python 3 bleeding edge (using the module anaconda3/bleeding_edge)",
+ "language": "python",
+ "argv": [
+	"/sw/rhel6-x64/jupyterhub/jupyter_kernels/scripts/anaconda3_bleeding.sh",
+  "{connection_file}"
+ ]
+}
+$ cat /sw/rhel6-x64/jupyterhub/jupyter_kernels/scripts/anaconda3_bleeding.sh
+!/bin/bash
+source /etc/profile
+module purge
+module load cdo/1.9.0-gcc48
+#jfe: anaconda3/bleeding_edge conflicts with this, dunno why. But
+#netcdf 4.6.1 is available...
+#module load netcdf_c/4.3.2-gcc48
+module load texlive/2016
+module load anaconda3/bleeding_edge
+python -m ipykernel_launcher -f "$1"
+\end{minted}
+
+Apparently, the Python and Anaconda environments that are used as Jupyter kernels were updated several times after initial deployment of the JupyterHub, but active maintenance has ceased months to years ago.
+
+\begin{minted}[breaklines,breakanywhere]{shell-session}
+$ ls /sw/rhel6-x64/conda/ -lha
+total 32G
+drwxr-xr-x   8 cvmfs cvmfs 4.0K Mar 17 10:39 .
+drwxr-xr-x 108 cvmfs cvmfs 4.0K Nov 13  2019 ..
+drwx------  20 cvmfs cvmfs 4.0K Oct 19  2016 anaconda2-4.2.0-python-2.7.12_do_not_use_anymore
+drwx------  20 cvmfs cvmfs 4.0K Apr 26  2017 anaconda2-4.3.1-python-2.7.13_do_not_use_anymore
+drwxrwxr-x  23 cvmfs cvmfs 4.0K Jun 20  2018 anaconda2-bleeding_edge
+-rw-r--r--   1 cvmfs cvmfs 3.2G Oct 26  2017 anaconda2-bleeding_edge.tar-2017-10-26
+-rw-r--r--   1 cvmfs cvmfs 3.2G Jun 13  2018 anaconda2-bleeding_edge.tar-2018-06-13
+-rw-r--r--   1 cvmfs cvmfs 3.2G Jun 15  2018 anaconda2-bleeding_edge.tar-2018-06-15
+drwx------  20 cvmfs cvmfs 4.0K Oct 19  2016 anaconda3-4.2.0-python-3.5.2_do_not_use_anymore
+drwx------  20 cvmfs cvmfs 4.0K Oct  8  2018 anaconda3-4.3.1-python-3.6.0_do_not_use_anymore
+drwxrwxr-x  26 cvmfs cvmfs 4.0K Jan 29 15:02 anaconda3-bleeding_edge
+-rw-r--r--   1 cvmfs cvmfs 3.3G Jun 13  2018 anaconda3-bleeding_edge.tar-2018-06-13
+-rw-r--r--   1 cvmfs cvmfs 9.5G Jun 22  2018 anaconda3-bleeding_edge.tar-2018-06-22
+-rw-r--r--   1 cvmfs cvmfs 9.5G Feb 20  2019 anaconda3-bleeding_edge.tar-2019-02-20
+\end{minted}
+
+\begin{minted}[breaklines,breakanywhere]{shell-session}
+$ ls /sw/rhel6-x64/python -la
+total 7.9G
+drwxrwxr-x   9 cvmfs cvmfs 4.0K Nov 23  2018 .
+drwxr-xr-x 108 cvmfs cvmfs 4.0K Nov 13  2019 ..
+drwxr-xr-x   7 cvmfs cvmfs 4.0K Mar  6  2018 python-2.7.12-gcc49
+drwxrwxr-x   6 cvmfs cvmfs 4.0K Oct 26  2016 python-2.7.12-gcc49.new2016-12-22
+-rw-r--r--   1 cvmfs cvmfs 725M Jan 20  2017 python-2.7.12-gcc49.tar.2017-01-20
+-rw-r--r--   1 cvmfs cvmfs 778M Feb 14  2017 python-2.7.12-gcc49.tar.2017-02-14
+-rw-r--r--   1 cvmfs cvmfs 992M Feb 15  2017 python-2.7.12-gcc49.tar.2017-02-15
+-rw-r--r--   1 cvmfs cvmfs 1.1G Jun 20  2017 python-2.7.12-gcc49.tar.2017-06-20
+-rw-r--r--   1 cvmfs cvmfs 1.1G Sep 25  2017 python-2.7.12-gcc49.tar.2017-09-25
+drwxrwxr-x   6 cvmfs cvmfs 4.0K Apr 21  2015 python-2.7.9-gcc49
+drwxrwxr-x   7 cvmfs cvmfs 4.0K Feb  9  2016 python-2.7-ve0-gcc49
+-rw-r--r--   1 cvmfs cvmfs 1.1G May 18  2017 python-2.7-ve0-gcc49.tar.2017-05-18
+-rw-r--r--   1 cvmfs cvmfs 1.1G Jul 11  2017 python-2.7-ve0-gcc49.tar.2017-07-11
+drwxrwxr-x   7 cvmfs cvmfs 4.0K Oct 27  2016 python-3.5.2-gcc49
+-rw-r--r--   1 cvmfs cvmfs 690M May 19  2017 python-3.5.2-gcc49.tar
+-rw-r--r--   1 cvmfs cvmfs  98M Nov 11  2016 python-3.5.2-gcc49.tar.2016-11-11
+-rw-r--r--   1 cvmfs cvmfs 490M Nov 18  2016 python-3.5.2-gcc49.tar.2016-11-18
+drwxrwxr-x   3 cvmfs cvmfs 4.0K Jun  9  2015 swift-2.4.0-gcc49
+drwxr-xr-x   2 cvmfs cvmfs 4.0K Dec 22  2016 tmp
+\end{minted}
+
+\subsection{Jupyter control script}
+
+(Provide details on what cases were investigated with the remote Jupyter manager solution.)

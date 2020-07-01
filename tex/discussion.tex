@@ -1,4 +1,6 @@
-\section{Discussion}
+\section{Discussion of the Jupyter@JSC solution}
+
+% (What are **strengths/weaknesses** of the JupyterHub@JSC service in terms of documentation, working environments, customization possibilities, available HPC resources? How does this compare to other Jupyter-based workflow solution, i.e. Jupyter@DKRZ and particular the workflows that were established at GEOMAR? What are the strengths/weaknesses of the system for the different target user groups stated in the introduction?)
 
 Here the Jupyter@JSC solution is discussed with respect to the user requirements and key service challenges developed in the introduction.
 
@@ -7,7 +9,7 @@ The latter also contains scientific end-users that are not experts themselves, b
 
 From a service provider perspective there are three different challenges in satisfying these user groups: Resource availability, working environments and their customization, and documentation.
 
-(What are **strengths/weaknesses** of the JupyterHub@JSC service in terms of documentation, working environments, customization possibilities, available HPC resources? How does this compare to other Jupyter-based workflow solution, i.e. Jupyter@DKRZ and particular the workflows that were established at GEOMAR? What are the strengths/weaknesses of the system for the different target user groups stated in the introduction?)
+\subsection{Documentation}
 
 % docs:
 %  * difficult for all user groups
@@ -21,6 +23,8 @@ From a service provider perspective there are three different challenges in sati
 %    * no changelogs
 
 The documentation of Jupyter@JSC is strong in that ...
+
+\subsection{Working environments}
 
 % working envs/customization:
 %  * beginning users are happy, intermediate users partly happy, experts not happy
@@ -46,6 +50,8 @@ These difficulties may lead to more advanced users who initially are happy with 
 
 It should be noted that the weaknesses described above are not necessarily due to problems with the specific implementation of Jupyter@JSC but largely stem from the fact that Jupyter(Lab) and its kernels are highly intertwined (and in that different parts of a complex system), even though the formal separation into frontend and kernels suggests otherwise.
 
+\subsection{HPC resources}
+
 %  availability of resources:
 %   * all users mostly happy
 %   * strengths:
@@ -63,6 +69,8 @@ In principle, JupyterLab servers can be started manually on every part of an HPC
 If JupyterLab is manually submitted via the command line, users can more much natively access information about currently occupied and idle compute nodes \footnote{for an example see the batch job solution maintained at GEOMAR and described in section \ref{}} and with that expected startup/waiting times for their JupyterLab server.
 A current drawback of spawning JupyterLab on batch compute nodes via the JupyterHub is currently the fundamental in-transparency of present system utilization and thus available resources.
 Scientific user productivity would strongly profit from being enabled to do informed decisions about the JupyterLab spawning location from a system utilization perspective in a convenient way, as several tasks with very different resource requirements might be at issue for a considered working session.
+
+\subsection{Additional aspects}
 
 (For providing a JupyterHub service, are there any implications for the configuration of the already available HPC system infrastructure? Is further HPC system infrastructure needed?)
 

@@ -1,6 +1,13 @@
 
 \subsection{Working environments}
 
+TODO: Somewhere here mention stability and reliability.
+\begin{itemize}
+	\item Stable in productive work? Error rate?
+  \item Possibility to debug if errors occur?
+  \item Responsive under less than ideal link from personal endpoint to Jupyterhub?
+\end{itemize}
+
 Here we summarize the status quo of working environment selection, modification and specification for JUWELS JupyterLab instances and give specific suggestions to achieve better robustness and flexibility, compatible with the chosen system software architecture.
 
 A detailed description of the technical details of the JUWELS Jupyter setup is given in the appendix~\ref{app:tech-details-jsc-hub} with suggestions for simpler implementations of user-defined kernels (see~\ref{sect:custom-kernels}) based on Conda and containers are given.
@@ -24,6 +31,14 @@ Specifying a more standalone and light-weight virtual Python environment as Jupy
 The specification of completely standalone working environments has been explored in sections \ref{sect:conda-environment} and \ref{sect:container-based-environment}.
 Both a Conda package manager and a container based Jupyter kernel approach are suggested.
 They extend the documented approaches by the possibility of deploying isolated software environments, enabling convenient porting of analysis environments and facilitating scientific reproducibility.
+
+\subsubsection{Further customization}
+
+\begin{itemize}
+  \item Use own notebook server?
+  \item Possible to use jupyter-server-proxy?
+  \item Jupyter Plugins / Widgets?
+\end{itemize}
 
 \subsubsection{Suggestions}
 

@@ -57,9 +57,16 @@ Access to the higher performance \verb|compute2| partition hardware and the GPU 
 
 \subsubsection{Jupyter working environment}
 
-The default Jupyter server spawned by the DKRZ JupyterHub is the Jupyter notebook 5.1.0rc1 released in August 2017.
-The Jupyter working environment is also defined in a (hidden) software environment module\footnote{at DKRZ http://modules.sourceforge.net/ is used} (see appendix \ref{app:dkrz-jupyter-env} for implementation details) on the HPC system.
-Only Python kernels are available per default, and these are defined in the same environment as the Jupyter server.
+The default Jupyter server spawned by the DKRZ JupyterHub is the Jupyter notebook 5.1.0rc2 released in August 2017.
+The Jupyter notebook working environment is also defined in a software environment module\footnote{at DKRZ http://modules.sourceforge.net/ is used, which has recently been extended by https://github.com/spack/spack module environment management} (see appendix \ref{app:dkrz-jupyter-env} for implementation details) on the HPC system.
+Only Python kernels are available per default.
+These are defined in their own software environment modules, e.g. the \verb|python/2.7.12|, the \verb|python/3.5.2|, the \verb|anaconda2/bleeding_edge| and the \verb|anaconda3/bleeding_edge| modules, that can also be loaded as working environments via command line terminal sessions on Mistral.
+These module-based Python environments are set up as Jupyter kernels via defining kernel startup files.
+The kernel definitions are stored in a subdirectory of the file system location that stores also all other software binaries available/departed on Mistral.
+They are added as Jupyter kernels manually by setting a corresponding Jupyter environment path variable in the {\tt jupyterhub/.0.1} module definition.
+Jupyter notebook at DKRZ does not come with further pre-installed extensions.
+No documentation on the configuration of the Jupyter working environment is provided by DKRZ.
+While it is likely possible to add further Jupyter kernels and Jupyter notebook extensions\footnote{we did not at all experiment with this, though}, the DKRZ documentation explicitely mentions that user have to stick to the Python installations that are provided there\footnote{https://www.dkrz.de/up/systems/mistral/programming/jupyter-notebook}.
 
 \subsection{Jupyter remote control script}
 

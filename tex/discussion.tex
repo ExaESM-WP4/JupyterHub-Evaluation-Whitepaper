@@ -31,14 +31,16 @@ From a service provider perspective there are three different challenges in sati
 %    * there is no obvious way of modifying/controlling any aspect of the default JupyterLab environment
 
 The default Jupyter kernels provided with Juptyer@JSC are ready to use for standard data science applications in Python and other languages (WHICH ARE AVAILABLE?).
-This is working well for beginning users who do not have any own special requirements, but can lead to limitations for users demands with more diverse demands.
+Hence, it is working well for beginning users who do not have any own special requirements, but can lead to limitations for users demands with more diverse demands.
 
-The documented ways of modifying working enrironments are not easy to follow and cleaner and simpler ways (see~\ref{sect:jupyter-kernel-suggestions}) of defining own Jupyter kernels are not documented.
-This may lead to users who initially are happy with the defaults moving away from the central hub at a later or more sophisticated stage of their work.
+Part of the complications that users with advanced requirements are likely to face are due to the intransparent environment module management via a Jupyter extension Lmod.
+While providing a seemingly easy way of loading and unloading arbitrary modules from the Juptyer frontend,Lmod has no obvious way of inspecting or debugging its actions and suffers (similar to the underlying module approach) from the problem that the order of loading or unloading modules may influence the software collection that eventually ends up in the Path.
+It could further be shown (see~\ref{sect:lmod-use-and-problems}), that there are multiple ways of accidentally breaking kernels, of not getting the desired dependencies, and of even breaking the whole Jupyter session by just activating or deactivating modules via Lmod.
+Parts of these problems could possibly be avoided by giving up full and fine grained modularity and more clearly separating modules into fully standalone software selections providing everything necessary for a kernel, but then, it's not obvious why Lmod would be needed at all.
 
-The Lmod extension has no obvious way of inspecting or debugging its actions.
-It could further be shown here (see~\ref{sect:lmod-use-and-problems}), that there is multiple ways of accidentally breaking kernels, of not getting the desired dependencies, and even of breaking the whole Jupyter session by just activating or deactivating modules via the plugin.
-Parts of these problems could possibly be avoided by giving up full modularity and more clearly separating modules into fully standalone software selections providing everything necessary for a kernel.
+Other complications for advanced users come from the fact that the documented ways of modifying working enrironments are not easy to follow and that cleaner and simpler ways (see~\ref{sect:jupyter-kernel-suggestions}) of defining own Jupyter kernels, e.g., with pip or conda or based on containers, are not documented yet\footnote{Keep in mind that this reflects the state at YYYY-MM-DD.}
+
+These difficulties may lead to more advanced users who initially are happy with the defaults moving away from the central hub at a later or more sophisticated stage of their work.
 
 It should be noted that the weaknesses described above are not necessarily due to problems with the specific implementation of Jupyter@JSC but largely stem from the fact that Jupyter(Lab) and its kernels are highly intertwined (and in that different parts of a complex system), even though the formal separation into frontend and kernels suggests otherwise.
 

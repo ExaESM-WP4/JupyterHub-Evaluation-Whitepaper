@@ -74,10 +74,21 @@ This risk might further increase by also increasing the complexity of the provid
 
 \subsection{Jupyter service levels}
 
-Supposing that a scientific user is already familiar with Jupyter, from a user perspective, Jupyter services provided by HPC centers might loosely be categorized as follows
+From a user perspective, Jupyter services provided by HPC centers might loosely be categorized as follows
 
 \begin{itemize}
-  \item Active repression of Jupyter-based workflows by disabling required ports and/or by suppressing the active communication between compute and login nodes.
+  \item No service.
+  Jupyter-based workflows have to be adapted to each particular HPC system by user's themselves, which requires them to be familiar with the deployment of Jupyter.
+  In a worst case, required network ports on login and/or compute nodes are disabled, howeer, and thus a user's attempt to install a Jupyter-based workflow on the HPC system fails.
+  In addition, the required HPC system configuration details on a user documentation level might not be anywhere accessible by a scientific user.
+  \item Base service.
+  The HPC system specifics are documented sufficiently and a scientific user who wants to bring their own Jupyter-based workflow to the HPC system can easily access the required information.
+  This includes the storage location for the many-small-files Python software base environment that e.g. JupyterLab depends on, but also sufficient details about login and compute node internal and external network connectivity.
+  \item Intermediate service.
+  Ready-to-use information on how to deploy and/or use JupyterLab on a particular HPC system is provided by the center.
+  This includes details about software environment storage, usage scenarios for the available system-specific compute partitions, and e.g. a Jupyter example workflow.
+  This would enable also scientists with not much previous experience and/or insufficient technical skills to work with Jupyter on the HPC system.
+  \item (dummy text)
 \end{itemize}
 
 \subsection{Scope of this paper}

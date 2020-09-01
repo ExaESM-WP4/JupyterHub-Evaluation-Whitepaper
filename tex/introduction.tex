@@ -79,16 +79,26 @@ From a user perspective, Jupyter services provided by HPC centers might loosely 
 \begin{itemize}
   \item No service.
   Jupyter-based workflows have to be adapted to each particular HPC system by user's themselves, which requires them to be familiar with the deployment of Jupyter.
-  In a worst case, required network ports on login and/or compute nodes are disabled, howeer, and thus a user's attempt to install a Jupyter-based workflow on the HPC system fails.
+  In a worst case, required network ports on login and/or compute nodes are disabled, however, and thus a user's attempt to install a Jupyter-based workflow on the HPC system fails.
   In addition, the required HPC system configuration details on a user documentation level might not be anywhere accessible by a scientific user.
   \item Base service.
   The HPC system specifics are documented sufficiently and a scientific user who wants to bring their own Jupyter-based workflow to the HPC system can easily access the required information.
   This includes the storage location for the many-small-files Python software base environment that e.g. JupyterLab depends on, but also sufficient details about login and compute node internal and external network connectivity.
+  The goal would be that a user familiar with Jupyter, but not with the HPC system itself is enabled to efficiently bring a Jupyter environment to the system.
   \item Intermediate service.
   Ready-to-use information on how to deploy and/or use JupyterLab on a particular HPC system is provided by the center.
-  This includes details about software environment storage, usage scenarios for the available system-specific compute partitions, and e.g. a Jupyter example workflow.
-  This would enable also scientists with not much previous experience and/or insufficient technical skills to work with Jupyter on the HPC system.
-  \item (dummy text)
+  This includes details about the storage location for the necessary software environment, Jupyter usage scenarios and proper documentation of the available system-specific compute partitions, and e.g. a Jupyter example workflow.
+  There could be a minimalistic and uncustomized, but ready-to-use default JupyterLab and/or notebook client environment, but documentation about how to set it up might be enough.
+  Documentation on how to extend the available environment should also be provided.
+  The goal would be to enable also scientists with not much previous Jupyter experience and/or lack of technical skill to bring their own and/or to work with a basic Jupyter on the HPC system.
+  \item Advanced service.
+  Everything from the previous levels, plus a JupyterHub that provides a ready-to-use default JupyterLab and/or notebook client environment, but also the possibility of integrating own JupyterLab environments into the provided JupyterHubs.
+  Details about the JupyterHub and Jupyter client services should be provided, i.e. a track of changes, limitations, customizability (issues).
+  Goal would be to enable users of all experience levels and with all HPC usage scenarios to work productively with Jupyter on the HPC system by providing a certain amount of default comfort/support, but also allowing highly customized self-maintained working environments.
+  \item Even-more-advanced service.
+  IPython (and eventually Jupyter) was designed with the goal of reducing the cognitive load that comes with "context switching" that is slowing down scientific work sessions.
+  As such HPC specific cognitive loads (see section X)\footnote{shift between monitoring of HPC system resource availability, job resource planning, design of scalable experiments with testing/debugging of implementation details, the monitoring of actually running jobs with preliminary analysis of a particular compute task's outputs, resource-demanding exploratory analyses, ...} could already be well-intergrated into the default Jupyter client (need more details here).
+  The goal would be a Jupyter-based HPC center specific intergrative "scientific workflow environment" that makes typical necessities like SSH keys and bunches of single terminal sessions (ideally even inside the JupyterLab client environment) indeed (mostly) obsolete.
 \end{itemize}
 
 \subsection{Scope of this paper}

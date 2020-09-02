@@ -23,15 +23,15 @@ Besides Jupyter, there are other popular implementations of computational notebo
 
 Here, we present usage scenarios on high-performance computing systems that might pose stress on a scientists work session and poses implementation challenges on a provided Jupyter service.
 
-From a connectivity perspective scientists might rely on
+From a network connectivity perspective scientists might be enabled/disabled by
 
 \begin{itemize}
-  \item cable network connections with high bandwidth and reliability as e.g. provided by the employing research institute
-  \item wireless network connections with varying stability and bandwidth as e.g. available at home
-  \item low-bandwidth, instable, disconnective (and port-disabled) wireless network connection such as e.g. on mobile phone, train and/or airport WiFi hotspots
+  \item reliable and high-bandwidth cable network connections as provided e.g. by the employing research institute
+  \item wireless network connections of varying bandwidth and stability as available for example during home office
+  \item low-bandwidth, instable, disconnective (and port-disabled) wireless network connections such as e.g. on mobile phone, train and/or airport WiFi hotspots
 \end{itemize}
 
-From a HPC system hardware type perspective scientists might require
+From a HPC system hardware type and compute resource perspective scientists might require
 
 \begin{itemize}
   \item only standard memory and/or CPU compute nodes to do and/or scale their computational tasks
@@ -39,15 +39,24 @@ From a HPC system hardware type perspective scientists might require
   \item usage of heterogeneous node resources for a single task e.g. several standard CPU nodes supplemented by a GPU node that speeds-up only certain highly specialized parts of a code
 \end{itemize}
 
-From a workflow perspective scientists have to
+From a software stack perspective there are scientists that
 
 \begin{itemize}
-  \item work on several clusters provided by one HPC center if compute task types and compute project memberships require them to
-  \item rely only on a single-purpose Jupyter notebook session
-  \item be able to do advanced workflow management\footnote{for example with \href{https://www.nextflow.io/}{Nextflow}, \href{https://snakemake.readthedocs.io/}{Snakemake}, ...}
+  \item are happy with a ready-to-use and sufficiently recent standard Anaconda data science package stack
+  \item require a version-specific and very unique software package set
+  \item strongly profit from system-optimized packages
 \end{itemize}
 
-\subsection{previous text}
+From a general workflow perspective scientists might
+
+\begin{itemize}
+  \item be happy with a single-purpose Jupyter notebook session on a single workhorse HPC system.
+  \item work on several clusters provided by one HPC center.
+  This could be the case for scientists that work on several scientific projects that are assigned to different compute projects and/or for scientific compute task pipelines that require hardware types and resource scalability not found on a particular HPC system alone.
+  \item need to be able use software associated with advanced workflow management systems\footnote{for example with \href{https://www.nextflow.io/}{Nextflow}, \href{https://snakemake.readthedocs.io/}{Snakemake}, ...}
+\end{itemize}
+
+\subsubsection{previous text}
 
 Jupyter on HPC is a solution for different user groups that profit for different reasons.
 There is expert users who have substantial resource demands (computational power or storage which can only be provided by HPC) and who don't want to miss the familiar comfort of the integrated working environment (notebooks and visualization but also terminal access) provided by Jupyter.

@@ -19,7 +19,35 @@ Work with remote Jupyter instances, e.g., through a JupyterHub is popular, becau
 Besides Jupyter, there are other popular implementations of computational notebooks~\citep{Hinsen2019a} that increasingly provide a browser-based way of working with them\footnote{See, e.g., the Matlab Live Editor at https://de.mathworks.com/products/matlab/live-editor.html.}.
 
 
-\subsection{User requirements}
+\subsection{Usage requirements}
+
+Here, we present usage scenarios on high-performance computing systems that might pose stress on a scientists work session and poses implementation challenges on a provided Jupyter service.
+
+From a connectivity perspective scientists might rely on
+
+\begin{itemize}
+  \item cable network connections with high bandwidth and reliability as e.g. provided by the employing research institute
+  \item wireless network connections with varying stability and bandwidth as e.g. available at home
+  \item low-bandwidth, instable, disconnective (and port-disabled) wireless network connection such as e.g. on mobile phone, train and/or airport WiFi hotspots
+\end{itemize}
+
+From a HPC system hardware type perspective scientists might require
+
+\begin{itemize}
+  \item only standard memory and/or CPU compute nodes to do and/or scale their computational tasks
+  \item specialized nodes with e.g. GPUs, higher memory and/or more performant CPU-types installed
+  \item usage of heterogeneous node resources for a single task e.g. several standard CPU nodes supplemented by a GPU node that speeds-up only certain highly specialized parts of a code
+\end{itemize}
+
+From a workflow perspective scientists have to
+
+\begin{itemize}
+  \item work on several clusters provided by one HPC center if compute task types and compute project memberships require them to
+  \item rely only on a single-purpose Jupyter notebook session
+  \item be able to do advanced workflow management\footnote{for example with \href{https://www.nextflow.io/}{Nextflow}, \href{https://snakemake.readthedocs.io/}{Snakemake}, ...}
+\end{itemize}
+
+\subsection{previous text}
 
 Jupyter on HPC is a solution for different user groups that profit for different reasons.
 There is expert users who have substantial resource demands (computational power or storage which can only be provided by HPC) and who don't want to miss the familiar comfort of the integrated working environment (notebooks and visualization but also terminal access) provided by Jupyter.

@@ -1,47 +1,23 @@
+---
+title: Jupyter services at high-performance computing centers from a scientific target user perspective
+author: Katharina Höflich¹, Willi Rath¹, and Martin Claus¹²
+date: 2020
+---
+
 <!--
-# Jupyter services at the Jülich Supercomputing Center (JSC) from a scientific target-user perspective
+create PDF with
+```shell
+docker run --rm --volume "$(pwd):/data" --user "$(id -u):$(id -g)" pandoc/latex:latest white-paper.md --toc --pdf-engine=xelatex --variable fontsize=12pt -o white-paper.pdf
+```
 -->
 
-# Jupyter services at high-performance computing centers from a scientific target user perspective
-
 <!--
+alt title: Jupyter services at the Jülich Supercomputing Center (JSC) from a scientific target-user perspective
 maybe choose "... from a scientific end-user perspective"?
 -->
 
-Katharina Höflich<sup>1</sup>, Willi Rath<sup>1</sup>, and Martin Claus<sup>1,2</sup>
-
-<sup>1</sup>GEOMAR Helmholtz Center for Ocean Research Kiel, Germany; <sup>2</sup>Faculty of Mathematics and Natural Sciences, Christian-Albrechts-Universität zu Kiel, Germany
-
-## Contents
-
-- [Jupyter services at high-performance computing centers from a scientific target user perspective](#jupyter-services-at-high-performance-computing-centers-from-a-scientific-target-user-perspective)
-  - [Contents](#contents)
-  - [Abstract](#abstract)
-  - [Introduction](#introduction)
-    - [What is high-performance computing?](#what-is-high-performance-computing)
-    - [What is Jupyter?](#what-is-jupyter)
-    - [Jupyter services at JSC](#jupyter-services-at-jsc)
-    - [Scope of this report](#scope-of-this-report)
-  - [Evaluation criteria](#evaluation-criteria)
-    - [Accessibility](#accessibility)
-    - [Selection of high-performance computing resources](#selection-of-high-performance-computing-resources)
-    - [Documentation](#documentation)
-    - [Software environment configuration](#software-environment-configuration)
-  - [Evaluation results](#evaluation-results)
-    - [Accessibility](#accessibility-1)
-    - [Selection of high-performance computing resources](#selection-of-high-performance-computing-resources-1)
-    - [Documentation](#documentation-1)
-    - [Software environment configuration](#software-environment-configuration-1)
-  - [Discussion and Jupyter@JSC recommendations](#discussion-and-jupyterjsc-recommendations)
-    - [Accessibility](#accessibility-2)
-    - [Selection of high-performance computing resources](#selection-of-high-performance-computing-resources-2)
-    - [Documentation](#documentation-2)
-    - [Configuration of the software environment](#configuration-of-the-software-environment)
-  - [Suggestions for Jupyter on high-performance computing systems](#suggestions-for-jupyter-on-high-performance-computing-systems)
-  - [Conclusion](#conclusion)
-  - [Acknowledgements](#acknowledgements)
-  - [Contribution](#contribution)
-  - [References](#references)
+¹GEOMAR Helmholtz Center for Ocean Research Kiel, Germany<br>
+²Faculty of Mathematics and Natural Sciences, Christian-Albrechts-Universität zu Kiel, Germany
 
 ## Abstract
 

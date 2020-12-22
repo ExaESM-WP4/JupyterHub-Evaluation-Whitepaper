@@ -1,13 +1,33 @@
 ---
 title: Jupyter services at high-performance computing centers from a scientific target user perspective
-author: Katharina Höflich¹, Willi Rath¹, and Martin Claus¹²
+author:
+  - Katharina Höflich^[_GEOMAR Helmholtz Center for Ocean Research Kiel, Germany,_ khoeflich@geomar.de]
+  - Willi Rath^[_GEOMAR Helmholtz Center for Ocean Research Kiel, Germany_]
+  - Martin Claus^[_GEOMAR Helmholtz Center for Ocean Research Kiel, Germany_ and _Faculty of Mathematics and Natural Sciences, Christian-Albrechts-Universität zu Kiel, Germany_]
 date: 2020
+numbersections: true
+abstract: |
+  Several high-performance computing (HPC) centers have started to provide Jupyter-based access to their compute infrastructure.
+  Jupyter tools are designed to simplify and have now become a popular choice for interactive computing tasks.
+  The Jupyter software itself comes with a wide range of deployment options and due to the in-build extensibility of the user interface it also allows for the set up of highly customized working environments.
+  While this configurability is a key strength of Jupyter software especially from a user's productivity perspective, it poses a challenge for Jupyter service providers and hence ready-to-use implementations might not turn out to improve individual scientific productivity in an optimal way.
+  Here, scientific user productivity requirements for JupyterHub deployments at HPC systems are formulated.
+  These have been developed along with a detailed investigation of the Jupyter-JSC service, which is a very mature and feature-rich implementation provided by the Jülich Supercomputing Center (JSC).
+  We assess aspects such as documentation, accessibility, system state reporting, fine-tuning of high-performance computing resources, and Jupyter notebook server and Jupyter kernel defaults and customization.
+  In doing so, suggestions are given that are targeted not only at maximizing the productivity of scientific target users, but also at minimizing system administrator workload.
+  This paper might serve as a discussion basis for the setup of Jupyter@HPC reference implementations, which would be important in light of the recent developments in the HPC community: The increasing importance of HPC for data analysis and machine-learning workloads, and the upcoming paradigm shift, i.e. Jupyter-based HPC system access as a replacement for the traditional SSH-based access.
 ---
 
 <!--
 create PDF with
 ```shell
-docker run --rm --volume "$(pwd):/data" --user "$(id -u):$(id -g)" pandoc/latex:latest white-paper.md --toc --pdf-engine=xelatex --variable fontsize=12pt -o white-paper.pdf
+docker run \
+  --rm --volume "$(pwd):/data" --user "$(id -u):$(id -g)" \
+  pandoc/latex:latest \
+  -f markdown+implicit_figures \
+  --pdf-engine=xelatex --variable fontsize=12pt --toc \
+  -o white-paper.pdf \
+    white-paper.md
 ```
 -->
 
@@ -16,30 +36,14 @@ alt title: Jupyter services at the Jülich Supercomputing Center (JSC) from a sc
 maybe choose "... from a scientific end-user perspective"?
 -->
 
-¹GEOMAR Helmholtz Center for Ocean Research Kiel, Germany<br>
-²Faculty of Mathematics and Natural Sciences, Christian-Albrechts-Universität zu Kiel, Germany
-
-## Abstract
-
-Several high-performance computing (HPC) centers have started to provide Jupyter-based access to their compute infrastructure.
-Jupyter tools are designed to simplify and have now become a popular choice for interactive computing tasks.
-The Jupyter software itself comes with a wide range of deployment options and due to the in-build extensibility of the user interface it also allows for the set up of highly customized working environments.
-While this configurability is a key strength of Jupyter software especially from a user's productivity perspective, it poses a challenge for Jupyter service providers and hence ready-to-use implementations might not turn out to improve individual scientific productivity in an optimal way.
-Here, scientific user productivity requirements for JupyterHub deployments at HPC systems are formulated.
-These have been developed along with a detailed investigation of the Jupyter-JSC service, which is a very mature and feature-rich implementation provided by the Jülich Supercomputing Center (JSC).
-We assess aspects such as documentation, accessibility, system state reporting, fine-tuning of high-performance computing resources, and Jupyter notebook server and Jupyter kernel defaults and customization.
-In doing so, suggestions are given that are targeted not only at maximizing the productivity of scientific target users, but also at minimizing system administrator workload.
-This paper might serve as a discussion basis for the setup of Jupyter@HPC reference implementations, which would be important in light of the recent developments in the HPC community: The increasing importance of HPC for data analysis and machine-learning workloads, and the upcoming paradigm shift, i.e. Jupyter-based HPC system access as a replacement for the traditional SSH-based access.
-
-
-## Introduction
+# Introduction
 
 SOMEWHERE HERE, ENSURE THAT IT'S CLEAR WE, WE INTEND TO PROVIDE IMPLEMENTABLE SUGGESTIONS FOR A PROBLEM THAT WAS POSED IN [@GOEBBERT-ET-AL-2018]: HOW TO MANAGE DIVERGING DEMANDS OF ALL THE USERS AND THEIR INTERACTIVE COMPUTING SOFTWARE ENVIRONMENTS ON A CENTRALLY MANAGED JUPYTERHUB DEPLOYMENT
 
 In this section, we'll briefly describe what problems high-performance computing (HPC) is tackling, what exactly project Jupyter software aims at and what challenges on HPC it might solve. We'll also briefly introduce the JupyterHub service at the Jülich Supercomputing Center (JSC), which is a ready-to-use JupyterLab web client environment providing access to a variety of their systems and which has seen several years of active developed and has evolved into a mature system.
 Finally, we define the scope of this report.
 
-### What is high-performance computing?
+ What is high-performance computing?
 
 High-performance computing (HPC) centres such as the the Jülich Supercomputing Center (JSC) provide research infrastructure which is shared among many scientific disciplines [@wissenschaftsrat-2015].
 As, e.g., pointed out by [@wissenschaftsrat-2020], HPC and is no longer only relevant for classical simulations applications but increasingly so for data analysis and machine-learning workloads [@wissenschaftsrat-2020].
@@ -55,7 +59,9 @@ As a general rule the need for optimization and system specific adaptation of co
 TODO JSC-PEOPLE: GIVE A FEW EXAMPLES FOR ADAPTED LIBRARIES HERE (EG NETWORK/UCX AND GPU/CUDA AND NUMPY/MKL/BLAS/BOOST)?
 
 
-![](./HPC-architecture/hpc-architecture.png) <!-- ASK SIMONE KNIEF FOR PERMISSION TO USE THIS IMAGE -->
+![Typical HPC architecture.](./HPC-architecture/hpc-architecture.png)
+
+<!-- ASK SIMONE KNIEF FOR PERMISSION TO USE THIS IMAGE -->
 <!-- REFER TO THE IMAGE IN THE TEXT? -- No, this is fine. We could add a figure caption, thouhg? -->
 
 High-performance computing systems are (almost) exclusively operated by Linux systems [@top500.org/1] and are natively accessible via SSH. The user accesses the system via one of a few dedicated login, frontend or gateway nodes and has to request actual compute resources via a batch job scheduling system.
@@ -63,7 +69,7 @@ The batch scheduler allocates available compute resources according to a specifi
 Often, compute node resources are heterogeneous (in terms of CPU type, GPU acceleration, or installed memory on a group of compute nodes) and organized into separate batch partitions.
 Upon submitting requests to the batch scheduler, users have to manually specify resource needs such as node/partition type, number of compute nodes, CPUs, GPUs, amount of memory, as well as a prospected job duration.
 
-### What is Jupyter?
+## What is Jupyter?
 
 Jupyter is a stack of open-source software tools for interactive computing, as well as a collaborative  community of users and developers [https://jupyter.org/about].
 The mission of project Jupyter is to improve the workflows of scientific computing practitioners (e.g. researchers, educators, or scientists) from the exploratory phase of their work to the communication of results and insights [https://blog.jupyter.org/and-voil%C3%A0-f6a2c08a4a93].
@@ -117,7 +123,7 @@ We can only guess why there is no community-based setup guides and configuration
 Part of the reason may be that HPC system configurations are much more diverse than the cloud or single-machine-based systems not only in their software and hardware configurations, but also in their security measures, and that hence there is less common ground to build on.
 It should be noted, however, that there are several HPC facilities that provide JupyterHubs taylored to their systems (like the Jupyter-JSC system we discuss below which is detailed in [@Goebbert-et-al-2018]).
 
-![](./jupyter-architecture/jupyter-architecture.png)
+![Jupyter architecture.](./jupyter-architecture/jupyter-architecture.png)
 
 <!--
 
@@ -185,7 +191,7 @@ Jupyter as new paradigm to HPC access: hepix2019 talk!!!
 
 -->
 
-### Jupyter services at JSC
+## Jupyter services at JSC
 
 ADD BRIEF OVERVIEW OF JSC, JSC SUPERCOMPUTERS, AND JUPYTER@JSC.
 
@@ -213,7 +219,7 @@ For Jupyter: https://github.com/FZJ-JSC/ + https://github.com/jupyter-jsc see KT
 
 -->
 
-### Scope of this report
+## Scope of this report
 
 This report was created within a multi-partner project that aims at fore-seeing and possibly solving earth-system modeling specific problems arising with the next generation of supercomputers (the [Pilot Lab Exascale Earth System Modeling](https://www.fz-juelich.de/ias/jsc/EN/News/Newsletter/Issues/2019-09-no-267.html#Thema1a2) project).
 The objective of this report is to inform future design decisions for Jupyter systems that are deployed on or close to high-performance computing infrastructure.
@@ -224,7 +230,7 @@ During the investigation of the system, we took the perspective of a normal user
 The report presents an evaluation of different aspects of the Jupyter@JSC system always focusing on the impact on _individual scientific productivity_ of the target users.
 The insights of the investigation are condensed into recommendations and suggestions that are addressed at the Juptyer@JSC system providers, at other Jupyter system providers with a high-performance computing background, and at, both, the wider high-performance computing and the wider Jupyter community.
 
-## Evaluation criteria
+# Evaluation criteria
 
 In this section, we'll briefly describe the criteria against which the JupyterHub service at the Jülich Supercomputing Center (JSC) will be evaluated.
 
@@ -234,7 +240,7 @@ They found that Jupyter on their HPC system is mainly used for data exploration,
 However, to evaluate in what aspects and to what extent the existing Jupyter service at JSC inhibits, enables, or even strongly improves _individual scientific productivity_, we need to consider both user experience with HPC and/or Jupyter and usage scenarios.
 Note, that wherever possible, we have formulated the criteria in such a way that they can also be applied to a solution providing Jupyter@HPC that does not involve a JupyterHub.
 
-### Accessibility
+## Accessibility
 
 We will evaluate if and to what extent the provided Jupyter service
 - is accessible easily and irrespective of the user's platform and network cofiguration,
@@ -243,7 +249,7 @@ We will evaluate if and to what extent the provided Jupyter service
 
 These criteria are meant to guarantee the scientific productivity of, both, users with very stable and performant institutional networks, as well as those behind heavily firewalled and non-configurable public networks.
 
-### Selection of high-performance computing resources
+## Selection of high-performance computing resources
 
 We will evaluate if and to what extent the provided Jupyter service
 - provides pre-selected defaults for low-barrier exploration on the system,
@@ -257,7 +263,7 @@ We will evaluate if and to what extent the provided Jupyter service
 These criteria are meant to ensure easy onboarding of new user that may be unexperienced either with HPC in general, with Jupyter, or with the specific system.
 The criteria are further meant to guarantee that users who have existing command-line based workflows, can, in principle, migrate any of their workflows to the Jupyter solution without finding their scientific productivity hampered by a later initially non-obvious obstacle.
 
-### Documentation
+## Documentation
 
 We will evaluate if and to what extent the provided Jupyter service documentation
 - is easily findable and accessible for users,
@@ -271,7 +277,7 @@ These criteria are meant to check for ease of taking the first steps with Jupyte
 As Jupyter is prevalent on many systems, such as commercial cloud platforms, private compute clusters, or personal machines (see [@Paine-Ramakrishnan-2020]), it can be expected that there are many users who already are familiar with Jupyter to various degrees.
 For those users, there should be an efficient way of getting to know the provided Jupyter solution and to decide if and to what degree their needs are fulfilled.
 
-### Software environment configuration
+## Software environment configuration
 
 We will evaluate if and to what extent the provided Jupyter client environment can be used at different levels of customization in that it
 - provides sensible defaults that are usable in a realistic application,
@@ -286,12 +292,12 @@ These criteria are meant to enable unexperienced users to work with Jupyter on t
 They are also meant to facilitate collaboration by ensuring comparability of software environments among one or more users, and to support reproducibility via documenting and sharing environments in a fully self-sufficient way that requires no informal specification of details and no manual steps (see [@Sandve-et-al-2013]).
 
 
-## Evaluation results
+# Evaluation results
 
 In this section, we'll describe the JupyterHub solution provided by the Jülich Supercomputing Center (JSC) with respect to the evaluation criteria listed above.
 Where appropriate, we will also refer to other solutions for using Jupyter on high-performance computing systems, or to other JupyterHub-based services, such as the purely SSH-based solution described in [@geomar-jupyter-ssh-guide]
 
-### Accessibility
+## Accessibility
 
 While we could not do a full analysis of the availability and accessibility of the Jupyter@JSC system, we had the opportunity of running sporadic tests that covered different times of day on normal working days and weekends.
 In these tests, we found that the JupyterHub was accessible and responsive from different operating systems, and from different network configurations (wired institutional network at GEOMAR, WiFi at GEOMAR, WiFi at home, mobile WiFi hotspot) and provided a smooth user experience most of the time.
@@ -308,7 +314,7 @@ ADD COMMENT ON GEOMAR JUPYTER AT HPC SOLUTION
 WHAT ABOUT THE DKRZ SOLUTION
 -->
 
-### Selection of high-performance computing resources
+## Selection of high-performance computing resources
 
 On Jupyter@JSC, there is a no-input-needed way of spwaning a Jupyter user server on the front ends on each of the provided HPC systems.
 Using batch compute nodes requires the selection of the batch partition, the project from which to pay for the resource allocation, the number of nodes (1 to 256) to be used in the Juptyer session and the maximum duration (up 24 hours) of the session, and, if applicable, number of GPUs per node (1 to 4).
@@ -339,7 +345,7 @@ I'd drop these:
 ADD COMMENT ON GEOMAR JUPYTER AT HPC BASH SCRIPT SOLUTION
 COMMENT ON THE DKRZ SOLUTION -->
 
-### Documentation
+## Documentation
 
 The documentation of Jupyter@JSC is directly accessible from JupyterHub landing page also for users that are not logged in.
 The main Jupyter@JSC documentation that touches all all aspects of the workflows with the JupyterHub and its advantages / differences compared to manual SSH-based approaches comes as slides from a recent (May 2020) training workshop.
@@ -373,7 +379,7 @@ During our exploration and evaluation of the Jupyter@JSC system, we found the do
 <!-- ADD COMMENT ON GEOMAR JUPYTER AT HPC SOLUTION
 COMMENT ON AT LEAST THE OLD (AND NEW) DKRZ SOLUTION HERE -->
 
-### Software environment configuration
+## Software environment configuration
 
 The Jupyter@JSC JupyterHub provides a rich collection of default compute environments.
 It offers ready-to-use kernels for, e.g., Python, Bash, C++, Julia, and Octave and various.
@@ -411,13 +417,13 @@ We have tested and used a container-based Jupyter kernel environment management 
 <!-- ADD COMMENT ON GEOMAR JUPYTER AT HPC SOLUTION
 COMMENT ABOUT THE DKRZ SOLUTIONS HERE -->
 
-## Discussion and Jupyter@JSC recommendations
+# Discussion and Jupyter@JSC recommendations
 
 The Jupyter services provided by the Jülich Supercomputing Center (JSC) are focused on providing a JupyterHub, that spawns pre-configured JupyterLab servers on a variety of the supercomputing and/or cloud-server systems operated by JSC (SEE INTRO FOR A DETAILED OVERVIEW). Generally, as the Jupyter community currently does not maintain JupyterHub deployment guidelines tailored to high-performance computing systems (SEE INTRO FOR DETAILS), each group of system operators needs to decide on features they want to support themselves and then develop their own solutions. Therefore, from a user perspective, no JupyterHub on high-performance systems is like the other.
 
 In this section, we'll discuss the key strengths and the stumbling blocks of the Jupyter@JSC JupyterHub and develop recommendations that would improve individual scientific productivity.
 
-### Accessibility
+## Accessibility
 
 Jupyter@JSC provides a JupyterHub that integrates all possible spawning locations into one landing page that also serves as the only layer of authentication a user has for working with Jupyter.
 This is an excellent way of removing all special hardware and software requirements on the user side.
@@ -429,7 +435,7 @@ This could be mitigated by scaling up the hub infrastructure and the proxy serve
 <!-- MENTION SSH AND OTHER WAYS OF STARTING JUPYTER HERE?
 ADD KIT COMPLEXITY BY VPN HERE? -->
 
-### Selection of high-performance computing resources
+## Selection of high-performance computing resources
 
 The key strengh of the Jupyter@JSC system is immediate usability of Jupyter, both, on frontends and on compute nodes based on pre-defined default configurations, on most of their operated system.
 This allows for quickly getting to know each of the systems and, via the excellent terminal-based capabilities of JupyterLab, invites for directly using it for all classical terminal-based HPC tasks like data management and batch-job orchestration.
@@ -447,7 +453,7 @@ As a Jupyter@HPC JupyterHub lowers the barriers for access to the HPC systems an
 
 As even a very versatile JupyterHub with high configurability might not always provide all options needed by expert users, it could be beneficial to provide basic documentation of a Jupyter-based workflow that relies on classical HPC system access methods like SSH and manual batch-job submission entirely.
 
-### Documentation
+## Documentation
 
 The documention provided by Jupyter@JSC is strong in that it is easily findable and accessible directly via the JupyterHub landing page and without any login, in that it reflects the current state of the provided service, and in that it is easy consume for users familiar with Jupyter, because it stays very close to the concepts and language that is common to the Jupyter ecosystem.
 
@@ -489,7 +495,7 @@ CHECK THAT THE FOLLOWING IS COVERED ABOVE:
   - maybe add full-text search / would need consolidation into one collection of docs
   - CI? -->
 
-### Configuration of the software environment
+## Configuration of the software environment
 
 The use and management of software environments on Jupyter@JSC is strong in that there are fully functional default environments that can be used directly with example applications provided in the documentation.
 
@@ -506,13 +512,14 @@ Additionally, with the currently fixed and centrally Jupyter user server configu
 We therefore have the following suggestions: First, both, for reasons of scientific reproducibility and software environment compatibility, users should be enabled to use a previous version of the pre-configured JupyterLab user server directly from the JupyterHub. If that is not feasible, it should at least be described/documented how to re-use an older software environment manually and without the JupyterHub. Second, for the reasons mentioned above it should be made possible to spawn a fully user-managed Jupyter user server with custom Jupyter kernels via the JupyterHub. For an HPC based JupyterHub operated by GWDG it is, for example, possible to spawn a Jupyter environment that comes in a Singularity container (see [here](https://info.gwdg.de/docs/doku.php?id=en:services:application_services:jupyter:hpc) for a description). As Singularity has recently been added to the service portfolio at JSC, this could be a possible route. However, we would like to highlight that it would be best not to restrict spawning of user-specific Jupyter servers to only containers. It would be most worthwile to provide a bash spawner here, that would enable users to specify a start-up script with e.g. needed HPC modules and a custom JupyterLab server that is directly installed in the user space of the file system.
 
 CHECK THAT THESE POINTS ARE INCLUDED ABOVE:
-* ideally, provide a bash script spawner! GWDG@SCC provides a Singularity container spawning functionality and in their docs rudimentarily describe how to provide a Jupyter container image that talks to their JupyterHub [@gwdg.de/1]
-* strongly reduce the software module complexity! this might not be possible without adapting also the module environment that is accessible via SSH login;
-* provide access to older default JupyterLab environments
-* latency problems with file-system based envs
-* configuration of Jupyter extensions: https://jupyterlab.readthedocs.io/en/stable/user/extensions.html#listings
 
-## Suggestions for Jupyter on high-performance computing systems
+  * ideally, provide a bash script spawner! GWDG@SCC provides a Singularity container spawning functionality and in their docs rudimentarily describe how to provide a Jupyter container image that talks to their JupyterHub [@gwdg.de/1]
+  * strongly reduce the software module complexity! this might not be possible without adapting also the module environment that is accessible via SSH login;
+  * provide access to older default JupyterLab environments
+  * latency problems with file-system based envs
+  * configuration of Jupyter extensions: https://jupyterlab.readthedocs.io/en/stable/user/extensions.html#listings
+
+# Suggestions for Jupyter on high-performance computing systems
 In the previous section we have discussed and made rather specific feature requests and suggestions for the Jupyter@JSC JupyterHub service.
 Here, additionally, we want to briefly describe what we think are unique challenges to Jupyter services on high-performance computing systems, and to explicitly sketch an implementation that we think would both maximize individual scientific productivity, and at the same time would minimize the need for manual system administrator intervention.
 
@@ -537,6 +544,7 @@ Over approximately two years of maintaining this documentation-focused approach 
 Our main takeaways from the documentation based approach at GEOMAR are that enabling users by educating them is very sustainable, and that solving access irrespective of the personal endpoint of the user is very difficult and needs continuous maintenance.
 
 Taking the perspective of a general scientific target user, we would describe the ideal JupyterHub service for high-performance computing systems as follows:
+
 - The system needs to be highly customizable in every aspect that influences the active work of the user on the system. 
 It needs to allow for spawning a customized Jupyter user server (e.g., JupyterLab), provide different possibilities for the underlying compute kernels, and provide access to all parts of the high-performance computing cluster that the user would be able to access via the classical command-line approach.
 - The system needs clear and ready-to use defaults that allow for immediate exploration by new users.
@@ -546,7 +554,7 @@ It needs to allow for spawning a customized Jupyter user server (e.g., JupyterLa
 
 <!-- IS JUPYTER-AT-HPC NECESSARILY ONLY JUPYTERHUB AT HPC? --- yes. -->
 
-## Conclusion
+# Conclusion
 
 BACK REFERENCING ESPECIALLY TO DISCUSSION AND JUPYTER@HPC SECTIONS, THIS IS NOT CURRENTLY DONE SUFFICIENTLY.
 
@@ -556,7 +564,7 @@ For advanced needs, however, there is room for improvement as detailed in the [s
 As the central idea behind and the main strength of the tools provided by the Jupyter project and the Jupyter community is customizability by the individual end user or application developer, any pre-configured Jupyter working environment on a shared and multi-discipline compute infrastructure can only be a compromise.
 We therefore think that providers of Jupyter systems for high-performance computers used by a variety of scientific users with highly individual working environment and software library requirements even within the same scientific domain, it is of the utmost importance to focus all design decisions and implementation efforts on enabling users to fully customize all aspects of their Jupyter environments.
 
-## Acknowledgements
+# Acknowledgements
 
 The authors would like to thank [list of names and reason]
 
@@ -564,11 +572,11 @@ JSC, KIT, DKRZ, NESH
 
 This work was financially supported by Helmholtz XXX under XXX.
 
-## Contribution
+# Contribution
 
 KH, WR, MC, ...
 
-## References
+# References
 
 [2]: https://www.fz-juelich.de/ias/jsc/EN/Expertise/IndustryRelations/_node.html; last accessed 2020-11-12
 

@@ -38,7 +38,7 @@ To optimally utilize the specialised hardware, system specific drivers (such as 
 This optimization typically needs assistance by specialists employed at the computing centres providing the HPC systems.
 As a general rule the need for optimization and system specific adaptation of components of software is stronger the closer the component is to the utilization of hardware-specific features.
 
-![Typical HPC architecture. (Adapted from the [HPC introduction course materials provided by the Kiel University Computing Centre in May 2020](https://www.rz.uni-kiel.de/en/our-portfolio/hiperf/virtual_hpc_introduction_course).)](./HPC-architecture/hpc-architecture.png)
+![Typical HPC architecture. (Adapted from the [HPC introduction course materials provided by the Kiel University Computing Centre in May 2020](https://www.rz.uni-kiel.de/en/our-portfolio/hiperf/virtual_hpc_introduction_course).)](./figures/HPC-architecture/HPC-architecture.png)
 
 High-performance computing systems are (almost) exclusively operated by Linux systems [@top500.org/1]. The user accesses the system via SSH via one of a few dedicated login, frontend or gateway nodes and has to request actual computational resources via a batch job scheduling system.
 The batch scheduler allocates compute resources according to a specified scheduling policy, which often differs strongly across single HPC systems, and involves studying of the site-specific documentation.
@@ -100,7 +100,7 @@ We can only guess why there is no community-based setup guides and configuration
 Part of the reason may be that HPC system configurations are much more diverse than the cloud or single-machine-based systems not only in their software and hardware configurations, but also in their security measures, and that hence there is less common ground to build on.
 It should be noted, however, that there are several HPC facilities that provide JupyterHubs taylored to their systems (like the Jupyter-JSC system we discuss below which is detailed in [@Goebbert-et-al-2018]).
 
-![JupyterLab v2.2 architecture.](./jupyter-architecture/jupyter-architecture.png)
+![JupyterLab v2.2 architecture.](./figures/jupyter-architecture/jupyter-architecture.png)
 
 
 ## Why focus on Jupyter services at JSC?

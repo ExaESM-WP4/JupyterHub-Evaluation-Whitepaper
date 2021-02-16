@@ -14,6 +14,6 @@ jobs:
     - run: echo ${GITHUB_SHA} && pandoc -f markdown+implicit_figures --pdf-engine=xelatex --variable fontsize=12pt --toc -o jupyterhub-white-paper_${GITHUB_SHA}.pdf white-paper.md && ls -la
     - uses: actions/upload-artifact@v2
       with:
-        name: jupyterhub-white-paper.zip
+        name: jupyterhub-white-paper
         path: jupyterhub-white-paper_${{github.sha}}.pdf
         if-no-files-found: error

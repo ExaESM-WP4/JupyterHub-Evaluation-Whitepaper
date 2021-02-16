@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-18.04
     container: docker://pandoc/latex:latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - run: echo ${GITHUB_SHA} && pandoc -f markdown+implicit_figures --pdf-engine=xelatex --variable fontsize=12pt --toc -o jupyterhub-white-paper_${GITHUB_SHA}.pdf white-paper.md && ls -la
     - uses: actions/upload-artifact@v2
       with:

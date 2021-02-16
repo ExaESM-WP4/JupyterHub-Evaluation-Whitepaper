@@ -14,9 +14,7 @@ jobs:
     container: docker://pandoc/latex:latest
     steps:
     - uses: actions/checkout@v2
-      with:
-        ref: ${{github.event.pull_request.head.sha}}
-    - run: echo ${{github.event.pull_request.head.sha}} && pandoc -f markdown+implicit_figures --pdf-engine=xelatex --variable fontsize=12pt --toc -o jupyterhub-white-paper_${{github.event.pull_request.head.sha}}.pdf white-paper.md && ls -la
+    - run: pandoc -f markdown+implicit_figures --pdf-engine=xelatex --variable fontsize=12pt --toc -o jupyterhub-white-paper_${{github.event.pull_request.head.sha}}.pdf white-paper.md && ls -la
     - uses: actions/upload-artifact@v2
       with:
         name: jupyterhub-white-paper

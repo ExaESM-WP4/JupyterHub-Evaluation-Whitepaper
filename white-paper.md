@@ -38,7 +38,7 @@ To optimally utilize the specialised hardware, system specific drivers (such as 
 This optimization typically needs assistance by specialists employed at the computing centres providing the HPC systems.
 As a general rule the need for optimization and system specific adaptation of components of software is stronger the closer the component is to the utilization of hardware-specific features.
 
-![Typical HPC architecture. (Adapted from the [HPC introduction course materials provided by the Kiel University Computing Centre in May 2020](https://www.rz.uni-kiel.de/en/our-portfolio/hiperf/virtual_hpc_introduction_course).)](./figures/HPC-architecture/HPC-architecture.png)
+![Typical HPC architecture. (Adapted from the [HPC introduction course materials provided by the Kiel University Computing Centre in May 2020](https://www.rz.uni-kiel.de/en/our-portfolio/hiperf/virtual_hpc_introduction_course).)](./figures/HPC-architecture/hpc-architecture.png)
 
 High-performance computing systems are (almost) exclusively operated by Linux systems [@top500.org/1]. The user accesses the system via SSH via one of a few dedicated login, frontend or gateway nodes and has to request actual computational resources via a batch job scheduling system.
 The batch scheduler allocates compute resources according to a specified scheduling policy, which often differs strongly across single HPC systems, and involves studying of the site-specific documentation.

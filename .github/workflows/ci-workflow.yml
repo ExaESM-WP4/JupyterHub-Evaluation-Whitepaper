@@ -14,7 +14,7 @@ jobs:
     container: docker://pandoc/latex:latest
     steps:
     - uses: actions/checkout@v1
-    - run: pandoc -f markdown+implicit_figures --pdf-engine=xelatex --variable fontsize=12pt --toc -o jupyterhub-white-paper_${GITHUB_SHA::7}.pdf white-paper.md
+    - run: echo ${GITHUB_SHA::7} && pandoc -f markdown+implicit_figures --pdf-engine=xelatex --variable fontsize=12pt --toc -o jupyterhub-white-paper_${GITHUB_SHA::7}.pdf white-paper.md && ls -la
     - uses: actions/upload-artifact@v2
       with:
         name: jupyterhub-white-paper

@@ -8,11 +8,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-18.04
-    container: docker://exaesmwp4/texlive:latest
+    container: docker://pandoc/latex:latest
     steps:
     - uses: actions/checkout@v1
-    - run: cd tex/ && latexmk -f -bibtex -pdf -pdflatex="pdflatex --shell-escape %O %S" jupyterhub-evaluation-whitepaper.tex && cd -
-    - uses: actions/upload-artifact@v1
+    - run: echo ${GITHUB_SHA} && pandoc -f markdown+implicit_figures --pdf-engine=xelatex --variable fontsize=12pt --toc -o jupyterhub-white-paper_${GITHUB_SHA}.pdf white-paper.md && ls -la
+    - uses: actions/upload-artifact@v2
       with:
-        name: jupyterhub-evaluation-whitepaper.pdf
-        path: tex/jupyterhub-evaluation-whitepaper.pdf
+        name: jupyterhub-white-paper
+        path: jupyterhub-white-paper_${{github.sha}}.pdf

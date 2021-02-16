@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - run: pandoc -f markdown+implicit_figures --pdf-engine=xelatex --variable fontsize=12pt --toc -o jupyterhub-white-paper_${GITHUB_SHA::7}.pdf white-paper.md
-    - uses: actions/upload-artifact@v1
+    - uses: actions/upload-artifact@v2
       with:
-        name: jupyterhub-white-paper_${GITHUB_SHA::7}.pdf
+        name: jupyterhub-white-paper
         path: jupyterhub-white-paper_${GITHUB_SHA::7}.pdf

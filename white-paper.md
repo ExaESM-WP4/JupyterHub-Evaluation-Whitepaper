@@ -43,7 +43,7 @@ SOMEWHERE HERE, ENSURE THAT IT'S CLEAR WE, WE INTEND TO PROVIDE IMPLEMENTABLE SU
 In this section, we'll briefly describe what problems high-performance computing (HPC) is tackling, what exactly project Jupyter software aims at and what challenges on HPC it might solve. We'll also briefly introduce the JupyterHub service at the Jülich Supercomputing Center (JSC), which is a ready-to-use JupyterLab web client environment providing access to a variety of their systems and which has seen several years of active developed and has evolved into a mature system.
 Finally, we define the scope of this report.
 
- What is high-performance computing?
+## What is high-performance computing?
 
 High-performance computing (HPC) centres such as the the Jülich Supercomputing Center (JSC) provide research infrastructure which is shared among many scientific disciplines [@wissenschaftsrat-2015].
 As, e.g., pointed out by [@wissenschaftsrat-2020], HPC and is no longer only relevant for classical simulations applications but increasingly so for data analysis and machine-learning workloads [@wissenschaftsrat-2020].

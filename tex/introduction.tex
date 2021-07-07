@@ -3,8 +3,16 @@
 \label{s-introductoin}
 
 Jupyter notebooks~\citep{Kluyver2016} are increasingly used for scientific work.
-Services like Binder~\citep{Jupyter2018}, colab \citep{Google2020, Carneiro2018}, or the Pangeo hubs\citep{robinson2019science}, that are based on public cloud infrastructure, are setting high standards for user experience (ELABORATE ON UX ON BINDER, COLAB, PANGEO?).
-There are numerous efforts to establish Jupyter based workflows in HPC centres or on-premise cloud infrastructure:
+The widely used Python package managers Conda and pip simplify the deployment of a ready-to-use and single-user Jupyter server on personal desktop computers or laptops and let people start working with Jupyter notebooks quickly.
+However, nowadays there are many scientific use cases that require working on a dataset together.
+Moreover, the scientific questions and amounts of data that need to be analysed to generate insight often exceed the computational and storage capabilities of a personal computing environment.
+
+Jupyter servers communicate via HTTP and can, in principle, be accessed also when they are running on a remote computer.
+In practice, setting up a Jupyter server on a remote machine with zero control over the particular network implementation might, however, not be a trivial task.
+So, to simplify Jupyter-based workflows on remote machines, several data centres, research computing organisations, and cloud providers have started to implement Jupyter services that are targeted at simplifying the network connection and/or compute software environment management aspects.
+Services like Binder~\citep{Jupyter2018}, Coogle colaboratory \citep{Google2020, Carneiro2018}, or the Pangeo hubs~\citep{robinson2019science}, that are based on public cloud infrastructure, are setting high standards for user experience in terms of immediate availability of resources, management of compute environment, and documentation / tutorials.
+Furthermore, there are numerous efforts to support Jupyter-based workflows and to provide Jupyter services also in HPC centers, which includes (a certainly incomplete list of) solutions by:
+
 \begin{itemize}
   \item NCAR runs it on CHEYNENNE\footnote{https://www2.cisl.ucar.edu/resources/computational-systems/cheyenne/software/jupyter-and-ipython},
   \item DKRZ offers a JupyterHub\footnote{https://www.dkrz.de/up/systems/mistral/programming/jupyter-notebook},
